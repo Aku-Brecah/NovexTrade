@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, ShieldCheck, ArrowUpRight, Lock, Activity } from 'lucide-react';
+import { Layers, ShieldCheck, ArrowUpRight, Lock, Activity } from 'lucide-react';
 
 interface FooterProps {
   onNavigateToTrade?: (sym?: string) => void;
@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer
       style={{
-        background: '#12141a',
+        background: '#181a20',
         borderTop: '1px solid #2b313a',
         padding: '50px 24px 30px',
         color: '#848e9c',
@@ -34,19 +34,24 @@ export const Footer: React.FC<FooterProps> = ({
         >
           {/* Column 1: Brand & Solvency */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '20px', fontWeight: 800, color: '#fcd535' }}>
-              <Zap size={24} />
-              <span>NovexTrade</span>
+            <div className="brand-logo-badge">
+              <div className="brand-logo-icon">
+                <Layers size={18} color="#f0b90b" />
+              </div>
+              <div className="brand-logo-text-wrap">
+                <span className="brand-name-novex" style={{ fontSize: '18px' }}>NOVEX</span>
+                <span className="brand-name-trade" style={{ fontSize: '18px' }}>TRADE</span>
+              </div>
             </div>
             <p style={{ fontSize: '13px', lineHeight: '1.6', margin: 0, color: '#848e9c' }}>
               Institutional-grade digital asset exchange engineered with microsecond deterministic matching, strict double-entry ledger architecture, and 100% verified Proof of Reserves.
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#2ebd85', fontWeight: 600, background: 'rgba(46, 189, 133, 0.1)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(46, 189, 133, 0.2)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#0ecb81', fontWeight: 600, background: 'rgba(14, 203, 129, 0.1)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(14, 203, 129, 0.2)' }}>
                 <ShieldCheck size={14} />
                 100% Proof of Reserves
               </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#fcd535', fontWeight: 600, background: 'rgba(252, 213, 53, 0.1)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(252, 213, 53, 0.2)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#f0b90b', fontWeight: 600, background: 'rgba(240, 185, 11, 0.1)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(240, 185, 11, 0.2)' }}>
                 <Lock size={14} />
                 $1B SAFU
               </span>
@@ -67,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({
                     }
                   }}
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Spot Trading (350+ Pairs)
@@ -77,18 +82,18 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/invest"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s', display: 'flex', alignItems: 'center', gap: '6px' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   <span>High-Yield Earn &amp; Staking</span>
-                  <span style={{ background: 'rgba(252, 213, 53, 0.15)', color: '#fcd535', fontSize: '10px', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>250% ROI</span>
+                  <span style={{ background: 'rgba(240, 185, 11, 0.15)', color: '#f0b90b', fontSize: '10px', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>250% ROI</span>
                 </a>
               </li>
               <li>
                 <a
                   href="/wallet"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Instant Internal Transfers (0% Fee)
@@ -104,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({
                     }
                   }}
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   P2P Escrow Market
@@ -114,7 +119,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/stock/NVDA"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Stock &amp; Equity Intelligence
@@ -124,7 +129,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/news"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Live Financial News &amp; Feeds
@@ -134,7 +139,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="#/resources"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Strategy Playbooks &amp; PDFs
@@ -151,7 +156,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/dashboard"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Proof of Reserves Audit
@@ -161,7 +166,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/security"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   SAFU Vault Custody
@@ -170,7 +175,7 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <a
                   href="/admin"
-                  style={{ color: '#fcd535', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                  style={{ color: '#f0b90b', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                 >
                   <span>Executive Admin Console</span>
                   <ArrowUpRight size={13} />
@@ -180,7 +185,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/dashboard"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Identity &amp; KYC Verification
@@ -190,7 +195,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <a
                   href="/watchlist"
                   style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Watchlist &amp; Price Alerts
@@ -244,7 +249,7 @@ export const Footer: React.FC<FooterProps> = ({
             <span>&bull;</span>
             <span>ISO 27001 Security Standard</span>
             <span>&bull;</span>
-            <span style={{ color: '#2ebd85' }}>100% Solvency Backed</span>
+            <span style={{ color: '#0ecb81' }}>100% Solvency Backed</span>
           </div>
         </div>
       </div>

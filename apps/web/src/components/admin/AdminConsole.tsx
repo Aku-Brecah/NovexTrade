@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { PanelLeftClose, PanelLeftOpen, Zap, ShieldCheck, Activity, Cpu } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, Layers, ShieldCheck, Activity, Cpu } from 'lucide-react';
 import { useAdminSession } from '../../hooks/useAdminPermissions';
 import { useAdminQuery } from '../../hooks/useAdminApi';
 import {
@@ -184,7 +184,7 @@ const AdminInlineLogin: React.FC<{ onLoggedIn: () => void }> = ({ onLoggedIn }) 
         <button
           type="submit"
           disabled={loading}
-          style={{ background: '#fcd535', color: '#181a20', border: 'none', borderRadius: '8px', padding: '12px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', marginTop: '8px', opacity: loading ? 0.7 : 1 }}
+          style={{ background: '#f0b90b', color: '#0b0e11', border: 'none', borderRadius: '8px', padding: '12px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', marginTop: '8px', opacity: loading ? 0.7 : 1 }}
         >
           {loading ? 'Authenticating...' : 'Sign In to Admin Console'}
         </button>
@@ -272,8 +272,8 @@ export const AdminConsole: React.FC = () => {
     return (
       <div style={{ maxWidth: '440px', margin: '40px 16px', background: '#1e2329', border: '1px solid #2b313a', borderRadius: '16px', padding: '24px 20px', boxShadow: '0 12px 32px rgba(0, 0, 0, 0.4)' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ width: '52px', height: '52px', borderRadius: '12px', background: 'rgba(252, 213, 53, 0.15)', border: '1px solid #fcd535', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
-            <PanelLeftOpen size={26} color="#fcd535" />
+          <div style={{ width: '52px', height: '52px', borderRadius: '12px', background: 'rgba(240, 185, 11, 0.15)', border: '1px solid #f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+            <PanelLeftOpen size={26} color="#f0b90b" />
           </div>
           <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#eaecef', marginBottom: '6px' }}>Admin Console Access</h2>
           <p style={{ fontSize: '13px', color: '#848e9c', margin: 0 }}>Sign in with an exchange administrator account to manage platform risk and operations.</p>
@@ -348,7 +348,7 @@ export const AdminConsole: React.FC = () => {
         }}
       >
         <div>
-          {/* NexLink Brand Header */}
+          {/* NovexTrade Brand Header */}
           <div style={{
             padding: '18px 16px 16px',
             borderBottom: '1px solid #23272e',
@@ -362,21 +362,21 @@ export const AdminConsole: React.FC = () => {
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #fcd535 0%, #f0b90b 100%)',
+                background: 'linear-gradient(135deg, #f0b90b 0%, #d99806 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(252, 213, 53, 0.3)',
+                boxShadow: '0 4px 12px rgba(240, 185, 11, 0.3)',
                 flexShrink: 0
               }}>
-                <Zap size={20} color="#181a20" />
+                <Layers size={20} color="#0b0e11" />
               </div>
               {(!sidebarCollapsed || isMobile) && (
                 <div style={{ lineHeight: 1.2 }}>
                   <div style={{ fontSize: '16px', fontWeight: 900, color: '#eaecef', letterSpacing: '-0.02em' }}>
                     NovexTrade
                   </div>
-                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#fcd535', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '2px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#f0b90b', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '2px' }}>
                     Enterprise CRM
                   </div>
                 </div>
@@ -437,9 +437,9 @@ export const AdminConsole: React.FC = () => {
                           alignItems: 'center',
                           gap: '12px',
                           width: '100%',
-                          background: isActive ? 'rgba(252, 213, 53, 0.12)' : 'transparent',
-                          color: isActive ? '#fcd535' : '#848e9c',
-                          border: isActive ? '1px solid rgba(252, 213, 53, 0.3)' : '1px solid transparent',
+                          background: isActive ? 'rgba(240, 185, 11, 0.12)' : 'transparent',
+                          color: isActive ? '#f0b90b' : '#848e9c',
+                          border: isActive ? '1px solid rgba(240, 185, 11, 0.3)' : '1px solid transparent',
                           borderRadius: '8px',
                           padding: '8px 12px',
                           fontSize: '13px',
@@ -449,7 +449,7 @@ export const AdminConsole: React.FC = () => {
                           transition: 'all 0.15s'
                         }}
                       >
-                        <span style={{ color: isActive ? '#fcd535' : '#848e9c', display: 'flex', alignItems: 'center' }}>
+                        <span style={{ color: isActive ? '#f0b90b' : '#848e9c', display: 'flex', alignItems: 'center' }}>
                           {item.icon}
                         </span>
                         {(!sidebarCollapsed || isMobile) && <span>{item.label}</span>}
@@ -479,7 +479,7 @@ export const AdminConsole: React.FC = () => {
               <div style={{ width: '99.99%', height: '100%', background: '#0ecb81', borderRadius: '2px' }} />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#eaecef' }}>
-              <ShieldCheck size={13} color="#fcd535" />
+              <ShieldCheck size={13} color="#f0b90b" />
               <span style={{ fontWeight: 700 }}>100% Solvency Backed</span>
             </div>
           </div>

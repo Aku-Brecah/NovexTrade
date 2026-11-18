@@ -111,7 +111,7 @@ export const OrderBookSurveillance: React.FC = () => {
             </div>
 
             <div style={{ background: '#202630', padding: '12px 16px', borderRadius: '8px', border: '1px solid #29313D' }}>
-              <strong>Flow Ratio (Buy/Total):</strong> <span style={{ color: '#FCD535', fontWeight: 700 }}>{velocityRatio}</span>
+              <strong>Flow Ratio (Buy/Total):</strong> <span style={{ color: '#f0b90b', fontWeight: 700 }}>{velocityRatio}</span>
             </div>
           </div>
         </AdminDataState>

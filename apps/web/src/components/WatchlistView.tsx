@@ -342,8 +342,8 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
                 <button
                   onClick={() => setWatchlistMode('quotes')}
                   style={{
-                    background: watchlistMode === 'quotes' ? '#fcd535' : 'transparent',
-                    color: watchlistMode === 'quotes' ? '#181a20' : '#848e9c',
+                    background: watchlistMode === 'quotes' ? '#f0b90b' : 'transparent',
+                    color: watchlistMode === 'quotes' ? '#0b0e11' : '#848e9c',
                     border: 'none',
                     borderRadius: '4px',
                     padding: '3px 8px',
@@ -357,8 +357,8 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
                 <button
                   onClick={() => setWatchlistMode('mini-charts')}
                   style={{
-                    background: watchlistMode === 'mini-charts' ? '#fcd535' : 'transparent',
-                    color: watchlistMode === 'mini-charts' ? '#181a20' : '#848e9c',
+                    background: watchlistMode === 'mini-charts' ? '#f0b90b' : 'transparent',
+                    color: watchlistMode === 'mini-charts' ? '#0b0e11' : '#848e9c',
                     border: 'none',
                     borderRadius: '4px',
                     padding: '3px 8px',
@@ -372,8 +372,8 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
                 <button
                   onClick={() => setWatchlistMode('table')}
                   style={{
-                    background: watchlistMode === 'table' ? '#fcd535' : 'transparent',
-                    color: watchlistMode === 'table' ? '#181a20' : '#848e9c',
+                    background: watchlistMode === 'table' ? '#f0b90b' : 'transparent',
+                    color: watchlistMode === 'table' ? '#0b0e11' : '#848e9c',
                     border: 'none',
                     borderRadius: '4px',
                     padding: '3px 8px',
@@ -417,7 +417,7 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#fcd535';
+                    e.currentTarget.style.borderColor = '#f0b90b';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={(e) => {
@@ -461,7 +461,7 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
                             if (onToggleWatchlist) onToggleWatchlist(stock.symbol);
                           }}
                         >
-                          <Star size={15} fill="#fcd535" color="#fcd535" />
+                          <Star size={15} fill="#f0b90b" color="#f0b90b" />
                         </button>
                         <span className="wl-company-name">{stock.name}</span>
                       </div>

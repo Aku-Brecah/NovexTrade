@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSignIn, useSignUp } from '@clerk/clerk-react';
 import {
-  Zap,
+  Layers,
   Mail,
   Lock,
   User as UserIcon,
@@ -193,23 +193,15 @@ export const SignupView: React.FC<SignupViewProps> = ({
           cursor: 'pointer'
         }}
       >
-        <div
-          style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '10px',
-            background: 'rgba(252, 213, 53, 0.12)',
-            border: '1px solid rgba(252, 213, 53, 0.35)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <Zap size={20} color="#fcd535" />
+        <div className="brand-logo-badge">
+          <div className="brand-logo-icon" style={{ width: '38px', height: '38px' }}>
+            <Layers size={20} color="#f0b90b" />
+          </div>
+          <div className="brand-logo-text-wrap">
+            <span className="brand-name-novex" style={{ fontSize: '22px' }}>NOVEX</span>
+            <span className="brand-name-trade" style={{ fontSize: '22px' }}>TRADE</span>
+          </div>
         </div>
-        <span style={{ fontSize: '22px', fontWeight: 800, color: '#eaecef', letterSpacing: '-0.5px' }}>
-          NovexTrade
-        </span>
       </div>
 
       {/* Main Clean Card */}
@@ -252,7 +244,7 @@ export const SignupView: React.FC<SignupViewProps> = ({
               fontWeight: 700,
               cursor: 'pointer',
               transition: 'all 0.15s ease',
-              background: mode === 'login' ? '#fcd535' : 'transparent',
+              background: mode === 'login' ? '#f0b90b' : 'transparent',
               color: mode === 'login' ? '#0b0e11' : '#848e9c'
             }}
           >
@@ -275,7 +267,7 @@ export const SignupView: React.FC<SignupViewProps> = ({
               fontWeight: 700,
               cursor: 'pointer',
               transition: 'all 0.15s ease',
-              background: mode === 'signup' ? '#fcd535' : 'transparent',
+              background: mode === 'signup' ? '#f0b90b' : 'transparent',
               color: mode === 'signup' ? '#0b0e11' : '#848e9c'
             }}
           >
@@ -508,7 +500,7 @@ export const SignupView: React.FC<SignupViewProps> = ({
               height: '42px',
               borderRadius: '6px',
               border: 'none',
-              background: '#fcd535',
+              background: '#f0b90b',
               color: '#0b0e11',
               fontSize: '13.5px',
               fontWeight: 800,

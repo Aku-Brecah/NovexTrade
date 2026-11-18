@@ -204,7 +204,7 @@ export const P2PView: React.FC<P2PViewProps> = ({ user, onOpenAuth }) => {
       </div>
 
       {activeTrade && (
-        <div style={{ background: '#1e2329', border: '1px solid #fcd535', padding: '24px 28px', borderRadius: '16px', marginBottom: '32px' }}>
+        <div style={{ background: '#1e2329', border: '1px solid #f0b90b', padding: '24px 28px', borderRadius: '16px', marginBottom: '32px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>Active Escrow Order #{activeTrade.id}</h3>
             <span className="badge badge-yellow">{activeTrade.status}</span>
@@ -221,7 +221,7 @@ export const P2PView: React.FC<P2PViewProps> = ({ user, onOpenAuth }) => {
             </div>
             <div>
               <span style={{ color: '#848e9c' }}>Price: </span>
-              <strong style={{ color: '#fcd535' }}>${activeTrade.price}</strong>
+              <strong style={{ color: '#f0b90b' }}>${activeTrade.price}</strong>
             </div>
             <div>
               <span style={{ color: '#848e9c' }}>Payment: </span>
@@ -326,7 +326,7 @@ export const P2PView: React.FC<P2PViewProps> = ({ user, onOpenAuth }) => {
             <tbody className="mono">
               {myTrades.map((t) => (
                 <tr key={t.id}>
-                  <td style={{ color: '#fcd535' }}>{t.id}</td>
+                  <td style={{ color: '#f0b90b' }}>{t.id}</td>
                   <td style={{ fontWeight: 700, color: '#ffffff' }}>{t.cryptoAmount} {t.asset}</td>
                   <td style={{ color: '#0ecb81' }}>${t.fiatAmount} {t.fiatCurrency}</td>
                   <td style={{ color: '#848e9c' }}>{t.paymentMethod}</td>

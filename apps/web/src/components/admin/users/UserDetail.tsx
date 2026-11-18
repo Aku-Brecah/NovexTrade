@@ -142,12 +142,12 @@ export const UserDetailDrawer: React.FC<UserDetailProps> = ({ userId, onClose, c
                 width: '36px',
                 height: '36px',
                 borderRadius: '8px',
-                background: 'rgba(252, 213, 53, 0.15)',
-                border: '1px solid #fcd535',
+                background: 'rgba(240, 185, 11, 0.15)',
+                border: '1px solid #f0b90b',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#fcd535',
+                color: '#f0b90b',
                 fontWeight: 800
               }}
             >
@@ -204,7 +204,7 @@ export const UserDetailDrawer: React.FC<UserDetailProps> = ({ userId, onClose, c
                     <span style={{ fontSize: '11px', background: '#181a20', border: '1px solid #2b313a', padding: '4px 8px', borderRadius: '6px', color: '#eaecef' }}>
                       Tier: <strong>{u.kycTier || 'Tier 0'}</strong>
                     </span>
-                    <span style={{ fontSize: '11px', background: u.kycStatus === 'APPROVED' ? 'rgba(14, 203, 129, 0.15)' : 'rgba(252, 213, 53, 0.15)', border: `1px solid ${u.kycStatus === 'APPROVED' ? '#0ecb81' : '#fcd535'}`, padding: '4px 8px', borderRadius: '6px', color: u.kycStatus === 'APPROVED' ? '#0ecb81' : '#fcd535', fontWeight: 700 }}>
+                    <span style={{ fontSize: '11px', background: u.kycStatus === 'APPROVED' ? 'rgba(14, 203, 129, 0.15)' : 'rgba(240, 185, 11, 0.15)', border: `1px solid ${u.kycStatus === 'APPROVED' ? '#0ecb81' : '#f0b90b'}`, padding: '4px 8px', borderRadius: '6px', color: u.kycStatus === 'APPROVED' ? '#0ecb81' : '#f0b90b', fontWeight: 700 }}>
                       KYC: {u.kycStatus || 'NOT_SUBMITTED'}
                     </span>
                     <span style={{ fontSize: '11px', background: '#181a20', border: '1px solid #2b313a', padding: '4px 8px', borderRadius: '6px', color: u.isTotpEnabled ? '#0ecb81' : '#848e9c' }}>
@@ -222,7 +222,7 @@ export const UserDetailDrawer: React.FC<UserDetailProps> = ({ userId, onClose, c
                 <div style={{ background: '#202630', padding: '16px', borderRadius: '12px', border: '1px solid #29313d' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Wallet size={16} color="#fcd535" />
+                      <Wallet size={16} color="#f0b90b" />
                       <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#eaecef' }}>
                         Customer Balances (Double-Entry)
                       </h4>
@@ -231,7 +231,7 @@ export const UserDetailDrawer: React.FC<UserDetailProps> = ({ userId, onClose, c
                       <button
                         onClick={() => setSelectedAssetForModal('USDT')}
                         style={{
-                          background: '#fcd535',
+                          background: '#f0b90b',
                           color: '#181a20',
                           border: 'none',
                           borderRadius: '6px',
@@ -289,7 +289,7 @@ export const UserDetailDrawer: React.FC<UserDetailProps> = ({ userId, onClose, c
                                 border: '1px solid #2b313a',
                                 borderRadius: '6px',
                                 padding: '5px 10px',
-                                color: '#fcd535',
+                                color: '#f0b90b',
                                 fontSize: '12px',
                                 fontWeight: 700,
                                 cursor: 'pointer',
@@ -343,9 +343,9 @@ export const UserDetailDrawer: React.FC<UserDetailProps> = ({ userId, onClose, c
                         style={{
                           padding: '10px',
                           borderRadius: '8px',
-                          border: u.isWithdrawalSuspended ? '1px solid #0ecb81' : '1px solid #fcd535',
-                          background: u.isWithdrawalSuspended ? 'rgba(14, 203, 129, 0.15)' : 'rgba(252, 213, 53, 0.15)',
-                          color: u.isWithdrawalSuspended ? '#0ecb81' : '#fcd535',
+                          border: u.isWithdrawalSuspended ? '1px solid #0ecb81' : '1px solid #f0b90b',
+                          background: u.isWithdrawalSuspended ? 'rgba(14, 203, 129, 0.15)' : 'rgba(240, 185, 11, 0.15)',
+                          color: u.isWithdrawalSuspended ? '#0ecb81' : '#f0b90b',
                           fontSize: '12px',
                           fontWeight: 700,
                           cursor: 'pointer',

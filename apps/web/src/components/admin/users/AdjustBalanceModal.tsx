@@ -222,9 +222,9 @@ export const AdjustBalanceModal: React.FC<AdjustBalanceModalProps> = ({
                   style={{
                     padding: '10px 8px',
                     borderRadius: '8px',
-                    border: asset === sym ? '1px solid #fcd535' : '1px solid #2b313a',
-                    background: asset === sym ? 'rgba(252, 213, 53, 0.15)' : '#202630',
-                    color: asset === sym ? '#fcd535' : '#eaecef',
+                    border: asset === sym ? '1px solid #f0b90b' : '1px solid #2b313a',
+                    background: asset === sym ? 'rgba(240, 185, 11, 0.15)' : '#202630',
+                    color: asset === sym ? '#f0b90b' : '#eaecef',
                     fontWeight: 700,
                     fontSize: '13px',
                     cursor: 'pointer',
@@ -337,7 +337,7 @@ export const AdjustBalanceModal: React.FC<AdjustBalanceModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setAmount(currentBal.available)}
-                  style={{ background: 'transparent', border: 'none', color: '#fcd535', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
+                  style={{ background: 'transparent', border: 'none', color: '#f0b90b', fontSize: '11px', cursor: 'pointer', fontWeight: 600 }}
                 >
                   Max Available
                 </button>
@@ -424,7 +424,7 @@ export const AdjustBalanceModal: React.FC<AdjustBalanceModalProps> = ({
                 flex: 1.5,
                 padding: '12px',
                 borderRadius: '8px',
-                background: operation === 'CREDIT' ? '#0ecb81' : operation === 'DEBIT' ? '#f6465d' : '#fcd535',
+                background: operation === 'CREDIT' ? '#0ecb81' : operation === 'DEBIT' ? '#f6465d' : '#f0b90b',
                 border: 'none',
                 color: operation === 'SET' ? '#181a20' : '#ffffff',
                 fontSize: '14px',

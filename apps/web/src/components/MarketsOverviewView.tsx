@@ -620,7 +620,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
 
           <div className="markets-live-status-row" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#848E9C' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2EBD85', display: 'inline-block' }}></span>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0ecb81', display: 'inline-block' }}></span>
               <span className="desktop-only">Real-time </span>Live
             </span>
             <button
@@ -659,7 +659,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
               }}
             >
               <span>Rankings</span>
-              {subTab === 'rankings' && <div style={{ width: '20px', height: '3px', background: '#FCD535', borderRadius: '2px' }} />}
+              {subTab === 'rankings' && <div style={{ width: '20px', height: '3px', background: '#f0b90b', borderRadius: '2px' }} />}
             </button>
 
             <button
@@ -681,7 +681,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
               }}
             >
               <span>USDⓈ-M Futures</span>
-              {subTab === 'usd_futures' && <div style={{ width: '20px', height: '3px', background: '#FCD535', borderRadius: '2px' }} />}
+              {subTab === 'usd_futures' && <div style={{ width: '20px', height: '3px', background: '#f0b90b', borderRadius: '2px' }} />}
             </button>
 
             <button
@@ -703,7 +703,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
               }}
             >
               <span>COIN-M Futures</span>
-              {subTab === 'coin_futures' && <div style={{ width: '20px', height: '3px', background: '#FCD535', borderRadius: '2px' }} />}
+              {subTab === 'coin_futures' && <div style={{ width: '20px', height: '3px', background: '#f0b90b', borderRadius: '2px' }} />}
             </button>
 
             <button
@@ -725,7 +725,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
               }}
             >
               <span>Live TradingView Screener</span>
-              {subTab === 'screener' && <div style={{ width: '20px', height: '3px', background: '#FCD535', borderRadius: '2px' }} />}
+              {subTab === 'screener' && <div style={{ width: '20px', height: '3px', background: '#f0b90b', borderRadius: '2px' }} />}
             </button>
           </div>
         </div>
@@ -755,7 +755,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
               <div style={{ background: '#202630', borderRadius: '16px', border: '1px solid #29313D', padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Flame size={18} color="#FCD535" />
+                    <Flame size={18} color="#f0b90b" />
                     <span style={{ fontWeight: 700, fontSize: '15px' }}>Hot Coins</span>
                   </div>
                   <span style={{ fontSize: '12px', color: '#848E9C' }}>24h Activity</span>
@@ -768,7 +768,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#29313D', color: '#FCD535', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '10px' }}>
+                        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#29313D', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '10px' }}>
                           {c.baseAsset.slice(0, 3)}
                         </div>
                         <div>
@@ -778,7 +778,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: '13.5px', fontWeight: 700, fontFamily: 'monospace' }}>{c.lastPrice}</div>
-                        <div style={{ fontSize: '12px', fontWeight: 600, color: c.isPositive ? '#2EBD85' : '#F6465D' }}>{c.change24h}</div>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: c.isPositive ? '#0ecb81' : '#F6465D' }}>{c.change24h}</div>
                       </div>
                     </div>
                   ))}
@@ -789,7 +789,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
               <div style={{ background: '#202630', borderRadius: '16px', border: '1px solid #29313D', padding: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <TrendingUp size={18} color="#2EBD85" />
+                    <TrendingUp size={18} color="#0ecb81" />
                     <span style={{ fontWeight: 700, fontSize: '15px' }}>Top Gainers</span>
                   </div>
                   <span style={{ fontSize: '12px', color: '#848E9C' }}>24h Surge</span>
@@ -802,7 +802,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#29313D', color: '#2EBD85', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '10px' }}>
+                        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#29313D', color: '#0ecb81', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '10px' }}>
                           {c.baseAsset.slice(0, 3)}
                         </div>
                         <div>
@@ -812,7 +812,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: '13.5px', fontWeight: 700, fontFamily: 'monospace' }}>{c.lastPrice}</div>
-                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#2EBD85' }}>{c.change24h}</div>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#0ecb81' }}>{c.change24h}</div>
                       </div>
                     </div>
                   ))}
@@ -914,7 +914,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                       onClick={() => setSelectedInterval(iv)}
                       style={{
                         background: selectedInterval === iv ? '#29313D' : 'transparent',
-                        color: selectedInterval === iv ? '#FCD535' : '#848E9C',
+                        color: selectedInterval === iv ? '#f0b90b' : '#848E9C',
                         border: 'none',
                         borderRadius: '6px',
                         padding: '4px 10px',
@@ -967,8 +967,8 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
               <button
                 onClick={() => onNavigateToTrade('BTC/USDT')}
                 style={{
-                  background: '#FCD535',
-                  color: '#181A20',
+                  background: '#f0b90b',
+                  color: '#0b0e11',
                   border: 'none',
                   borderRadius: '8px',
                   padding: '10px 24px',
@@ -978,7 +978,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  boxShadow: '0 4px 12px rgba(252, 213, 53, 0.2)'
+                  boxShadow: '0 4px 12px rgba(240, 185, 11, 0.2)'
                 }}
               >
                 <span>Trade {subTab === 'usd_futures' ? 'USDⓈ-M' : 'COIN-M'} Futures</span>
@@ -998,14 +998,14 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                   </div>
                   <span style={{ fontSize: '11px', background: '#29313D', color: '#848E9C', padding: '2px 6px', borderRadius: '4px' }}>{selectedInterval}</span>
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#2EBD85', marginBottom: '12px' }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: '#0ecb81', marginBottom: '12px' }}>
                   1.48 <span style={{ fontSize: '13px', color: '#848E9C', fontWeight: 500 }}>(59.68% Long)</span>
                 </div>
                 <div style={{ width: '100%', height: '8px', background: '#F6465D', borderRadius: '4px', overflow: 'hidden', display: 'flex', marginBottom: '10px' }}>
-                  <div style={{ width: '59.68%', height: '100%', background: '#2EBD85' }}></div>
+                  <div style={{ width: '59.68%', height: '100%', background: '#0ecb81' }}></div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span style={{ color: '#2EBD85', fontWeight: 600 }}>Long 59.68%</span>
+                  <span style={{ color: '#0ecb81', fontWeight: 600 }}>Long 59.68%</span>
                   <span style={{ color: '#F6465D', fontWeight: 600 }}>Short 40.32%</span>
                 </div>
               </div>
@@ -1019,14 +1019,14 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                   </div>
                   <span style={{ fontSize: '11px', background: '#29313D', color: '#848E9C', padding: '2px 6px', borderRadius: '4px' }}>{selectedInterval}</span>
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#2EBD85', marginBottom: '12px' }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: '#0ecb81', marginBottom: '12px' }}>
                   1.72 <span style={{ fontSize: '13px', color: '#848E9C', fontWeight: 500 }}>(63.24% Long)</span>
                 </div>
                 <div style={{ width: '100%', height: '8px', background: '#F6465D', borderRadius: '4px', overflow: 'hidden', display: 'flex', marginBottom: '10px' }}>
-                  <div style={{ width: '63.24%', height: '100%', background: '#2EBD85' }}></div>
+                  <div style={{ width: '63.24%', height: '100%', background: '#0ecb81' }}></div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span style={{ color: '#2EBD85', fontWeight: 600 }}>Long 63.24%</span>
+                  <span style={{ color: '#0ecb81', fontWeight: 600 }}>Long 63.24%</span>
                   <span style={{ color: '#F6465D', fontWeight: 600 }}>Short 36.76%</span>
                 </div>
               </div>
@@ -1040,14 +1040,14 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                   </div>
                   <span style={{ fontSize: '11px', background: '#29313D', color: '#848E9C', padding: '2px 6px', borderRadius: '4px' }}>{selectedInterval}</span>
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#2EBD85', marginBottom: '12px' }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: '#0ecb81', marginBottom: '12px' }}>
                   1.10 <span style={{ fontSize: '13px', color: '#848E9C', fontWeight: 500 }}>(52.38% Long)</span>
                 </div>
                 <div style={{ width: '100%', height: '8px', background: '#F6465D', borderRadius: '4px', overflow: 'hidden', display: 'flex', marginBottom: '10px' }}>
-                  <div style={{ width: '52.38%', height: '100%', background: '#2EBD85' }}></div>
+                  <div style={{ width: '52.38%', height: '100%', background: '#0ecb81' }}></div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span style={{ color: '#2EBD85', fontWeight: 600 }}>Long 52.38%</span>
+                  <span style={{ color: '#0ecb81', fontWeight: 600 }}>Long 52.38%</span>
                   <span style={{ color: '#F6465D', fontWeight: 600 }}>Short 47.62%</span>
                 </div>
               </div>
@@ -1062,13 +1062,13 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                   <span style={{ fontSize: '11px', background: '#29313D', color: '#848E9C', padding: '2px 6px', borderRadius: '4px' }}>{selectedInterval}</span>
                 </div>
                 <div style={{ fontSize: '24px', fontWeight: 800, color: '#EAECEF', marginBottom: '12px' }}>
-                  1.08 <span style={{ fontSize: '13px', color: '#2EBD85', fontWeight: 500 }}>(+5.8% Net Buy)</span>
+                  1.08 <span style={{ fontSize: '13px', color: '#0ecb81', fontWeight: 500 }}>(+5.8% Net Buy)</span>
                 </div>
                 <div style={{ width: '100%', height: '8px', background: '#F6465D', borderRadius: '4px', overflow: 'hidden', display: 'flex', marginBottom: '10px' }}>
-                  <div style={{ width: '51.92%', height: '100%', background: '#2EBD85' }}></div>
+                  <div style={{ width: '51.92%', height: '100%', background: '#0ecb81' }}></div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span style={{ color: '#2EBD85', fontWeight: 600 }}>Buy $1.42B</span>
+                  <span style={{ color: '#0ecb81', fontWeight: 600 }}>Buy $1.42B</span>
                   <span style={{ color: '#F6465D', fontWeight: 600 }}>Sell $1.31B</span>
                 </div>
               </div>
@@ -1080,9 +1080,9 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                     <span style={{ fontSize: '14px', fontWeight: 700, color: '#EAECEF' }}>Basis Spread &amp; Next Settlement</span>
                     <Info size={14} color="#707A8A" />
                   </div>
-                  <span style={{ fontSize: '11px', background: '#29313D', color: '#FCD535', padding: '2px 6px', borderRadius: '4px' }}>8h Cycle</span>
+                  <span style={{ fontSize: '11px', background: '#29313D', color: '#f0b90b', padding: '2px 6px', borderRadius: '4px' }}>8h Cycle</span>
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#2EBD85', marginBottom: '4px' }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: '#0ecb81', marginBottom: '4px' }}>
                   +0.0100%
                 </div>
                 <div style={{ fontSize: '12.5px', color: '#848E9C', marginBottom: '10px' }}>
@@ -1090,7 +1090,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#848E9C', borderTop: '1px solid #29313D', paddingTop: '8px' }}>
                   <span>Annualized Basis: +10.95%</span>
-                  <span style={{ color: '#2EBD85' }}>Normal Premium</span>
+                  <span style={{ color: '#0ecb81' }}>Normal Premium</span>
                 </div>
               </div>
 
@@ -1106,7 +1106,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                 <div style={{ fontSize: '24px', fontWeight: 800, color: '#EAECEF', marginBottom: '4px' }}>
                   {subTab === 'usd_futures' ? '$26.19B' : '$8.45B'}
                 </div>
-                <div style={{ fontSize: '12.5px', color: '#2EBD85', marginBottom: '10px' }}>
+                <div style={{ fontSize: '12.5px', color: '#0ecb81', marginBottom: '10px' }}>
                   +3.42% in 24h
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#848E9C', borderTop: '1px solid #29313D', paddingTop: '8px' }}>
@@ -1136,9 +1136,9 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                     key={cat.key}
                     onClick={() => setRankingCategory(cat.key as RankingCategory)}
                     style={{
-                      background: isSelected ? '#FCD535' : '#202630',
+                      background: isSelected ? '#f0b90b' : '#202630',
                       color: isSelected ? '#181A20' : '#EAECEF',
-                      border: isSelected ? '1px solid #FCD535' : '1px solid #29313D',
+                      border: isSelected ? '1px solid #f0b90b' : '1px solid #29313D',
                       padding: '8px 18px',
                       borderRadius: '8px',
                       fontSize: '13.5px',
@@ -1180,7 +1180,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                     onClick={() => setSelectedTag(tab.key)}
                     style={{
                       background: selectedTag === tab.key ? '#29313D' : 'transparent',
-                      color: selectedTag === tab.key ? '#FCD535' : '#848E9C',
+                      color: selectedTag === tab.key ? '#f0b90b' : '#848E9C',
                       border: selectedTag === tab.key ? '1px solid #434C5A' : '1px solid transparent',
                       padding: '6px 14px',
                       borderRadius: '6px',
@@ -1284,18 +1284,18 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                       >
                         <td>
                           <button onClick={(e) => toggleWatchlist(c.symbol, e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
-                            <Star size={15} fill={isFav ? '#FCD535' : 'none'} color={isFav ? '#FCD535' : '#707A8A'} />
+                            <Star size={15} fill={isFav ? '#f0b90b' : 'none'} color={isFav ? '#f0b90b' : '#707A8A'} />
                           </button>
                         </td>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#29313D', color: '#FCD535', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '11px' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#29313D', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '11px' }}>
                               {c.baseAsset.slice(0, 3)}
                             </div>
                             <div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <span style={{ fontWeight: 700, color: '#EAECEF', fontSize: '14px' }}>{c.symbol}</span>
-                                <span style={{ fontSize: '10px', background: c.contractType === 'Perpetual' ? '#29313D' : '#3B2D54', color: c.contractType === 'Perpetual' ? '#FCD535' : '#D09CFF', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>
+                                <span style={{ fontSize: '10px', background: c.contractType === 'Perpetual' ? '#29313D' : '#3B2D54', color: c.contractType === 'Perpetual' ? '#f0b90b' : '#D09CFF', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>
                                   {c.contractType === 'Perpetual' ? 'Coin-M Perp' : 'Quarterly'}
                                 </span>
                               </div>
@@ -1305,15 +1305,15 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         </td>
                         <td style={{ fontWeight: 700, fontFamily: 'monospace', fontSize: '14px', color: '#EAECEF' }}>{c.markPrice}</td>
                         <td style={{ color: '#848E9C', fontFamily: 'monospace', fontSize: '13px' }}>{c.indexPrice}</td>
-                        <td style={{ fontFamily: 'monospace', fontSize: '12px', color: c.basis.startsWith('+') ? '#2EBD85' : '#F6465D' }}>{c.basis}</td>
+                        <td style={{ fontFamily: 'monospace', fontSize: '12px', color: c.basis.startsWith('+') ? '#0ecb81' : '#F6465D' }}>{c.basis}</td>
                         <td>
-                          <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: '4px', fontWeight: 700, fontSize: '12.5px', background: c.isPositive ? 'rgba(46, 189, 133, 0.12)' : 'rgba(246, 70, 93, 0.12)', color: c.isPositive ? '#2EBD85' : '#F6465D' }}>
+                          <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: '4px', fontWeight: 700, fontSize: '12.5px', background: c.isPositive ? 'rgba(46, 189, 133, 0.12)' : 'rgba(246, 70, 93, 0.12)', color: c.isPositive ? '#0ecb81' : '#F6465D' }}>
                             {c.change24h}
                           </span>
                         </td>
                         <td>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: 700, fontSize: '13px', color: c.fundingRate.startsWith('+') ? '#FCD535' : '#2EBD85' }}>{c.fundingRate}</span>
+                            <span style={{ fontWeight: 700, fontSize: '13px', color: c.fundingRate.startsWith('+') ? '#f0b90b' : '#0ecb81' }}>{c.fundingRate}</span>
                             <span style={{ fontSize: '11px', color: '#707A8A', fontFamily: 'monospace' }}>{c.contractType === 'Perpetual' ? `in ${c.nextFundingTime}` : c.nextFundingTime}</span>
                           </div>
                         </td>
@@ -1322,7 +1322,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         <td style={{ textAlign: 'right' }}>
                           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                             <button onClick={(e) => { e.stopPropagation(); onNavigateToStock(c.baseAsset); }} style={{ background: '#29313D', border: '1px solid #333B47', color: '#EAECEF', padding: '6px 12px', borderRadius: '4px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>Detail</button>
-                            <button onClick={(e) => { e.stopPropagation(); onNavigateToTrade(`${c.baseAsset}/USDT`); }} style={{ background: '#FCD535', border: 'none', color: '#181A20', padding: '6px 16px', borderRadius: '4px', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>Trade</button>
+                            <button onClick={(e) => { e.stopPropagation(); onNavigateToTrade(`${c.baseAsset}/USDT`); }} style={{ background: '#f0b90b', border: 'none', color: '#0b0e11', padding: '6px 16px', borderRadius: '4px', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>Trade</button>
                           </div>
                         </td>
                       </tr>
@@ -1341,18 +1341,18 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                       >
                         <td>
                           <button onClick={(e) => toggleWatchlist(f.symbol, e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
-                            <Star size={15} fill={isFav ? '#FCD535' : 'none'} color={isFav ? '#FCD535' : '#707A8A'} />
+                            <Star size={15} fill={isFav ? '#f0b90b' : 'none'} color={isFav ? '#f0b90b' : '#707A8A'} />
                           </button>
                         </td>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#29313D', color: '#FCD535', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '11px' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#29313D', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '11px' }}>
                               {f.baseAsset.slice(0, 3)}
                             </div>
                             <div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                 <span style={{ fontWeight: 700, color: '#EAECEF', fontSize: '14px' }}>{f.baseAsset}USDT</span>
-                                <span style={{ fontSize: '10px', background: '#29313D', color: '#FCD535', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>Perp</span>
+                                <span style={{ fontSize: '10px', background: '#29313D', color: '#f0b90b', padding: '1px 5px', borderRadius: '3px', fontWeight: 700 }}>Perp</span>
                               </div>
                               <div style={{ fontSize: '11.5px', color: '#848E9C' }}>{f.baseAssetName} Perpetual</div>
                             </div>
@@ -1360,15 +1360,15 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         </td>
                         <td style={{ fontWeight: 700, fontFamily: 'monospace', fontSize: '14px', color: '#EAECEF' }}>{f.markPrice}</td>
                         <td style={{ color: '#848E9C', fontFamily: 'monospace', fontSize: '13px' }}>{f.indexPrice}</td>
-                        <td style={{ fontFamily: 'monospace', fontSize: '12px', color: f.basis.startsWith('+') ? '#2EBD85' : '#F6465D' }}>{f.basis}</td>
+                        <td style={{ fontFamily: 'monospace', fontSize: '12px', color: f.basis.startsWith('+') ? '#0ecb81' : '#F6465D' }}>{f.basis}</td>
                         <td>
-                          <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: '4px', fontWeight: 700, fontSize: '12.5px', background: f.isPositive ? 'rgba(46, 189, 133, 0.12)' : 'rgba(246, 70, 93, 0.12)', color: f.isPositive ? '#2EBD85' : '#F6465D' }}>
+                          <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: '4px', fontWeight: 700, fontSize: '12.5px', background: f.isPositive ? 'rgba(46, 189, 133, 0.12)' : 'rgba(246, 70, 93, 0.12)', color: f.isPositive ? '#0ecb81' : '#F6465D' }}>
                             {f.change24h}
                           </span>
                         </td>
                         <td>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontWeight: 700, fontSize: '13px', color: f.fundingRate.startsWith('+') ? '#FCD535' : '#2EBD85' }}>{f.fundingRate}</span>
+                            <span style={{ fontWeight: 700, fontSize: '13px', color: f.fundingRate.startsWith('+') ? '#f0b90b' : '#0ecb81' }}>{f.fundingRate}</span>
                             <span style={{ fontSize: '11px', color: '#707A8A', fontFamily: 'monospace' }}>in {f.nextFundingTime}</span>
                           </div>
                         </td>
@@ -1377,7 +1377,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         <td style={{ textAlign: 'right' }}>
                           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                             <button onClick={(e) => { e.stopPropagation(); onNavigateToStock(f.baseAsset); }} style={{ background: '#29313D', border: '1px solid #333B47', color: '#EAECEF', padding: '6px 12px', borderRadius: '4px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>Detail</button>
-                            <button onClick={(e) => { e.stopPropagation(); onNavigateToTrade(`${f.baseAsset}/USDT`); }} style={{ background: '#FCD535', border: 'none', color: '#181A20', padding: '6px 16px', borderRadius: '4px', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>Trade</button>
+                            <button onClick={(e) => { e.stopPropagation(); onNavigateToTrade(`${f.baseAsset}/USDT`); }} style={{ background: '#f0b90b', border: 'none', color: '#0b0e11', padding: '6px 16px', borderRadius: '4px', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>Trade</button>
                           </div>
                         </td>
                       </tr>
@@ -1398,9 +1398,9 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         {headerNav === 'trading_data' && subTab === 'rankings' && (
                           <td style={{ textAlign: 'center', fontWeight: 800 }}>
                             {rankNum === 1 ? (
-                              <span style={{ background: '#FCD535', color: '#181A20', borderRadius: '4px', padding: '2px 6px', fontSize: '11px' }}>#1</span>
+                              <span style={{ background: '#f0b90b', color: '#0b0e11', borderRadius: '4px', padding: '2px 6px', fontSize: '11px' }}>#1</span>
                             ) : rankNum === 2 ? (
-                              <span style={{ background: '#CACED3', color: '#181A20', borderRadius: '4px', padding: '2px 6px', fontSize: '11px' }}>#2</span>
+                              <span style={{ background: '#CACED3', color: '#0b0e11', borderRadius: '4px', padding: '2px 6px', fontSize: '11px' }}>#2</span>
                             ) : rankNum === 3 ? (
                               <span style={{ background: '#CD7F32', color: '#FFFFFF', borderRadius: '4px', padding: '2px 6px', fontSize: '11px' }}>#3</span>
                             ) : (
@@ -1410,12 +1410,12 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         )}
                         <td>
                           <button onClick={(e) => toggleWatchlist(p.symbol, e)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
-                            <Star size={15} fill={isFav ? '#FCD535' : 'none'} color={isFav ? '#FCD535' : '#707A8A'} />
+                            <Star size={15} fill={isFav ? '#f0b90b' : 'none'} color={isFav ? '#f0b90b' : '#707A8A'} />
                           </button>
                         </td>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#29313D', color: '#FCD535', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '11px' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#29313D', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '11px' }}>
                               {p.baseAsset.slice(0, 3)}
                             </div>
                             <div>
@@ -1429,7 +1429,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         </td>
                         <td style={{ fontWeight: 700, fontFamily: 'monospace', fontSize: '14px' }}>{p.lastPrice}</td>
                         <td>
-                          <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: '4px', fontWeight: 700, fontSize: '12.5px', background: p.isPositive ? 'rgba(46, 189, 133, 0.12)' : 'rgba(246, 70, 93, 0.12)', color: p.isPositive ? '#2EBD85' : '#F6465D' }}>
+                          <span style={{ display: 'inline-block', padding: '4px 10px', borderRadius: '4px', fontWeight: 700, fontSize: '12.5px', background: p.isPositive ? 'rgba(46, 189, 133, 0.12)' : 'rgba(246, 70, 93, 0.12)', color: p.isPositive ? '#0ecb81' : '#F6465D' }}>
                             {p.change24h}
                           </span>
                         </td>
@@ -1442,7 +1442,7 @@ export const MarketsOverviewView: React.FC<MarketsOverviewViewProps> = ({
                         <td style={{ textAlign: 'right' }}>
                           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                             <button onClick={(e) => { e.stopPropagation(); onNavigateToStock(p.baseAsset); }} style={{ background: '#29313D', border: '1px solid #333B47', color: '#EAECEF', padding: '6px 12px', borderRadius: '4px', fontWeight: 600, fontSize: '12px', cursor: 'pointer' }}>Detail</button>
-                            <button onClick={(e) => { e.stopPropagation(); onNavigateToTrade(`${p.baseAsset}/USDT`); }} style={{ background: '#FCD535', border: 'none', color: '#181A20', padding: '6px 16px', borderRadius: '4px', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>Trade</button>
+                            <button onClick={(e) => { e.stopPropagation(); onNavigateToTrade(`${p.baseAsset}/USDT`); }} style={{ background: '#f0b90b', border: 'none', color: '#0b0e11', padding: '6px 16px', borderRadius: '4px', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>Trade</button>
                           </div>
                         </td>
                       </tr>

@@ -76,7 +76,7 @@ export const EmailTemplatesView: React.FC = () => {
     re_engagement: {
       title: `[${userName}], opportunities are waiting for you`,
       subtitle: 'Re-activation campaign for inactive users',
-      icon: <UserCheck size={16} color="#fcd535" />,
+      icon: <UserCheck size={16} color="#f0b90b" />,
       getHtml: () => generateReEngagementEmail({
         name: userName,
         dashboardUrl: window.location.origin + '/#/dashboard'
@@ -162,7 +162,7 @@ export const EmailTemplatesView: React.FC = () => {
             <span>{copied ? 'HTML Copied!' : 'Copy HTML'}</span>
           </button>
 
-          <button className="btn btn-primary" onClick={handleSendTest} style={{ fontSize: '12px', gap: '6px', background: '#fcd535', color: '#181a20', fontWeight: 800 }}>
+          <button className="btn btn-primary" onClick={handleSendTest} style={{ fontSize: '12px', gap: '6px', background: '#f0b90b', color: '#0b0e11', fontWeight: 800 }}>
             {sentSuccess ? <Check size={14} /> : <Send size={14} />}
             <span>{sentSuccess ? 'Sent to Inbox!' : 'Send Test'}</span>
           </button>

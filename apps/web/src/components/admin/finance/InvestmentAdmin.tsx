@@ -161,7 +161,7 @@ export const InvestmentAdmin: React.FC = () => {
             <button className="btn btn-secondary" onClick={() => { plansQuery.refresh(); subsQuery.refresh(); }}>
               <RefreshCw size={14} /> Refresh
             </button>
-            <button className="btn btn-primary" onClick={() => handleOpenEdit()} style={{ background: '#fcd535', color: '#181a20', fontWeight: 700 }}>
+            <button className="btn btn-primary" onClick={() => handleOpenEdit()} style={{ background: '#f0b90b', color: '#0b0e11', fontWeight: 700 }}>
               <Plus size={14} /> Create Plan
             </button>
           </div>
@@ -175,7 +175,7 @@ export const InvestmentAdmin: React.FC = () => {
         <button
           onClick={() => setActiveSubTab('plans')}
           style={{
-            background: activeSubTab === 'plans' ? '#fcd535' : 'transparent',
+            background: activeSubTab === 'plans' ? '#f0b90b' : 'transparent',
             color: activeSubTab === 'plans' ? '#181a20' : '#848e9c',
             fontWeight: activeSubTab === 'plans' ? 700 : 500,
             border: 'none',
@@ -190,7 +190,7 @@ export const InvestmentAdmin: React.FC = () => {
         <button
           onClick={() => setActiveSubTab('subscriptions')}
           style={{
-            background: activeSubTab === 'subscriptions' ? '#fcd535' : 'transparent',
+            background: activeSubTab === 'subscriptions' ? '#f0b90b' : 'transparent',
             color: activeSubTab === 'subscriptions' ? '#181a20' : '#848e9c',
             fontWeight: activeSubTab === 'subscriptions' ? 700 : 500,
             border: 'none',
@@ -232,8 +232,8 @@ export const InvestmentAdmin: React.FC = () => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                     <div>
                       <span style={{
-                        background: 'rgba(252, 213, 53, 0.15)',
-                        color: '#fcd535',
+                        background: 'rgba(240, 185, 11, 0.15)',
+                        color: '#f0b90b',
                         padding: '2px 8px',
                         borderRadius: '4px',
                         fontSize: '11px',
@@ -276,7 +276,7 @@ export const InvestmentAdmin: React.FC = () => {
                     </div>
                     <div>
                       <div style={{ fontSize: '11px', color: '#848e9c' }}>Daily Yield</div>
-                      <div style={{ fontSize: '13px', fontWeight: 600, color: '#fcd535' }}>~{p.daily_yield_percent}% / day</div>
+                      <div style={{ fontSize: '13px', fontWeight: 600, color: '#f0b90b' }}>~{p.daily_yield_percent}% / day</div>
                     </div>
                   </div>
 
@@ -326,7 +326,7 @@ export const InvestmentAdmin: React.FC = () => {
                   <tr key={inv.id}>
                     <td className="mono">{inv.id}</td>
                     <td>{inv.user_id}</td>
-                    <td><strong style={{ color: '#fcd535' }}>{inv.plan_name}</strong></td>
+                    <td><strong style={{ color: '#f0b90b' }}>{inv.plan_name}</strong></td>
                     <td style={{ fontWeight: 700, color: '#eaecef' }}>${inv.invested_amount_usd}</td>
                     <td style={{ fontWeight: 700, color: '#0ecb81' }}>${inv.expected_return_usd}</td>
                     <td style={{ color: '#0ecb81' }}>${inv.accrued_profit_usd}</td>
@@ -489,7 +489,7 @@ export const InvestmentAdmin: React.FC = () => {
                   type="submit"
                   className="btn btn-primary"
                   disabled={isSubmitting}
-                  style={{ background: '#fcd535', color: '#181a20', fontWeight: 700 }}
+                  style={{ background: '#f0b90b', color: '#0b0e11', fontWeight: 700 }}
                 >
                   {isSubmitting ? 'Saving...' : 'Save Plan'}
                 </button>

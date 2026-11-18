@@ -41,7 +41,7 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#fcd535' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#f0b90b' }}>
               EXCHANGE OPERATIONS OVERVIEW
             </span>
             <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#848e9c' }} />
@@ -64,7 +64,7 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
                 key={r}
                 onClick={() => setDateRange(r)}
                 style={{
-                  background: dateRange === r ? '#fcd535' : 'transparent',
+                  background: dateRange === r ? '#f0b90b' : 'transparent',
                   color: dateRange === r ? '#181a20' : '#848e9c',
                   border: 'none',
                   borderRadius: '6px',
@@ -137,7 +137,7 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <span style={{ fontSize: '13px', color: '#848e9c', fontWeight: 600 }}>24h Trading Volume</span>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(252, 213, 53, 0.12)', color: '#fcd535', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(240, 185, 11, 0.12)', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <TrendingUp size={18} />
                   </div>
                 </div>
@@ -197,15 +197,15 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <span style={{ fontSize: '13px', color: '#848e9c', fontWeight: 600 }}>Pending Withdrawals</span>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(240, 185, 11, 0.12)', color: '#fcd535', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(240, 185, 11, 0.12)', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <ArrowUpRight size={18} />
                   </div>
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 900, color: h.metrics.pendingWithdrawals > 0 ? '#fcd535' : '#0ecb81', fontFamily: 'monospace', marginBottom: '6px' }}>
+                <div style={{ fontSize: '24px', fontWeight: 900, color: h.metrics.pendingWithdrawals > 0 ? '#f0b90b' : '#0ecb81', fontFamily: 'monospace', marginBottom: '6px' }}>
                   {h.metrics.pendingWithdrawals.toLocaleString()}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
-                  <span style={{ background: h.metrics.pendingWithdrawals > 0 ? 'rgba(240, 185, 11, 0.15)' : 'rgba(14, 203, 129, 0.15)', color: h.metrics.pendingWithdrawals > 0 ? '#fcd535' : '#0ecb81', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                  <span style={{ background: h.metrics.pendingWithdrawals > 0 ? 'rgba(240, 185, 11, 0.15)' : 'rgba(14, 203, 129, 0.15)', color: h.metrics.pendingWithdrawals > 0 ? '#f0b90b' : '#0ecb81', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
                     {h.metrics.pendingWithdrawals > 0 ? 'Requires Admin Approval' : 'Queue Clear'}
                   </span>
                 </div>
@@ -226,15 +226,15 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <span style={{ fontSize: '13px', color: '#848e9c', fontWeight: 600 }}>Pending KYC Reviews</span>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(240, 185, 11, 0.12)', color: '#fcd535', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(240, 185, 11, 0.12)', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <ShieldCheck size={18} />
                   </div>
                 </div>
-                <div style={{ fontSize: '24px', fontWeight: 900, color: h.metrics.pendingKycReviews > 0 ? '#fcd535' : '#0ecb81', fontFamily: 'monospace', marginBottom: '6px' }}>
+                <div style={{ fontSize: '24px', fontWeight: 900, color: h.metrics.pendingKycReviews > 0 ? '#f0b90b' : '#0ecb81', fontFamily: 'monospace', marginBottom: '6px' }}>
                   {h.metrics.pendingKycReviews.toLocaleString()}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
-                  <span style={{ background: h.metrics.pendingKycReviews > 0 ? 'rgba(240, 185, 11, 0.15)' : 'rgba(14, 203, 129, 0.15)', color: h.metrics.pendingKycReviews > 0 ? '#fcd535' : '#0ecb81', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                  <span style={{ background: h.metrics.pendingKycReviews > 0 ? 'rgba(240, 185, 11, 0.15)' : 'rgba(14, 203, 129, 0.15)', color: h.metrics.pendingKycReviews > 0 ? '#f0b90b' : '#0ecb81', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
                     Tier 1 &amp; Tier 2
                   </span>
                   <span style={{ color: '#848e9c' }}>Compliance Queue</span>
@@ -341,7 +341,7 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <span style={{ fontSize: '13px', color: '#848e9c', fontWeight: 600 }}>Active Nodes &amp; WS</span>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(252, 213, 53, 0.12)', color: '#fcd535', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(240, 185, 11, 0.12)', color: '#f0b90b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Radio size={18} />
                   </div>
                 </div>
@@ -363,7 +363,7 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: '#eaecef' }}>Infrastructure &amp; Microservices</h3>
                     <div style={{ fontSize: '12px', color: '#848e9c', marginTop: '2px' }}>
-                      Server Uptime: <strong style={{ color: '#fcd535' }}>{formatUptime(h.uptimeSeconds)}</strong> · RAM {h.process.heapUsedMb}/{h.process.rssMb} MB
+                      Server Uptime: <strong style={{ color: '#f0b90b' }}>{formatUptime(h.uptimeSeconds)}</strong> · RAM {h.process.heapUsedMb}/{h.process.rssMb} MB
                     </div>
                   </div>
                   <span style={{ background: 'rgba(14, 203, 129, 0.15)', color: '#0ecb81', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 700 }}>
@@ -384,7 +384,7 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
                   </div>
                   <button
                     onClick={() => onNavigate('markets')}
-                    style={{ background: 'transparent', border: 'none', color: '#fcd535', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    style={{ background: 'transparent', border: 'none', color: '#f0b90b', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
                   >
                     <span>View Markets</span>
                     <ChevronRight size={14} />
@@ -413,7 +413,7 @@ export const SystemHealthDashboard: React.FC<{ onNavigate: (section: string) => 
                   <button
                     onClick={() => setShowAlertsOnly((s) => !s)}
                     style={{
-                      background: showAlertsOnly ? '#fcd535' : '#202630',
+                      background: showAlertsOnly ? '#f0b90b' : '#202630',
                       color: showAlertsOnly ? '#181a20' : '#eaecef',
                       border: '1px solid #2b313a',
                       borderRadius: '6px',

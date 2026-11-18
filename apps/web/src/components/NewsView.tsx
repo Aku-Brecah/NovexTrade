@@ -83,7 +83,7 @@ export const NewsView: React.FC<NewsViewProps> = ({ onNavigateToStock, onNavigat
       ticker: 'TLT',
       change: '+0.88%',
       isPositive: true,
-      thumbBg: 'linear-gradient(135deg, #312e81, #6366f1)'
+      thumbBg: 'linear-gradient(135deg, #1e293b, #3b82f6)'
     },
     {
       id: 6,

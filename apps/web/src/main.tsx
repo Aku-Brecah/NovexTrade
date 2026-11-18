@@ -52,7 +52,7 @@ class RootErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState
             maxWidth: '480px',
             textAlign: 'center'
           }}>
-            <h2 style={{ color: '#fcd535', margin: '0 0 12px 0' }}>Syncnode Institutional Exchange</h2>
+            <h2 style={{ color: '#f0b90b', margin: '0 0 12px 0' }}>NovexTrade Institutional Exchange</h2>
             <p style={{ color: '#848e9c', fontSize: '14px', marginBottom: '20px' }}>
               The interface encountered a temporary runtime state.
             </p>
@@ -61,9 +61,9 @@ class RootErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState
                 window.location.href = '/';
               }}
               style={{
-                background: '#fcd535',
-                color: '#12161c',
-                border: 'none',
+                background: '#f0b90b',
+                color: '#0b0e11',
+                border: '1px solid #f0b90b',
                 borderRadius: '6px',
                 padding: '10px 20px',
                 fontWeight: 700,

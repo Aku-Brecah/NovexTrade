@@ -243,8 +243,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   );
 
   const displayUid = user?.id ? (String(user.id).length > 8 ? String(user.id).slice(0, 8) : String(user.id)) : '—';
-  const referralCode = user?.id ? String(user.id).replace(/[^a-zA-Z0-9]/g, '').slice(-8).toUpperCase() : 'SYNCNODE';
-  const displayEmail = user?.email || 'user@syncnode.com';
+  const referralCode = user?.id ? String(user.id).replace(/[^a-zA-Z0-9]/g, '').slice(-8).toUpperCase() : 'NOVEX';
+  const displayEmail = user?.email || 'user@novextrade.com';
   const displayMaskedEmail = typeof displayEmail === 'string' && displayEmail.includes('@')
     ? `${displayEmail.split('@')[0].slice(0, 3)}***@${displayEmail.split('@')[1]}`
     : String(displayEmail);
@@ -259,7 +259,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           aria-label="Toggle Dashboard Menu"
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {isMobileSidebarOpen ? <X size={20} color="#fcd535" /> : <Menu size={20} color="#fcd535" />}
+            {isMobileSidebarOpen ? <X size={20} color="#f0b90b" /> : <Menu size={20} color="#f0b90b" />}
             <span style={{ fontWeight: 700, fontSize: '14px', color: '#eaecef' }}>
               {isMobileSidebarOpen ? 'Close Menu' : 'Dashboard Menu'}
             </span>
@@ -297,8 +297,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               width: '100%',
               padding: '12px 16px',
               borderRadius: '8px',
-              background: sidebarActiveTab === 'dashboard' ? 'rgba(252, 213, 53, 0.1)' : 'transparent',
-              color: sidebarActiveTab === 'dashboard' ? '#fcd535' : '#eaecef',
+              background: sidebarActiveTab === 'dashboard' ? 'rgba(240, 185, 11, 0.1)' : 'transparent',
+              color: sidebarActiveTab === 'dashboard' ? '#f0b90b' : '#eaecef',
               border: 'none',
               fontSize: '14px',
               fontWeight: 600,
@@ -452,9 +452,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           onMouseEnter={(e) => (e.currentTarget.style.color = '#eaecef')}
           onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
         >
-          <Gift size={20} color="#fcd535" />
+          <Gift size={20} color="#f0b90b" />
           <span>Rewards Hub</span>
-          <span style={{ marginLeft: 'auto', background: '#fcd535', color: '#181a20', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>
+          <span style={{ marginLeft: 'auto', background: '#f0b90b', color: '#181a20', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>
             NEW
           </span>
         </button>
@@ -579,7 +579,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Smartphone size={18} color="#fcd535" />
+            <Smartphone size={18} color="#f0b90b" />
             <span style={{ fontSize: '12px', fontWeight: 700, color: '#eaecef' }}>NovexTrade Mobile PWA</span>
           </div>
           <p style={{ fontSize: '11px', color: '#848e9c', margin: 0 }}>
@@ -625,8 +625,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <span className="dashboard-user-email-text">{displayMaskedEmail}</span>
                 <span
                   style={{
-                    background: 'rgba(252, 213, 53, 0.15)',
-                    color: '#fcd535',
+                    background: 'rgba(240, 185, 11, 0.15)',
+                    color: '#f0b90b',
                     fontSize: '10.5px',
                     fontWeight: 700,
                     padding: '2px 7px',
@@ -791,7 +791,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <button
                 onClick={() => setIsDepositModalOpen(true)}
                 style={{
-                  background: '#fcd535',
+                  background: '#f0b90b',
                   color: '#181a20',
                   border: 'none',
                   borderRadius: '8px',
@@ -807,8 +807,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 onClick={() => navigateTo('spot')}
                 style={{
                   background: 'transparent',
-                  color: '#fcd535',
-                  border: '1px solid #fcd535',
+                  color: '#f0b90b',
+                  border: '1px solid #f0b90b',
                   borderRadius: '8px',
                   padding: '8px 18px',
                   fontSize: '13px',
@@ -846,7 +846,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <span style={{ fontSize: '13px', color: '#848e9c', fontWeight: 600 }}>Spot Account</span>
-                <span style={{ fontSize: '11px', color: '#fcd535', fontWeight: 700 }}>
+                <span style={{ fontSize: '11px', color: '#f0b90b', fontWeight: 700 }}>
                   {totalUsdEstimated > 0 ? `${((spotAccountUsd / totalUsdEstimated) * 100).toFixed(0)}%` : '100%'}
                 </span>
               </div>
@@ -954,7 +954,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 title: 'Spot Trading',
                 desc: 'Trade BTC, ETH & 300+ pairs with 0.1% fees',
                 icon: Activity,
-                color: '#fcd535',
+                color: '#f0b90b',
                 action: () => navigateTo('spot')
               },
               {
@@ -989,7 +989,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 title: 'Trading Bots',
                 desc: 'Automate Spot Grid, DCA & Rebalancing strategies',
                 icon: Bot,
-                color: '#8b5cf6',
+                color: '#f0b90b',
                 action: () => navigateTo('spot')
               },
               {
@@ -1038,7 +1038,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         width: '40px',
                         height: '40px',
                         borderRadius: '10px',
-                        background: `rgba(${srv.color === '#fcd535' ? '252, 213, 53' : srv.color === '#2ebd85' ? '46, 189, 133' : '59, 130, 246'}, 0.12)`,
+                        background: `rgba(${srv.color === '#f0b90b' ? '240, 185, 11' : srv.color === '#2ebd85' ? '46, 189, 133' : '59, 130, 246'}, 0.12)`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -1194,7 +1194,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             style={{
                               background: 'none',
                               border: 'none',
-                              color: '#fcd535',
+                              color: '#f0b90b',
                               fontWeight: 600,
                               fontSize: '12px',
                               cursor: 'pointer'
@@ -1279,8 +1279,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     padding: '0 0 6px 0',
                     fontSize: '14px',
                     fontWeight: activeActivityTab === tab.id ? 700 : 500,
-                    color: activeActivityTab === tab.id ? '#fcd535' : '#848e9c',
-                    borderBottom: activeActivityTab === tab.id ? '2px solid #fcd535' : '2px solid transparent',
+                    color: activeActivityTab === tab.id ? '#f0b90b' : '#848e9c',
+                    borderBottom: activeActivityTab === tab.id ? '2px solid #f0b90b' : '2px solid transparent',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease'
                   }}
@@ -1295,7 +1295,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#fcd535',
+                color: '#f0b90b',
                 fontSize: '12px',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -1321,7 +1321,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     onClick={() => navigateTo('spot')}
                     style={{
                       marginTop: '16px',
-                      background: '#fcd535',
+                      background: '#f0b90b',
                       color: '#181a20',
                       border: 'none',
                       borderRadius: '8px',
@@ -1551,12 +1551,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <TrendingUp size={18} color="#fcd535" />
+                <TrendingUp size={18} color="#f0b90b" />
                 <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#eaecef', margin: 0 }}>Markets Overview</h3>
               </div>
               <button
                 onClick={() => navigateTo('markets')}
-                style={{ background: 'none', border: 'none', color: '#fcd535', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#f0b90b', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
               >
                 View all markets
               </button>
@@ -1582,7 +1582,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
               <button
                 onClick={() => navigateTo('watchlist')}
-                style={{ background: 'none', border: 'none', color: '#fcd535', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#f0b90b', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
               >
                 Manage Watchlist
               </button>
@@ -1603,7 +1603,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#fcd535';
+                    e.currentTarget.style.borderColor = '#f0b90b';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={(e) => {
@@ -1652,7 +1652,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <ArrowDownLeft size={22} color="#fcd535" />
+                <ArrowDownLeft size={22} color="#f0b90b" />
                 <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Deposit Crypto &amp; Fiat</h3>
               </div>
               <button
@@ -1715,9 +1715,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   style={{
                     fontFamily: 'monospace',
                     fontSize: '13px',
-                    color: '#fcd535',
+                    color: '#f0b90b',
                     wordBreak: 'break-all',
-                    background: 'rgba(252, 213, 53, 0.08)',
+                    background: 'rgba(240, 185, 11, 0.08)',
                     padding: '10px',
                     borderRadius: '6px',
                     display: 'flex',
@@ -1728,7 +1728,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <span>TYas98Qk7x1J9s81L9z0qKp18LqX810as</span>
                   <button
                     onClick={() => handleCopy('TYas98Qk7x1J9s81L9z0qKp18LqX810as', 'uid')}
-                    style={{ background: 'none', border: 'none', color: '#fcd535', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: '#f0b90b', cursor: 'pointer' }}
                   >
                     <Copy size={16} />
                   </button>
@@ -1743,7 +1743,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   onClick={() => setIsDepositModalOpen(false)}
                   style={{
                     flex: 1,
-                    background: '#fcd535',
+                    background: '#f0b90b',
                     color: '#181a20',
                     border: 'none',
                     borderRadius: '8px',
@@ -1793,7 +1793,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <ArrowRightLeft size={22} color="#fcd535" />
+                <ArrowRightLeft size={22} color="#f0b90b" />
                 <h3 style={{ fontSize: '18px', fontWeight: 700, margin: 0 }}>Internal Account Transfer</h3>
               </div>
               <button
@@ -1816,7 +1816,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   }}
                   style={{
                     marginTop: '16px',
-                    background: '#fcd535',
+                    background: '#f0b90b',
                     color: '#181a20',
                     border: 'none',
                     borderRadius: '8px',
@@ -1867,7 +1867,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       borderRadius: '50%',
                       width: '36px',
                       height: '36px',
-                      color: '#fcd535',
+                      color: '#f0b90b',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1952,7 +1952,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         top: '8px',
                         background: 'none',
                         border: 'none',
-                        color: '#fcd535',
+                        color: '#f0b90b',
                         fontSize: '12px',
                         fontWeight: 700,
                         cursor: 'pointer'
@@ -1976,7 +1976,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   }}
                   style={{
                     marginTop: '8px',
-                    background: '#fcd535',
+                    background: '#f0b90b',
                     color: '#181a20',
                     border: 'none',
                     borderRadius: '8px',

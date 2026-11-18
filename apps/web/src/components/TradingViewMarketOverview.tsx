@@ -47,7 +47,7 @@ export const TradingViewMarketOverview: React.FC<TradingViewMarketOverviewProps>
       scaleFontColor: 'rgba(132, 142, 156, 1)',
       belowLineFillColorGrowing: 'rgba(14, 203, 129, 0.12)',
       belowLineFillColorFalling: 'rgba(246, 70, 93, 0.12)',
-      symbolActiveColor: 'rgba(252, 213, 53, 0.15)',
+      symbolActiveColor: 'rgba(240, 185, 11, 0.15)',
       tabs: [
         {
           title: 'Crypto Top',

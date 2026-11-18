@@ -222,9 +222,9 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
         padding: '50px 24px 40px'
       }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(252, 213, 53, 0.12)', border: '1px solid rgba(252, 213, 53, 0.3)', borderRadius: '20px', padding: '6px 14px', marginBottom: '16px' }}>
-            <Sparkles size={14} color="#fcd535" />
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#fcd535' }}>NovexTrade Institutional Yield &amp; Fixed Growth</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(240, 185, 11, 0.12)', border: '1px solid rgba(240, 185, 11, 0.3)', borderRadius: '20px', padding: '6px 14px', marginBottom: '16px' }}>
+            <Sparkles size={14} color="#f0b90b" />
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#f0b90b' }}>NovexTrade Institutional Yield &amp; Fixed Growth</span>
           </div>
 
           <h1 style={{ fontSize: '38px', fontWeight: 900, letterSpacing: '-0.02em', margin: '0 0 12px', color: '#eaecef' }}>
@@ -244,7 +244,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
 
             <div style={{ background: '#1e2329', border: '1px solid #2b313a', borderRadius: '12px', padding: '18px 20px' }}>
               <div style={{ fontSize: '12px', color: '#848e9c', marginBottom: '4px' }}>Total Capital Staked</div>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#fcd535' }}>$5,883,800.00</div>
+              <div style={{ fontSize: '26px', fontWeight: 900, color: '#f0b90b' }}>$5,883,800.00</div>
               <div style={{ fontSize: '11px', color: '#848e9c', marginTop: '2px' }}>Across 186 Active Institutional Nodes</div>
             </div>
 
@@ -283,7 +283,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
               </p>
             </div>
             {matchedPlan && (
-              <span style={{ background: 'rgba(252, 213, 53, 0.15)', color: '#fcd535', border: '1px solid rgba(252, 213, 53, 0.3)', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 700 }}>
+              <span style={{ background: 'rgba(240, 185, 11, 0.15)', color: '#f0b90b', border: '1px solid rgba(240, 185, 11, 0.3)', padding: '6px 14px', borderRadius: '8px', fontSize: '13px', fontWeight: 700 }}>
                 Selected Tier: {matchedPlan.name} ({matchedPlan.return_rate_percent}% ROI)
               </span>
             )}
@@ -293,7 +293,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
                 <span style={{ color: '#848e9c' }}>Deposit Capital:</span>
-                <span style={{ fontWeight: 800, color: '#fcd535', fontSize: '18px', fontFamily: 'monospace' }}>
+                <span style={{ fontWeight: 800, color: '#f0b90b', fontSize: '18px', fontFamily: 'monospace' }}>
                   ${calcAmount.toLocaleString('en-US')} USD
                 </span>
               </div>
@@ -308,7 +308,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                 onChange={(e) => setCalcAmount(Number(e.target.value))}
                 style={{
                   width: '100%',
-                  accentColor: '#fcd535',
+                  accentColor: '#f0b90b',
                   cursor: 'pointer',
                   height: '6px',
                   borderRadius: '4px',
@@ -324,7 +324,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                     type="button"
                     onClick={() => setCalcAmount(amt)}
                     style={{
-                      background: calcAmount === amt ? '#fcd535' : '#202630',
+                      background: calcAmount === amt ? '#f0b90b' : '#202630',
                       color: calcAmount === amt ? '#181a20' : '#eaecef',
                       fontWeight: 700,
                       border: '1px solid #2b313a',
@@ -362,7 +362,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
 
               <div>
                 <div style={{ fontSize: '12px', color: '#848e9c', marginBottom: '2px' }}>Daily Accrual Yield</div>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: '#fcd535', fontFamily: 'monospace' }}>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#f0b90b', fontFamily: 'monospace' }}>
                   +${calcReturn.daily.toLocaleString('en-US', { minimumFractionDigits: 2 })} / day
                 </div>
                 <div style={{ fontSize: '11px', color: '#848e9c', marginTop: '2px' }}>
@@ -376,7 +376,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                   onClick={() => matchedPlan && handleOpenSubscribe(matchedPlan)}
                   style={{
                     width: '100%',
-                    background: '#fcd535',
+                    background: '#f0b90b',
                     color: '#181a20',
                     fontWeight: 800,
                     fontSize: '14px',
@@ -513,7 +513,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
               key={p.id}
               style={{
                 background: '#181a20',
-                border: p.badge === 'VIP CHOICE' ? '2px solid #fcd535' : '1px solid #2b313a',
+                border: p.badge === 'VIP CHOICE' ? '2px solid #f0b90b' : '1px solid #2b313a',
                 borderRadius: '16px',
                 padding: '24px',
                 display: 'flex',
@@ -521,14 +521,14 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                 justifyContent: 'space-between',
                 position: 'relative',
                 transition: 'transform 0.2s',
-                boxShadow: p.badge === 'VIP CHOICE' ? '0 10px 30px rgba(252, 213, 53, 0.1)' : 'none'
+                boxShadow: p.badge === 'VIP CHOICE' ? '0 10px 30px rgba(240, 185, 11, 0.1)' : 'none'
               }}
             >
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <span style={{
-                    background: p.badge === 'VIP CHOICE' ? '#fcd535' : 'rgba(255, 255, 255, 0.08)',
-                    color: p.badge === 'VIP CHOICE' ? '#181a20' : '#fcd535',
+                    background: p.badge === 'VIP CHOICE' ? '#f0b90b' : 'rgba(255, 255, 255, 0.08)',
+                    color: p.badge === 'VIP CHOICE' ? '#181a20' : '#f0b90b',
                     fontSize: '11px',
                     fontWeight: 800,
                     padding: '3px 8px',
@@ -564,7 +564,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
                     <span style={{ color: '#848e9c' }}>Daily Yield:</span>
-                    <span style={{ fontWeight: 700, color: '#fcd535' }}>~{p.daily_yield_percent}% / day</span>
+                    <span style={{ fontWeight: 700, color: '#f0b90b' }}>~{p.daily_yield_percent}% / day</span>
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
@@ -594,9 +594,9 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                 onClick={() => handleOpenSubscribe(p)}
                 style={{
                   width: '100%',
-                  background: p.badge === 'VIP CHOICE' ? '#fcd535' : '#202630',
-                  color: p.badge === 'VIP CHOICE' ? '#181a20' : '#fcd535',
-                  border: p.badge === 'VIP CHOICE' ? 'none' : '1px solid rgba(252, 213, 53, 0.4)',
+                  background: p.badge === 'VIP CHOICE' ? '#f0b90b' : '#202630',
+                  color: p.badge === 'VIP CHOICE' ? '#181a20' : '#f0b90b',
+                  border: p.badge === 'VIP CHOICE' ? 'none' : '1px solid rgba(240, 185, 11, 0.4)',
                   padding: '12px',
                   borderRadius: '8px',
                   fontWeight: 800,
@@ -662,7 +662,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px' }}>
                   <span style={{ color: '#848e9c' }}>Investment Amount (USDT)</span>
                   <span style={{ color: '#848e9c' }}>
-                    Available: <strong style={{ color: '#fcd535' }}>{usdtBal.toFixed(2)} USDT</strong>
+                    Available: <strong style={{ color: '#f0b90b' }}>{usdtBal.toFixed(2)} USDT</strong>
                   </span>
                 </div>
 
@@ -707,7 +707,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span style={{ color: '#848e9c' }}>Estimated Daily Yield:</span>
-                  <span style={{ fontWeight: 700, color: '#fcd535', fontFamily: 'monospace' }}>
+                  <span style={{ fontWeight: 700, color: '#f0b90b', fontFamily: 'monospace' }}>
                     ${(((parseFloat(investAmount) || 0) * (parseFloat(selectedPlan.return_rate_percent) / 100)) / selectedPlan.duration_days).toFixed(2)} / day
                   </span>
                 </div>
@@ -731,7 +731,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                   type="submit"
                   className="btn btn-primary"
                   disabled={isSubscribing}
-                  style={{ flex: 1.5, background: '#fcd535', color: '#181a20', fontWeight: 800, border: 'none', padding: '12px' }}
+                  style={{ flex: 1.5, background: '#f0b90b', color: '#181a20', fontWeight: 800, border: 'none', padding: '12px' }}
                 >
                   {isSubscribing ? 'Confirming...' : 'Confirm Subscription'}
                 </button>

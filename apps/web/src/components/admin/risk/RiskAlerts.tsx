@@ -39,7 +39,7 @@ export const RiskAlerts: React.FC<RiskAlertsProps> = ({ circuitBreakers }) => {
 
         {haltedMarkets.length > 0 ? (
           haltedMarkets.map((sym) => (
-            <div key={sym} style={{ background: 'rgba(252,213,53,0.1)', border: '1px solid #FCD535', color: '#FCD535', padding: '8px 12px', borderRadius: '6px', marginBottom: '6px', fontSize: '13px' }}>
+            <div key={sym} style={{ background: 'rgba(252,213,53,0.1)', border: '1px solid #f0b90b', color: '#f0b90b', padding: '8px 12px', borderRadius: '6px', marginBottom: '6px', fontSize: '13px' }}>
               Market <strong>{sym}</strong> is halted by Circuit Breaker.
             </div>
           ))

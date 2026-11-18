@@ -247,7 +247,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   padding: '5px 12px',
                   fontSize: '11px',
                   fontWeight: 700,
-                  color: '#fcd535',
+                  color: '#f0b90b',
                   marginBottom: '16px',
                   letterSpacing: '0.5px',
                   maxWidth: '100%'
@@ -270,7 +270,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 }}
               >
                 Institutional-Grade <br />
-                <span style={{ color: '#fcd535' }}>
+                <span style={{ color: '#f0b90b' }}>
                   Digital Asset Exchange
                 </span>
               </h1>
@@ -287,7 +287,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       window.location.hash = '#/dashboard';
                     }}
                     style={{
-                      background: '#fcd535',
+                      background: '#f0b90b',
                       color: '#181a20',
                       border: 'none',
                       borderRadius: '12px',
@@ -358,7 +358,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     <button
                       onClick={onOpenAuth}
                       style={{
-                        background: '#fcd535',
+                        background: '#f0b90b',
                         color: '#181a20',
                         border: 'none',
                         borderRadius: '10px',
@@ -456,7 +456,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       minHeight: '140px'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#fcd535';
+                      e.currentTarget.style.borderColor = '#f0b90b';
                       e.currentTarget.style.transform = 'translateY(-2px)';
                     }}
                     onMouseLeave={(e) => {
@@ -548,7 +548,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               >
                 <div style={{ fontSize: '11px', color: '#848e9c', fontWeight: 500 }}>{stat.label}</div>
                 <div style={{ fontSize: '17px', fontWeight: 800, color: '#eaecef', margin: '3px 0 1px 0' }}>{stat.val}</div>
-                <div style={{ fontSize: '10.5px', color: '#fcd535' }}>{stat.sub}</div>
+                <div style={{ fontSize: '10.5px', color: '#f0b90b' }}>{stat.sub}</div>
               </div>
             ))}
           </div>
@@ -562,7 +562,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             onClick={() => setActiveTrendingTab('hot')}
             style={{
               flex: 1,
-              background: activeTrendingTab === 'hot' ? '#fcd535' : '#202630',
+              background: activeTrendingTab === 'hot' ? '#f0b90b' : '#202630',
               color: activeTrendingTab === 'hot' ? '#181a20' : '#eaecef',
               border: '1px solid #2b313a',
               borderRadius: '10px',
@@ -644,7 +644,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Flame size={16} color="#fcd535" />
+                <Flame size={16} color="#f0b90b" />
                 <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0 }}>Hot Coins</h3>
               </div>
               <span style={{ fontSize: '11px', color: '#848e9c' }}>24h Volume</span>
@@ -666,7 +666,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     cursor: 'pointer',
                     transition: 'all 0.15s ease'
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#fcd535')}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#f0b90b')}
                   onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#2b313a')}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -763,7 +763,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <ShieldCheck size={16} color="#2ebd85" />
                 <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0 }}>Vault &amp; Transfers</h3>
               </div>
-              <a href="#/wallet" style={{ fontSize: '11px', color: '#fcd535', textDecoration: 'none', fontWeight: 600 }}>
+              <a href="#/wallet" style={{ fontSize: '11px', color: '#f0b90b', textDecoration: 'none', fontWeight: 600 }}>
                 Transfer →
               </a>
             </div>
@@ -771,7 +771,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
                 { label: 'Instant Transfers', desc: 'Zero Network Fees', val: '0.00% FEE', color: '#2ebd85' },
-                { label: 'Proof of Reserves', desc: 'Full 1:1 Solvency', val: '100% BACKED', color: '#fcd535' },
+                { label: 'Proof of Reserves', desc: 'Full 1:1 Solvency', val: '100% BACKED', color: '#f0b90b' },
                 { label: 'Cold Storage Vault', desc: 'Multi-Sig Segregated', val: 'SAFU SECURE', color: '#3b82f6' }
               ].map((e) => (
                 <div
@@ -877,7 +877,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 key={tab.id}
                 onClick={() => setActiveMarketTab(tab.id as any)}
                 style={{
-                  background: activeMarketTab === tab.id ? '#fcd535' : '#181a20',
+                  background: activeMarketTab === tab.id ? '#f0b90b' : '#181a20',
                   color: activeMarketTab === tab.id ? '#181a20' : '#848e9c',
                   border: '1px solid #2b313a',
                   borderRadius: '10px',
@@ -1065,7 +1065,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                               onNavigateToTrade(coin.symbol);
                             }}
                             style={{
-                              background: '#fcd535',
+                              background: '#f0b90b',
                               color: '#181a20',
                               border: 'none',
                               borderRadius: '8px',
@@ -1116,8 +1116,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div>
               <span
                 style={{
-                  background: 'rgba(252, 213, 53, 0.15)',
-                  color: '#fcd535',
+                  background: 'rgba(240, 185, 11, 0.15)',
+                  color: '#f0b90b',
                   padding: '3px 8px',
                   borderRadius: '6px',
                   fontSize: '10.5px',
@@ -1155,7 +1155,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       padding: '12px 10px'
                     }}
                   >
-                    <Icon size={18} color="#fcd535" style={{ marginBottom: '4px' }} />
+                    <Icon size={18} color="#f0b90b" style={{ marginBottom: '4px' }} />
                     <div style={{ fontSize: '12px', fontWeight: 700, color: '#eaecef', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</div>
                     <div style={{ fontSize: '10.5px', color: '#848e9c', whiteSpace: 'nowrap' }}>{p.sub}</div>
                   </div>
@@ -1228,7 +1228,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
             {/* Swap Divider */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#181a20', border: '1px solid #2b313a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fcd535' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#181a20', border: '1px solid #2b313a', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f0b90b' }}>
                 <Zap size={16} />
               </div>
             </div>
@@ -1281,7 +1281,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 else onOpenAuth();
               }}
               style={{
-                background: '#fcd535',
+                background: '#f0b90b',
                 color: '#181a20',
                 border: 'none',
                 borderRadius: '12px',
@@ -1324,7 +1324,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 title: 'Spot Exchange',
                 desc: 'Trade 350+ digital assets with microsecond matching and L2 books.',
                 icon: BarChart3,
-                color: '#fcd535',
+                color: '#f0b90b',
                 action: () => onNavigateToTrade('BTC/USDT')
               },
               {
@@ -1373,7 +1373,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 title: 'Market News',
                 desc: 'Real-time breaking financial news and institutional updates.',
                 icon: Newspaper,
-                color: '#8b5cf6',
+                color: '#38bdf8',
                 action: () => (window.location.hash = '#/news')
               }
             ].map((prod) => {
@@ -1410,7 +1410,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         width: '36px',
                         height: '36px',
                         borderRadius: '10px',
-                        background: `rgba(${prod.color === '#fcd535' ? '252, 213, 53' : prod.color === '#2ebd85' ? '46, 189, 133' : '59, 130, 246'}, 0.15)`,
+                        background: `rgba(${prod.color === '#f0b90b' ? '240, 185, 11' : prod.color === '#2ebd85' ? '46, 189, 133' : '59, 130, 246'}, 0.15)`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -1451,14 +1451,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 width: '48px',
                 height: '48px',
                 borderRadius: '12px',
-                background: 'rgba(252, 213, 53, 0.12)',
+                background: 'rgba(240, 185, 11, 0.12)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0
               }}
             >
-              <Shield size={26} color="#fcd535" />
+              <Shield size={26} color="#f0b90b" />
             </div>
             <div>
               <h2 style={{ fontSize: 'clamp(18px, 4.5vw, 22px)', fontWeight: 800, color: '#eaecef', margin: '0 0 2px 0' }}>Your Funds are SAFU</h2>
@@ -1483,7 +1483,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   padding: '14px'
                 }}
               >
-                <h4 style={{ fontSize: '13.5px', fontWeight: 700, color: '#fcd535', margin: '0 0 4px 0' }}>{p.title}</h4>
+                <h4 style={{ fontSize: '13.5px', fontWeight: 700, color: '#f0b90b', margin: '0 0 4px 0' }}>{p.title}</h4>
                 <p style={{ fontSize: '11.5px', color: '#848e9c', lineHeight: '1.5', margin: 0 }}>{p.desc}</p>
               </div>
             ))}
@@ -1521,7 +1521,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
                     <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#eaecef' }}>{faq.q}</span>
-                    {isOpen ? <ChevronUp size={18} color="#fcd535" style={{ flexShrink: 0 }} /> : <ChevronDown size={18} color="#848e9c" style={{ flexShrink: 0 }} />}
+                    {isOpen ? <ChevronUp size={18} color="#f0b90b" style={{ flexShrink: 0 }} /> : <ChevronDown size={18} color="#848e9c" style={{ flexShrink: 0 }} />}
                   </div>
                   {isOpen && (
                     <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
@@ -1562,7 +1562,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 else onOpenAuth();
               }}
               style={{
-                background: '#fcd535',
+                background: '#f0b90b',
                 color: '#181a20',
                 border: 'none',
                 borderRadius: '8px',

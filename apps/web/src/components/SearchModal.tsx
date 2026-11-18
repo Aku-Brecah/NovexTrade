@@ -170,9 +170,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               key={cat}
               onClick={() => setActiveCategory(cat)}
               style={{
-                background: activeCategory === cat ? '#fcd535' : '#141722',
+                background: activeCategory === cat ? '#f0b90b' : '#141722',
                 color: activeCategory === cat ? '#181a20' : '#848e9c',
-                border: `1px solid ${activeCategory === cat ? '#fcd535' : '#232838'}`,
+                border: `1px solid ${activeCategory === cat ? '#f0b90b' : '#232838'}`,
                 padding: '4px 10px',
                 borderRadius: '6px',
                 fontSize: '11px',
@@ -194,14 +194,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 onSelectStock(query.trim().toUpperCase());
                 onClose();
               }}
-              style={{ background: 'rgba(252, 213, 53, 0.05)', border: '1px dashed rgba(252, 213, 53, 0.3)' }}
+              style={{ background: 'rgba(240, 185, 11, 0.05)', border: '1px dashed rgba(240, 185, 11, 0.3)' }}
             >
-              <div className="search-stock-avatar" style={{ background: '#fcd535', color: '#181a20' }}>
+              <div className="search-stock-avatar" style={{ background: '#f0b90b', color: '#0b0e11' }}>
                 <TrendingUp size={16} />
               </div>
               <div className="search-stock-info">
                 <div className="search-stock-symbol-row">
-                  <span className="search-stock-symbol" style={{ color: '#fcd535' }}>{query.trim().toUpperCase()}</span>
+                  <span className="search-stock-symbol" style={{ color: '#f0b90b' }}>{query.trim().toUpperCase()}</span>
                   <span className="search-stock-badge">Live Global Search</span>
                 </div>
                 <div className="search-stock-name">
@@ -252,8 +252,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     >
                       <Star
                         size={16}
-                        fill={isWatchlisted ? '#fcd535' : 'none'}
-                        color={isWatchlisted ? '#fcd535' : '#717a88'}
+                        fill={isWatchlisted ? '#f0b90b' : 'none'}
+                        color={isWatchlisted ? '#f0b90b' : '#717a88'}
                       />
                     </button>
                   )}

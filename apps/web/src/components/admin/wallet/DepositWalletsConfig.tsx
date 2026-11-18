@@ -113,7 +113,7 @@ export const DepositWalletsConfig: React.FC = () => {
             <button className="btn btn-secondary" onClick={query.refresh} disabled={query.status === 'LOADING'}>
               <RefreshCw size={14} /> Refresh
             </button>
-            <button className="btn btn-primary" onClick={() => handleOpenEdit()} style={{ background: '#fcd535', color: '#181a20', fontWeight: 700 }}>
+            <button className="btn btn-primary" onClick={() => handleOpenEdit()} style={{ background: '#f0b90b', color: '#0b0e11', fontWeight: 700 }}>
               <Plus size={14} /> Configure Wallet
             </button>
           </div>
@@ -124,8 +124,8 @@ export const DepositWalletsConfig: React.FC = () => {
 
       {/* Info Banner */}
       <div style={{
-        background: 'rgba(252, 213, 53, 0.08)',
-        border: '1px solid rgba(252, 213, 53, 0.25)',
+        background: 'rgba(240, 185, 11, 0.08)',
+        border: '1px solid rgba(240, 185, 11, 0.25)',
         borderRadius: '8px',
         padding: '12px 16px',
         marginBottom: '20px',
@@ -133,7 +133,7 @@ export const DepositWalletsConfig: React.FC = () => {
         alignItems: 'center',
         gap: '12px'
       }}>
-        <ShieldCheck size={22} color="#fcd535" style={{ flexShrink: 0 }} />
+        <ShieldCheck size={22} color="#f0b90b" style={{ flexShrink: 0 }} />
         <div style={{ fontSize: '13px', color: '#eaecef' }}>
           <strong>Fixed User Deposit Routing:</strong> All incoming customer deposits will be directed to these designated hot/cold wallet addresses. Whenever users select an asset & network on the Deposit page, the system presents the corresponding fixed address and QR code configured here.
         </div>
@@ -193,7 +193,7 @@ export const DepositWalletsConfig: React.FC = () => {
                   <td className="admin-muted-cell">{item.confirmations_required ?? 1} Block(s)</td>
                   <td>
                     {item.qr_code_url ? (
-                      <a href={item.qr_code_url} target="_blank" rel="noreferrer" title="Open QR Code" style={{ color: '#fcd535', display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', fontSize: '12px' }}>
+                      <a href={item.qr_code_url} target="_blank" rel="noreferrer" title="Open QR Code" style={{ color: '#f0b90b', display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none', fontSize: '12px' }}>
                         <QrCode size={16} /> QR
                       </a>
                     ) : (
@@ -340,7 +340,7 @@ export const DepositWalletsConfig: React.FC = () => {
                   type="submit"
                   className="btn btn-primary"
                   disabled={isSubmitting}
-                  style={{ background: '#fcd535', color: '#181a20', fontWeight: 700 }}
+                  style={{ background: '#f0b90b', color: '#0b0e11', fontWeight: 700 }}
                 >
                   {isSubmitting ? 'Saving Address...' : 'Save Configuration'}
                 </button>

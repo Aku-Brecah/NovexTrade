@@ -136,7 +136,7 @@ export const UsersTable: React.FC<{
                         <>
                           <button
                             className="btn btn-secondary"
-                            style={{ padding: '4px 8px', fontSize: '11px', color: '#fcd535', borderColor: 'rgba(252, 213, 53, 0.3)' }}
+                            style={{ padding: '4px 8px', fontSize: '11px', color: '#f0b90b', borderColor: 'rgba(240, 185, 11, 0.3)' }}
                             onClick={() => setAdjustingUser(u)}
                             title="Add / Edit user balance"
                           >

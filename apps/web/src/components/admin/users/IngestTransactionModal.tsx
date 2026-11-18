@@ -251,7 +251,7 @@ export const IngestTransactionModal: React.FC<IngestTransactionModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              style={{ flex: 1.5, padding: '12px', borderRadius: '8px', background: '#fcd535', border: 'none', color: '#181a20', fontSize: '14px', fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+              style={{ flex: 1.5, padding: '12px', borderRadius: '8px', background: '#f0b90b', border: 'none', color: '#0b0e11', fontSize: '14px', fontWeight: 700, cursor: 'pointer', opacity: loading ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
             >
               {loading ? (
                 <>

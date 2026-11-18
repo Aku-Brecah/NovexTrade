@@ -14,11 +14,11 @@
   --buy-green-bg: rgba(14, 203, 129, 0.15);
   --sell-red: #f6465d;
   --sell-red-bg: rgba(246, 70, 93, 0.15);
-  --accent-gold: #fcd535;
-  --accent-yellow: #fcd535;
-  --accent-cyan: #fcd535;
+  --accent-gold: #f0b90b;
+  --accent-yellow: #f0b90b;
+  --accent-cyan: #38bdf8;
   --accent-amber: #f0b90b;
-  --accent-purple: #fcd535;
+  --accent-purple: #38bdf8;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
@@ -36,7 +36,7 @@
   --color-TertiaryText: #707A8A;
   --color-SecondaryText: #929AA5;
   --color-PrimaryText: #EAECEF;
-  --color-BtnBg: #FCD535;
+  --color-BtnBg: #f0b90b;
   --color-PrimaryYellow: #F0B90B;
   --color-TextLink: #F0B90B;
   --color-TradeBg: #0B0E11;
@@ -457,7 +457,7 @@ body {
 }
 
 .input-field:focus {
-  border-color: #fcd535;
+  border-color: #f0b90b;
   background: #1e2329;
 }
 
@@ -498,12 +498,12 @@ body {
 }
 
 .btn-primary {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
 }
 .btn-primary:hover {
   background: #f0b90b;
-  box-shadow: 0 4px 16px rgba(252, 213, 53, 0.35);
+  box-shadow: 0 4px 16px rgba(240, 185, 11, 0.35);
   transform: translateY(-1px);
 }
 
@@ -559,29 +559,29 @@ body {
 }
 
 .badge-amber {
-  background: rgba(252, 213, 53, 0.12);
-  color: #fcd535;
-  border: 1px solid rgba(252, 213, 53, 0.3);
+  background: rgba(240, 185, 11, 0.12);
+  color: #f0b90b;
+  border: 1px solid rgba(240, 185, 11, 0.3);
 }
 
 .badge-cyan {
-  background: rgba(252, 213, 53, 0.12);
-  color: #fcd535;
-  border: 1px solid rgba(252, 213, 53, 0.25);
+  background: rgba(240, 185, 11, 0.12);
+  color: #f0b90b;
+  border: 1px solid rgba(240, 185, 11, 0.25);
 }
 
 .badge-yellow {
-  background: rgba(252, 213, 53, 0.12);
-  color: #fcd535;
-  border: 1px solid rgba(252, 213, 53, 0.25);
+  background: rgba(240, 185, 11, 0.12);
+  color: #f0b90b;
+  border: 1px solid rgba(240, 185, 11, 0.25);
 }
 
 .text-yellow {
-  color: #fcd535 !important;
+  color: #f0b90b !important;
 }
 
 .text-yellow {
-  color: #fcd535 !important;
+  color: #f0b90b !important;
 }
 
 /* ==========================================================================
@@ -612,7 +612,7 @@ body {
   right: 5%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(252, 213, 53, 0.07) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(240, 185, 11, 0.07) 0%, transparent 70%);
   pointer-events: none;
   filter: blur(40px);
 }
@@ -636,9 +636,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(252, 213, 53, 0.1);
-  border: 1px solid rgba(252, 213, 53, 0.25);
-  color: #fcd535;
+  background: rgba(240, 185, 11, 0.1);
+  border: 1px solid rgba(240, 185, 11, 0.25);
+  color: #f0b90b;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
@@ -657,7 +657,7 @@ body {
 }
 
 .bn-gradient-text {
-  background: linear-gradient(90deg, #fcd535 0%, #f0b90b 100%);
+  background: linear-gradient(90deg, #f0b90b 0%, #f0b90b 100%);
   -webkit-background-clip: text;
   -webkit-fill-color: transparent;
   -webkit-text-fill-color: transparent;
@@ -697,12 +697,12 @@ body {
 }
 
 .bn-reg-input:focus {
-  border-color: #fcd535;
+  border-color: #f0b90b;
   background: #1e2329;
 }
 
 .bn-btn-yellow {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-weight: 700;
   border-radius: 8px;
@@ -720,7 +720,7 @@ body {
 
 .bn-btn-yellow:hover {
   background: #f0b90b;
-  box-shadow: 0 4px 16px rgba(252, 213, 53, 0.35);
+  box-shadow: 0 4px 16px rgba(240, 185, 11, 0.35);
   transform: translateY(-1px);
 }
 
@@ -814,7 +814,7 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-weight: 800;
   font-size: 11px;
@@ -894,7 +894,7 @@ body {
 .bn-stat-value {
   font-size: 22px;
   font-weight: 800;
-  color: #fcd535;
+  color: #f0b90b;
   font-family: var(--font-mono);
 }
 
@@ -942,7 +942,7 @@ body {
 .bn-btn-link {
   background: transparent;
   border: none;
-  color: #fcd535;
+  color: #f0b90b;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
@@ -982,7 +982,7 @@ body {
 
 .bn-tab-btn.active {
   background: #2b313a;
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 /* Market Table */
@@ -1033,7 +1033,7 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-weight: 800;
   font-size: 11px;
@@ -1077,9 +1077,9 @@ body {
 }
 
 .bn-btn-trade:hover {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
-  border-color: #fcd535;
+  border-color: #f0b90b;
 }
 
 /* Convert / Buy Section */
@@ -1102,7 +1102,7 @@ body {
 }
 
 .bn-tag-yellow {
-  color: #fcd535;
+  color: #f0b90b;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.5px;
@@ -1238,7 +1238,7 @@ body {
 }
 
 .bn-product-card:hover {
-  border-color: #fcd535;
+  border-color: #f0b90b;
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
@@ -1247,7 +1247,7 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 12px;
-  background: rgba(252, 213, 53, 0.1);
+  background: rgba(240, 185, 11, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1275,7 +1275,7 @@ body {
   gap: 4px;
   font-size: 13px;
   font-weight: 700;
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 /* SAFU Section */
@@ -1284,7 +1284,7 @@ body {
 }
 
 .bn-safu-container {
-  background: radial-gradient(circle at 10% 50%, rgba(252, 213, 53, 0.08) 0%, transparent 60%), #1e2329;
+  background: radial-gradient(circle at 10% 50%, rgba(240, 185, 11, 0.08) 0%, transparent 60%), #1e2329;
   border: 1px solid #2b313a;
   border-radius: 16px;
   padding: 48px;
@@ -1301,7 +1301,7 @@ body {
   width: 72px;
   height: 72px;
   border-radius: 16px;
-  background: rgba(252, 213, 53, 0.12);
+  background: rgba(240, 185, 11, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1637,9 +1637,9 @@ body {
 }
 
 .bn-social-icon:hover {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
-  border-color: #fcd535;
+  border-color: #f0b90b;
 }
 
 .bn-footer-col h4 {
@@ -1664,7 +1664,7 @@ body {
 }
 
 .bn-footer-col ul li a:hover {
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 .bn-footer-bottom {
@@ -1752,7 +1752,7 @@ body {
 .signup-brand-badge {
   font-size: 10px;
   font-weight: 700;
-  color: #fcd535;
+  color: #f0b90b;
   background: #1e2329;
   border: 1px solid #2b313a;
   padding: 2px 6px;
@@ -1809,8 +1809,8 @@ body {
 
 .signup-input-wrapper:focus-within,
 .signup-input-wrapper.is-focused-gold {
-  border-color: #fcd535;
-  box-shadow: 0 0 0 1px #fcd535, 0 0 12px rgba(252, 213, 53, 0.15);
+  border-color: #f0b90b;
+  box-shadow: 0 0 0 1px #f0b90b, 0 0 12px rgba(240, 185, 11, 0.15);
 }
 
 .signup-input {
@@ -1855,8 +1855,8 @@ body {
 }
 
 .signup-select-wrapper:focus-within {
-  border-color: #fcd535;
-  box-shadow: 0 0 0 1px #fcd535;
+  border-color: #f0b90b;
+  box-shadow: 0 0 0 1px #f0b90b;
 }
 
 .signup-select {
@@ -1892,7 +1892,7 @@ body {
 }
 
 .signup-submit-btn {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-size: 15px;
   font-weight: 700;
@@ -1903,13 +1903,13 @@ body {
   width: 100%;
   margin-top: 10px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(252, 213, 53, 0.2);
+  box-shadow: 0 4px 16px rgba(240, 185, 11, 0.2);
 }
 
 .signup-submit-btn:hover:not(:disabled) {
   background: #f0b90b;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(252, 213, 53, 0.35);
+  box-shadow: 0 6px 20px rgba(240, 185, 11, 0.35);
 }
 
 .signup-submit-btn:disabled {
@@ -1937,7 +1937,7 @@ body {
 }
 
 .signup-switch-link:hover {
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 /* Right Column (Social Proof & Live Mockup) */
@@ -2086,7 +2086,7 @@ body {
 }
 
 .mockup-view-all:hover {
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 /* Market Summary & Chart */
@@ -2481,7 +2481,7 @@ body {
 }
 
 .dash-view-all-link:hover {
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 /* Category Filter Pills */
@@ -3119,7 +3119,7 @@ body {
 }
 
 .create-alert-btn {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-size: 11.5px;
   font-weight: 800;
@@ -3178,12 +3178,12 @@ body {
   border-radius: 50%;
 }
 
-.dot.yellow { background: #fcd535; }
+.dot.yellow { background: #f0b90b; }
 .dot.green { background: #0ecb81; }
 .dot.red { background: #f6465d; }
 .dot.blue { background: #3b82f6; }
 .dot.orange { background: #f97316; }
-.dot.purple { background: #a855f7; }
+.dot.purple { background: #38bdf8; }
 .dot.teal { background: #14b8a6; }
 .dot.gray { background: #6b7280; }
 
@@ -3287,7 +3287,7 @@ body {
 }
 
 .info-link {
-  color: #fcd535;
+  color: #f0b90b;
   text-decoration: none;
   font-weight: 700;
 }
@@ -3652,7 +3652,7 @@ body {
 }
 
 .wl-btn-add-stock {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-size: 12px;
   font-weight: 800;
@@ -3751,7 +3751,7 @@ body {
 
 .wl-btn-add-alert {
   background: #202534;
-  color: #fcd535;
+  color: #f0b90b;
   border: 1px solid #2e3549;
   font-size: 11px;
   font-weight: 700;
@@ -3763,7 +3763,7 @@ body {
 
 .wl-btn-add-alert:hover {
   background: #2a3144;
-  border-color: #fcd535;
+  border-color: #f0b90b;
 }
 
 /* Alerts Stack */
@@ -3888,7 +3888,7 @@ body {
 
 .wl-freq-pill {
   background: #232838;
-  color: #fcd535;
+  color: #f0b90b;
   font-size: 9.5px;
   font-weight: 700;
   padding: 2px 8px;
@@ -3990,7 +3990,7 @@ body {
 .wl-news-readmore {
   font-size: 11px;
   font-weight: 700;
-  color: #fcd535;
+  color: #f0b90b;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -4048,13 +4048,13 @@ body {
 }
 
 .price-alert-input:focus {
-  border-color: #fcd535;
-  box-shadow: 0 0 0 1px #fcd535;
+  border-color: #f0b90b;
+  box-shadow: 0 0 0 1px #f0b90b;
 }
 
 .price-alert-input.active-highlight {
-  border-color: #fcd535;
-  box-shadow: 0 0 0 1px #fcd535;
+  border-color: #f0b90b;
+  box-shadow: 0 0 0 1px #f0b90b;
 }
 
 .price-alert-input.readonly {
@@ -4084,7 +4084,7 @@ body {
 }
 
 .price-alert-select:focus {
-  border-color: #fcd535;
+  border-color: #f0b90b;
 }
 
 .select-chevron {
@@ -4106,7 +4106,7 @@ body {
 }
 
 .dollar-prefix {
-  color: #fcd535;
+  color: #f0b90b;
   font-weight: 700;
   font-size: 14px;
   margin-right: 6px;
@@ -4126,7 +4126,7 @@ body {
 }
 
 .price-alert-submit-btn {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-weight: 800;
   font-size: 13.5px;
@@ -4270,7 +4270,7 @@ body {
 
 .email-nav-item.active {
   background: #1b202e;
-  border-color: #fcd535;
+  border-color: #f0b90b;
 }
 
 .email-nav-icon {
@@ -4341,7 +4341,7 @@ body {
 }
 
 .test-input:focus {
-  border-color: #fcd535;
+  border-color: #f0b90b;
 }
 
 /* Preview Frame */
@@ -4464,8 +4464,8 @@ body {
 }
 
 .email-gallery-card.selected {
-  border-color: #fcd535;
-  box-shadow: 0 0 0 1px #fcd535;
+  border-color: #f0b90b;
+  box-shadow: 0 0 0 1px #f0b90b;
 }
 
 .gallery-card-header {
@@ -4806,10 +4806,10 @@ body {
 }
 
 .news-cat-btn.active {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
   font-weight: 700;
-  border-color: #fcd535;
+  border-color: #f0b90b;
 }
 
 /* Featured Hero Story */
@@ -4862,7 +4862,7 @@ body {
 }
 
 .featured-cat {
-  color: #fcd535;
+  color: #f0b90b;
   font-weight: 700;
 }
 
@@ -4973,7 +4973,7 @@ body {
 
 .news-card-source {
   font-weight: 700;
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 .news-card-headline {
@@ -5022,7 +5022,7 @@ body {
 }
 
 .news-bookmark-btn:hover {
-  color: #fcd535;
+  color: #f0b90b;
   background: #1c202d;
 }
 
@@ -5565,7 +5565,7 @@ body {
   background: #23272e !important;
 }
 
-/* RTL Mode Support for NexLink */
+/* RTL Mode Support for NovexTrade */
 .admin-console.rtl-mode {
   direction: rtl;
 }
@@ -5708,13 +5708,13 @@ a[href*="tradingview.com"] {
 
 .mobile-drawer-item:hover {
   background: #202630;
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 .mobile-drawer-item.active {
-  background: rgba(252, 213, 53, 0.12);
-  color: #fcd535;
-  border-left: 3px solid #fcd535;
+  background: rgba(240, 185, 11, 0.12);
+  color: #f0b90b;
+  border-left: 3px solid #f0b90b;
 }
 
 .mobile-drawer-item.logout {
@@ -5762,11 +5762,11 @@ a[href*="tradingview.com"] {
 }
 
 .mobile-tab-btn.active {
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 .mobile-tab-btn.active svg {
-  stroke: #fcd535;
+  stroke: #f0b90b;
 }
 
 @keyframes drawerFadeIn {
@@ -5805,14 +5805,14 @@ a[href*="tradingview.com"] {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #fcd535 0%, #f0b90b 100%);
+  background: linear-gradient(135deg, #f0b90b 0%, #f0b90b 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #181a20;
   font-size: 20px;
   font-weight: 800;
-  box-shadow: 0 4px 12px rgba(252, 213, 53, 0.2);
+  box-shadow: 0 4px 12px rgba(240, 185, 11, 0.2);
   flex-shrink: 0;
 }
 
@@ -5854,7 +5854,7 @@ a[href*="tradingview.com"] {
 }
 
 .dashboard-chip-copy-btn:hover {
-  color: #fcd535;
+  color: #f0b90b;
 }
 
 .dashboard-actions-grid {
@@ -5879,7 +5879,7 @@ a[href*="tradingview.com"] {
 }
 
 .dashboard-action-btn.primary {
-  background: #fcd535;
+  background: #f0b90b;
   color: #181a20;
 }
 
@@ -5929,7 +5929,7 @@ a[href*="tradingview.com"] {
   left: 0;
   right: 0;
   height: 3px;
-  background: #FCD535;
+  background: #f0b90b;
   border-radius: 2px 2px 0 0;
 }
 
@@ -5983,9 +5983,9 @@ a[href*="tradingview.com"] {
   }
 
   .spot-mobile-nav-tab.active {
-    background: rgba(252, 213, 53, 0.15);
-    color: #fcd535;
-    border-color: #fcd535;
+    background: rgba(240, 185, 11, 0.15);
+    color: #f0b90b;
+    border-color: #f0b90b;
   }
 
   .spot-terminal-grid {
@@ -6071,8 +6071,8 @@ a[href*="tradingview.com"] {
   }
 
   .dashboard-current-tab-badge {
-    background: rgba(252, 213, 53, 0.15);
-    color: #fcd535;
+    background: rgba(240, 185, 11, 0.15);
+    color: #f0b90b;
     font-size: 11px;
     font-weight: 700;
     padding: 3px 8px;

@@ -98,9 +98,9 @@ export const StockDetailView: React.FC<StockDetailViewProps> = ({
                   key={asset.sym}
                   onClick={() => handleSelectSymbol(asset.sym)}
                   style={{
-                    background: isSelected ? '#FCD535' : '#29313D',
+                    background: isSelected ? '#f0b90b' : '#29313D',
                     color: isSelected ? '#181A20' : '#EAECEF',
-                    border: isSelected ? '1px solid #FCD535' : '1px solid #333B47',
+                    border: isSelected ? '1px solid #f0b90b' : '1px solid #333B47',
                     borderRadius: '6px',
                     padding: '4px 10px',
                     fontSize: '12px',
@@ -124,7 +124,7 @@ export const StockDetailView: React.FC<StockDetailViewProps> = ({
                   key={tf}
                   onClick={() => setActiveInterval(tf)}
                   style={{
-                    background: activeInterval === tf ? '#FCD535' : 'transparent',
+                    background: activeInterval === tf ? '#f0b90b' : 'transparent',
                     color: activeInterval === tf ? '#181A20' : '#848E9C',
                     border: 'none',
                     borderRadius: '4px',
@@ -172,7 +172,7 @@ export const StockDetailView: React.FC<StockDetailViewProps> = ({
                   background: '#29313D',
                   border: '1px solid #333B47',
                   borderRadius: '6px',
-                  color: '#FCD535',
+                  color: '#f0b90b',
                   padding: '5px 10px',
                   fontSize: '12px',
                   fontWeight: 700,
@@ -209,9 +209,9 @@ export const StockDetailView: React.FC<StockDetailViewProps> = ({
           <div style={{ background: '#202630', borderRadius: '16px', border: '1px solid #29313D', padding: '20px', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
               <span style={{ fontSize: '15px', fontWeight: 800, color: '#EAECEF' }}>
-                Technical Analysis: <span style={{ color: '#FCD535' }}>{currentSym.toUpperCase()}</span>
+                Technical Analysis: <span style={{ color: '#f0b90b' }}>{currentSym.toUpperCase()}</span>
               </span>
-              <span style={{ fontSize: '11px', background: '#29313D', color: '#2EBD85', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
+              <span style={{ fontSize: '11px', background: '#29313D', color: '#0ecb81', padding: '3px 8px', borderRadius: '4px', fontWeight: 700 }}>
                 {activeInterval} Live Gauge
               </span>
             </div>
@@ -234,7 +234,7 @@ export const StockDetailView: React.FC<StockDetailViewProps> = ({
           {/* Column 1: Live Profile */}
           <div style={{ background: '#202630', borderRadius: '16px', border: '1px solid #29313D', padding: '20px' }}>
             <div style={{ fontSize: '15px', fontWeight: 800, color: '#EAECEF', marginBottom: '14px' }}>
-              Asset Profile: <span style={{ color: '#FCD535' }}>{currentSym.toUpperCase()}</span>
+              Asset Profile: <span style={{ color: '#f0b90b' }}>{currentSym.toUpperCase()}</span>
             </div>
             <div style={{ width: '100%', height: '420px', borderRadius: '8px', overflow: 'hidden' }}>
               <TradingViewSymbolProfile
@@ -263,7 +263,7 @@ export const StockDetailView: React.FC<StockDetailViewProps> = ({
           {/* Column 3: Fundamentals & Financial Overview */}
           <div style={{ background: '#202630', borderRadius: '16px', border: '1px solid #29313D', padding: '20px' }}>
             <div style={{ fontSize: '15px', fontWeight: 800, color: '#EAECEF', marginBottom: '14px' }}>
-              Financials &amp; Fundamentals: <span style={{ color: '#FCD535' }}>{currentSym.toUpperCase()}</span>
+              Financials &amp; Fundamentals: <span style={{ color: '#f0b90b' }}>{currentSym.toUpperCase()}</span>
             </div>
             <div style={{ width: '100%', height: '420px', borderRadius: '8px', overflow: 'hidden' }}>
               <TradingViewFinancials

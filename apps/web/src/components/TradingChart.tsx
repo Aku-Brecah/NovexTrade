@@ -170,8 +170,8 @@ export const TradingChart: React.FC<TradingChartProps> = ({ symbol }) => {
                 fontWeight: 700,
                 cursor: 'pointer',
                 border: 'none',
-                background: chartEngine === 'tradingview' ? '#fcd535' : 'transparent',
-                color: chartEngine === 'tradingview' ? '#181a20' : '#848e9c',
+                background: chartEngine === 'tradingview' ? '#f0b90b' : 'transparent',
+                color: chartEngine === 'tradingview' ? '#0b0e11' : '#848e9c',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -190,8 +190,8 @@ export const TradingChart: React.FC<TradingChartProps> = ({ symbol }) => {
                 fontWeight: 700,
                 cursor: 'pointer',
                 border: 'none',
-                background: chartEngine === 'canvas' ? '#fcd535' : 'transparent',
-                color: chartEngine === 'canvas' ? '#181a20' : '#848e9c',
+                background: chartEngine === 'canvas' ? '#f0b90b' : 'transparent',
+                color: chartEngine === 'canvas' ? '#0b0e11' : '#848e9c',
                 whiteSpace: 'nowrap'
               }}
             >
@@ -214,7 +214,7 @@ export const TradingChart: React.FC<TradingChartProps> = ({ symbol }) => {
                   cursor: 'pointer',
                   border: 'none',
                   background: interval === itv ? '#2b313a' : 'transparent',
-                  color: interval === itv ? '#fcd535' : '#848e9c'
+                  color: interval === itv ? '#f0b90b' : '#848e9c'
                 }}
               >
                 {itv}

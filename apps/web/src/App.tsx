@@ -26,7 +26,7 @@ const AdminConsole = lazy(() => import('./components/admin/AdminConsole').then(m
 const ViewFallback = () => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: '#848e9c' }}>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-      <div style={{ width: '28px', height: '28px', border: '3px solid #2b313a', borderTopColor: '#fcd535', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <div style={{ width: '28px', height: '28px', border: '3px solid #2b313a', borderTopColor: '#f0b90b', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       <span style={{ fontSize: '13px', fontWeight: 600 }}>Loading Terminal...</span>
     </div>
   </div>

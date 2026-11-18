@@ -273,7 +273,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
           <span style={{ color: '#0ecb81', fontWeight: 700, fontFamily: 'monospace' }}>
             {ticker?.spread ? `$${parseFloat(ticker.spread).toFixed(2)}` : '$0.50'}
           </span>
-          <span style={{ background: 'rgba(252, 213, 53, 0.15)', color: '#fcd535', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700 }}>
+          <span style={{ background: 'rgba(240, 185, 11, 0.15)', color: '#f0b90b', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700 }}>
             0.1% Fee
           </span>
         </div>
@@ -452,7 +452,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: orderType === t ? '#fcd535' : '#848e9c',
+                  color: orderType === t ? '#f0b90b' : '#848e9c',
                   fontWeight: orderType === t ? 700 : 500,
                   cursor: 'pointer',
                   padding: 0
@@ -551,7 +551,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                   onClick={() => handlePercentagePick(pct)}
                   style={{
                     background: percentSlider === pct ? '#29313d' : '#202630',
-                    color: percentSlider === pct ? '#fcd535' : '#848e9c',
+                    color: percentSlider === pct ? '#f0b90b' : '#848e9c',
                     border: '1px solid #2b313a',
                     borderRadius: '4px',
                     padding: '4px 0',
@@ -579,7 +579,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                 type="button"
                 onClick={onOpenAuth}
                 style={{
-                  background: '#fcd535',
+                  background: '#f0b90b',
                   color: '#181a20',
                   border: 'none',
                   borderRadius: '8px',
@@ -623,7 +623,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: rightPanelTab === 'MARKET_TRADES' ? '#fcd535' : '#848e9c',
+                color: rightPanelTab === 'MARKET_TRADES' ? '#f0b90b' : '#848e9c',
                 fontWeight: rightPanelTab === 'MARKET_TRADES' ? 700 : 500,
                 fontSize: '13px',
                 cursor: 'pointer',
@@ -637,7 +637,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: rightPanelTab === 'MY_TRADES' ? '#fcd535' : '#848e9c',
+                color: rightPanelTab === 'MY_TRADES' ? '#f0b90b' : '#848e9c',
                 fontWeight: rightPanelTab === 'MY_TRADES' ? 700 : 500,
                 fontSize: '13px',
                 cursor: 'pointer',
@@ -685,7 +685,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                   type="button"
                   onClick={onOpenAuth}
                   style={{
-                    background: '#fcd535',
+                    background: '#f0b90b',
                     color: '#181a20',
                     fontWeight: 700,
                     fontSize: '12px',
@@ -738,7 +738,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
             style={{
               background: 'transparent',
               border: 'none',
-              color: bottomTab === 'OPEN_ORDERS' ? '#fcd535' : '#848e9c',
+              color: bottomTab === 'OPEN_ORDERS' ? '#f0b90b' : '#848e9c',
               fontWeight: bottomTab === 'OPEN_ORDERS' ? 700 : 500,
               cursor: 'pointer',
               padding: 0
@@ -751,7 +751,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
             style={{
               background: 'transparent',
               border: 'none',
-              color: bottomTab === 'ORDER_HISTORY' ? '#fcd535' : '#848e9c',
+              color: bottomTab === 'ORDER_HISTORY' ? '#f0b90b' : '#848e9c',
               fontWeight: bottomTab === 'ORDER_HISTORY' ? 700 : 500,
               cursor: 'pointer',
               padding: 0
@@ -764,7 +764,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
             style={{
               background: 'transparent',
               border: 'none',
-              color: bottomTab === 'TRADE_HISTORY' ? '#fcd535' : '#848e9c',
+              color: bottomTab === 'TRADE_HISTORY' ? '#f0b90b' : '#848e9c',
               fontWeight: bottomTab === 'TRADE_HISTORY' ? 700 : 500,
               cursor: 'pointer',
               padding: 0
@@ -777,7 +777,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
             style={{
               background: 'transparent',
               border: 'none',
-              color: bottomTab === 'FUNDS' ? '#fcd535' : '#848e9c',
+              color: bottomTab === 'FUNDS' ? '#f0b90b' : '#848e9c',
               fontWeight: bottomTab === 'FUNDS' ? 700 : 500,
               cursor: 'pointer',
               padding: 0
@@ -800,7 +800,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                 <button
                   onClick={onOpenAuth}
                   style={{
-                    background: '#fcd535',
+                    background: '#f0b90b',
                     color: '#181a20',
                     fontWeight: 800,
                     fontSize: '13px',
