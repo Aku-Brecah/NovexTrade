@@ -5,7 +5,7 @@ import { App } from './App';
 import './index.css';
 
 const CLERK_PUBLISHABLE_KEY =
-  (import.meta as any).env?.VITE_CLERK_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ||
   'pk_test_aHVtYmxlLWduYXQtMzAxNy5jbGVyay5hY2NvdW50cy5kZXYk';
 
 interface ErrorBoundaryProps {

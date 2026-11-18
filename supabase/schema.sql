@@ -182,14 +182,14 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_created ON public.audit_logs(created_a
 -- DEFAULT SEED DATA
 -- ==============================================================================
 
--- Seed Default Hot Deposit Addresses
+-- Seed Demo Hot Deposit Addresses (Replace with real cold/hot custody addresses in production)
 INSERT INTO public.deposit_addresses (asset, network, address, memo, qr_code_url, min_deposit, confirmations_required, updated_at)
 VALUES
-    ('BTC', 'BTC', '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', NULL, 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', 0.0005, 1, EXTRACT(EPOCH FROM NOW())*1000),
-    ('ETH', 'ERC20', '0x71C8366420A092679b5436194448873305370caD', NULL, 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0x71C8366420A092679b5436194448873305370caD', 0.01, 12, EXTRACT(EPOCH FROM NOW())*1000),
-    ('USDT', 'TRC20', 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t', NULL, 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t', 10.0, 1, EXTRACT(EPOCH FROM NOW())*1000),
-    ('SOL', 'SOL', 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH', NULL, 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH', 0.1, 1, EXTRACT(EPOCH FROM NOW())*1000),
-    ('BNB', 'BEP20', '0x71C8366420A092679b5436194448873305370caD', NULL, 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0x71C8366420A092679b5436194448873305370caD', 0.05, 5, EXTRACT(EPOCH FROM NOW())*1000)
+    ('BTC', 'BTC', 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', NULL, '/api/v1/wallet/qr/BTC', 0.0005, 1, EXTRACT(EPOCH FROM NOW())*1000),
+    ('ETH', 'ERC20', '0x71C8366420A092679b5436194448873305370caD', NULL, '/api/v1/wallet/qr/ETH', 0.01, 12, EXTRACT(EPOCH FROM NOW())*1000),
+    ('USDT', 'TRC20', 'TXj6L9sBq4eC8wK7zN9mP1rT3yV5xW8aZ2', NULL, '/api/v1/wallet/qr/USDT', 10.0, 1, EXTRACT(EPOCH FROM NOW())*1000),
+    ('SOL', 'SOL', 'HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH', NULL, '/api/v1/wallet/qr/SOL', 0.1, 1, EXTRACT(EPOCH FROM NOW())*1000),
+    ('BNB', 'BEP20', '0x71C8366420A092679b5436194448873305370caD', NULL, '/api/v1/wallet/qr/BNB', 0.05, 5, EXTRACT(EPOCH FROM NOW())*1000)
 ON CONFLICT (asset) DO NOTHING;
 
 -- Enable Row Level Security (RLS) policies
@@ -204,14 +204,17 @@ ALTER TABLE public.user_investments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.deposit_addresses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Allow Service Role full access to all tables
-CREATE POLICY "Service role full access on users" ON public.users FOR ALL USING (true);
-CREATE POLICY "Service role full access on accounts" ON public.accounts FOR ALL USING (true);
-CREATE POLICY "Service role full access on orders" ON public.orders FOR ALL USING (true);
-CREATE POLICY "Service role full access on trades" ON public.trades FOR ALL USING (true);
-CREATE POLICY "Service role full access on deposits" ON public.deposits FOR ALL USING (true);
-CREATE POLICY "Service role full access on withdrawals" ON public.withdrawals FOR ALL USING (true);
-CREATE POLICY "Service role full access on transfers" ON public.transfers FOR ALL USING (true);
-CREATE POLICY "Service role full access on user_investments" ON public.user_investments FOR ALL USING (true);
-CREATE POLICY "Service role full access on deposit_addresses" ON public.deposit_addresses FOR ALL USING (true);
-CREATE POLICY "Service role full access on audit_logs" ON public.audit_logs FOR ALL USING (true);
+-- Revoke direct anon and authenticated permissions by default (Zero Trust)
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
+
+-- Allow only Backend Service Role full access to all tables (Fail Closed for public/anon)
+CREATE POLICY "Service role full access on users" ON public.users TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on accounts" ON public.accounts TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on orders" ON public.orders TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on trades" ON public.trades TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on deposits" ON public.deposits TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on withdrawals" ON public.withdrawals TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on transfers" ON public.transfers TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on user_investments" ON public.user_investments TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on deposit_addresses" ON public.deposit_addresses TO service_role USING (true) WITH CHECK (true);
+CREATE POLICY "Service role full access on audit_logs" ON public.audit_logs TO service_role USING (true) WITH CHECK (true);

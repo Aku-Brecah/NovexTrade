@@ -176,35 +176,35 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   const faqs = [
     {
-      q: 'What is CryptoBridge and how does the exchange work?',
-      a: 'CryptoBridge is an institutional digital asset exchange engineered with a high-throughput deterministic matching engine (Price-Time FIFO), a strict double-entry ledger architecture, deep spot and P2P liquidity, 100% verified Proof of Reserves, and multi-sig cold vault custody.'
+      q: 'What is NovexTrade and how does the exchange work?',
+      a: 'NovexTrade is an institutional digital asset exchange engineered with a high-throughput deterministic matching engine (Price-Time FIFO), a strict double-entry ledger architecture, deep spot and P2P liquidity, 100% verified Proof of Reserves, and multi-sig cold vault custody.'
     },
     {
       q: 'How do I deposit funds and are there zero-fee transfer options?',
-      a: 'You can fund your account via direct on-chain blockchain deposits (BTC, ETH, SOL, USDT), fiat bank payments via the P2P Escrow market, or receive instant zero-fee Internal Transfers from any other CryptoBridge user with sub-millisecond settlement.'
+      a: 'You can fund your account via direct on-chain blockchain deposits (BTC, ETH, SOL, USDT), fiat bank payments via the P2P Escrow market, or receive instant zero-fee Internal Transfers from any other NovexTrade user with sub-millisecond settlement.'
     },
     {
       q: 'How does the zero-fee Instant Internal Transfer work?',
-      a: 'Internal transfers allow you to send any cryptocurrency to another CryptoBridge user instantly by entering their User ID or registered Email. Because settlement occurs directly on our core double-entry ledger, there are 0% network gas fees and zero blockchain confirmation wait times.'
+      a: 'Internal transfers allow you to send any cryptocurrency to another NovexTrade user instantly by entering their User ID or registered Email. Because settlement occurs directly on our core double-entry ledger, there are 0% network gas fees and zero blockchain confirmation wait times.'
     },
     {
       q: 'How does the P2P Escrow system guarantee seller and buyer safety?',
-      a: 'When a P2P trade is opened, the seller’s crypto is automatically locked into CryptoBridge’s cryptographic escrow vault. The seller cannot double-spend or withdraw the crypto until the buyer sends payment and release is confirmed. In case of dispute, 24/7 compliance officers inspect proof and resolve the escrow.'
+      a: 'When a P2P trade is opened, the seller’s crypto is automatically locked into NovexTrade’s cryptographic escrow vault. The seller cannot double-spend or withdraw the crypto until the buyer sends payment and release is confirmed. In case of dispute, 24/7 compliance officers inspect proof and resolve the escrow.'
     },
     {
       q: 'How does Proof of Reserves guarantee 100% full solvency?',
-      a: 'CryptoBridge enforces strict mathematical double-entry accounting where customer liabilities are 100% backed 1:1 by segregated exchange vault assets. Anyone can verify in real time that total exchange vault holdings equal or exceed total customer balances.'
+      a: 'NovexTrade enforces strict mathematical double-entry accounting where customer liabilities are 100% backed 1:1 by segregated exchange vault assets. Anyone can verify in real time that total exchange vault holdings equal or exceed total customer balances.'
     },
     {
       q: 'How do I access Stock & Equity Intelligence?',
       a: 'Navigate to Stock Intelligence to view real-time interactive TradingView charts, multi-timeframe RSI and Moving Average technical gauges, earnings/financial statement overviews, and live macroeconomic timelines for top tech equities (NVDA, AAPL, TSLA) and commodities (Gold, Silver, Crude Oil).'
     },
     {
-      q: 'What trading fees apply on CryptoBridge?',
-      a: 'CryptoBridge offers ultra-low maker/taker fees starting at 0.08% / 0.10% for spot markets, 0.00% fees on all Internal Transfers, 0% platform fees on P2P escrow trades, and zero deposit fees on all supported crypto assets.'
+      q: 'What trading fees apply on NovexTrade?',
+      a: 'NovexTrade offers ultra-low maker/taker fees starting at 0.08% / 0.10% for spot markets, 0.00% fees on all Internal Transfers, 0% platform fees on P2P escrow trades, and zero deposit fees on all supported crypto assets.'
     },
     {
-      q: 'How does CryptoBridge protect user accounts and funds (SAFU)?',
+      q: 'How does NovexTrade protect user accounts and funds (SAFU)?',
       a: 'User accounts are secured with TOTP-based Two-Factor Authentication (2FA), Argon2id/PBKDF2 password hashing, and session anomaly detection. Over 95% of digital assets are stored in air-gapped, geographically distributed cold hardware vaults backed by our $1 Billion SAFU insurance fund.'
     }
   ];
@@ -1304,7 +1304,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <section style={{ marginBottom: '32px' }}>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <h2 style={{ fontSize: 'clamp(20px, 5vw, 26px)', fontWeight: 800, color: '#eaecef', margin: '0 0 6px 0' }}>
-              Explore the CryptoBridge Ecosystem
+              Explore the NovexTrade Ecosystem
             </h2>
             <p style={{ fontSize: '13px', color: '#848e9c', margin: 0 }}>
               Institutional-grade products engineered for high performance, deep liquidity, and security.
@@ -1499,7 +1499,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               Frequently Asked Questions
             </h2>
             <p style={{ fontSize: '12.5px', color: '#848e9c', margin: 0 }}>
-              Got questions about trading, safety, or fees on CryptoBridge? Find your answers below.
+              Got questions about trading, safety, or fees on NovexTrade? Find your answers below.
             </p>
           </div>
 
@@ -1549,7 +1549,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           }}
         >
           <h2 style={{ fontSize: 'clamp(20px, 5vw, 26px)', fontWeight: 800, color: '#ffffff', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
-            Start Trading on CryptoBridge
+            Start Trading on NovexTrade
           </h2>
           <p style={{ fontSize: '13px', color: '#848e9c', margin: '0 0 20px 0' }}>
             Deterministic matching engine. 0.10% spot fee tier. Instant zero-fee internal transfers.

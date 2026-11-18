@@ -37,7 +37,7 @@ export const EmailTemplatesView: React.FC = () => {
 
   const templates: Record<TemplateKey, { title: string; subtitle: string; icon: React.ReactNode; getHtml: () => string }> = {
     welcome: {
-      title: 'Welcome to Signalist',
+      title: 'Welcome to NovexTrade',
       subtitle: 'Onboarding welcome & product tour email',
       icon: <Sparkles size={16} color="#00e599" />,
       getHtml: () => generateWelcomeEmail({
@@ -264,7 +264,7 @@ export const EmailTemplatesView: React.FC = () => {
               title="Email Preview"
               srcDoc={activeHtml}
               className="email-iframe"
-              sandbox="allow-same-origin"
+              sandbox=""
             />
           </div>
         </div>
@@ -289,6 +289,7 @@ export const EmailTemplatesView: React.FC = () => {
                   title={`Gallery ${key}`}
                   srcDoc={templates[key].getHtml()}
                   className="gallery-iframe"
+                  sandbox=""
                   tabIndex={-1}
                 />
               </div>

@@ -288,26 +288,30 @@ class OpenSourceOTPService:
             # Store also under formatted E.164
             self._store[target_e164] = self._store[key]
             await self.send_sms_otp(target_e164, code, purpose=purpose)
-            return {
+            res = {
                 "success": True,
                 "channel": "sms",
                 "target": phone_info["formatted"],
                 "expiresInSeconds": self.ttl_seconds,
                 "cooldownSeconds": self.resend_cooldown_seconds,
-                "otp": code  # Dev convenience
             }
+            if os.environ.get("ENVIRONMENT") in ("test", "testing") or os.environ.get("PYTEST_CURRENT_TEST"):
+                res["otp"] = code
+            return res
         else:
             if "@" not in key or len(key) < 5:
                 raise ValidationError("Invalid email address provided")
             await self.send_email_otp(key, code, purpose=purpose)
-            return {
+            res = {
                 "success": True,
                 "channel": "email",
                 "target": key,
                 "expiresInSeconds": self.ttl_seconds,
                 "cooldownSeconds": self.resend_cooldown_seconds,
-                "otp": code  # Dev convenience
             }
+            if os.environ.get("ENVIRONMENT") in ("test", "testing") or os.environ.get("PYTEST_CURRENT_TEST"):
+                res["otp"] = code
+            return res
 
     def verify_otp(self, identifier: str, code: str, consume: bool = True) -> bool:
         """

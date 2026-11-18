@@ -374,7 +374,7 @@ export const AdminConsole: React.FC = () => {
               {(!sidebarCollapsed || isMobile) && (
                 <div style={{ lineHeight: 1.2 }}>
                   <div style={{ fontSize: '16px', fontWeight: 900, color: '#eaecef', letterSpacing: '-0.02em' }}>
-                    SyncNode
+                    NovexTrade
                   </div>
                   <div style={{ fontSize: '10px', fontWeight: 800, color: '#fcd535', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '2px' }}>
                     Enterprise CRM

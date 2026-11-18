@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Plus, Minus, Edit3, ShieldAlert, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
 import { UserBalance, AssetSymbol } from '../../../types/admin';
 

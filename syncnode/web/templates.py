@@ -4,7 +4,7 @@ MAIN_PAGE_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoBridge | Enterprise Digital Asset Exchange</title>
+    <title>NovexTrade | Enterprise Digital Asset Exchange</title>
     <meta name="description" content="Institutional-grade cryptocurrency exchange powered by a high-throughput Python matching engine, double-entry financial ledger, and multi-fiat P2P escrow.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -593,7 +593,7 @@ MAIN_PAGE_TEMPLATE = """
                 <!-- Internal Transfer Box -->
                 <div class="glass-card p-6 rounded-3xl space-y-4 border border-gray-800">
                     <h3 class="font-bold text-lg text-amber-400 flex items-center space-x-2"><span>Instant Internal Transfer</span></h3>
-                    <p class="text-xs text-gray-400">Send assets instantly to another CryptoBridge user with zero network fees.</p>
+                    <p class="text-xs text-gray-400">Send assets instantly to another NovexTrade user with zero network fees.</p>
                     <div class="space-y-3 text-xs">
                         <div>
                             <label class="text-gray-400 block mb-1">Recipient User ID</label>
@@ -635,7 +635,7 @@ MAIN_PAGE_TEMPLATE = """
     <div id="global-auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
         <div class="glass-panel p-8 rounded-3xl max-w-md w-full border border-amber-500/30 space-y-6 glow-brand">
             <div class="flex justify-between items-center">
-                <h2 id="auth-modal-title" class="text-2xl font-bold text-white">Sign In to CryptoBridge</h2>
+                <h2 id="auth-modal-title" class="text-2xl font-bold text-white">Sign In to NovexTrade</h2>
                 <button onclick="closeAuthModal()" class="text-gray-400 hover:text-white text-lg">&times;</button>
             </div>
             <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
@@ -1015,7 +1015,7 @@ MAIN_PAGE_TEMPLATE = """
 
         function openAuthModal(mode) {
             currentAuthMode = mode;
-            document.getElementById('auth-modal-title').innerText = mode === 'login' ? 'Sign In to CryptoBridge' : 'Create Exchange Account';
+            document.getElementById('auth-modal-title').innerText = mode === 'login' ? 'Sign In to NovexTrade' : 'Create Exchange Account';
             document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Sign In' : 'Complete Registration';
             document.getElementById('global-auth-modal').classList.remove('hidden');
         }

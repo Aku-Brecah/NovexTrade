@@ -53,7 +53,13 @@ class Logger:
     def info(self, message: str, meta: Dict[str, Any] = None):
         self._log("INFO", message, meta)
 
+    def debug(self, message: str, meta: Dict[str, Any] = None):
+        self._log("DEBUG", message, meta)
+
     def warn(self, message: str, meta: Dict[str, Any] = None):
+        self._log("WARN", message, meta)
+
+    def warning(self, message: str, meta: Dict[str, Any] = None):
         self._log("WARN", message, meta)
 
     def error(self, message: str, meta: Dict[str, Any] = None):

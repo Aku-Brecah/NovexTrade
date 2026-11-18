@@ -182,13 +182,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       balances.forEach((b) => {
         const existingIdx = list.findIndex((item) => item.asset === b.asset);
         if (existingIdx >= 0) {
-          list[existingIdx].free = parseFloat(b.free) || 0;
+          list[existingIdx].free = parseFloat(b.available ?? b.free) || 0;
           list[existingIdx].locked = parseFloat(b.locked) || 0;
         } else {
           list.push({
             asset: b.asset,
             name: b.asset,
-            free: parseFloat(b.free) || 0,
+            free: parseFloat(b.available ?? b.free) || 0,
             locked: parseFloat(b.locked) || 0,
             logo: b.asset.slice(0, 3),
             color: '#848e9c'
@@ -580,7 +580,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Smartphone size={18} color="#fcd535" />
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#eaecef' }}>CryptoBridge Mobile PWA</span>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: '#eaecef' }}>NovexTrade Mobile PWA</span>
           </div>
           <p style={{ fontSize: '11px', color: '#848e9c', margin: 0 }}>
             Trade on the go with real-time price alerts &amp; sub-millisecond execution.
@@ -879,7 +879,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {hideBalances ? '******' : `$${fundingAccountUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
               </div>
               <div style={{ fontSize: '12px', color: '#848e9c', marginTop: '4px' }}>
-                P2P &amp; CryptoBridge Pay
+                P2P &amp; NovexTrade Pay
               </div>
             </div>
 
@@ -920,7 +920,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               onClick={() => navigateTo('earn')}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '13px', color: '#848e9c', fontWeight: 600 }}>CryptoBridge Earn</span>
+                <span style={{ fontSize: '13px', color: '#848e9c', fontWeight: 600 }}>NovexTrade Earn</span>
                 <span style={{ fontSize: '11px', color: '#2ebd85', fontWeight: 700 }}>Flexible</span>
               </div>
               <div style={{ fontSize: '18px', fontWeight: 700, color: '#eaecef' }}>
@@ -965,7 +965,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 action: () => navigateTo('spot')
               },
               {
-                title: 'CryptoBridge Earn',
+                title: 'NovexTrade Earn',
                 desc: 'Earn up to 16.4% APR with Simple Earn & Staking',
                 icon: Coins,
                 color: '#f0b90b',
@@ -1851,7 +1851,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <option value="Spot Account">Spot Account</option>
                       <option value="Funding Account">Funding Account</option>
                       <option value="Futures USDⓈ-M">Futures USDⓈ-M</option>
-                      <option value="Earn Account">CryptoBridge Earn</option>
+                      <option value="Earn Account">NovexTrade Earn</option>
                     </select>
                   </div>
 
@@ -1897,7 +1897,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <option value="Futures USDⓈ-M">Futures USDⓈ-M</option>
                       <option value="Spot Account">Spot Account</option>
                       <option value="Funding Account">Funding Account</option>
-                      <option value="Earn Account">CryptoBridge Earn</option>
+                      <option value="Earn Account">NovexTrade Earn</option>
                     </select>
                   </div>
                 </div>

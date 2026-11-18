@@ -57,8 +57,8 @@ class Database:
         from syncnode.common.types import KycTier, KycStatus, AdminRole
         import time
 
-        admin_email = os.environ.get("ADMIN_BOOTSTRAP_EMAIL", "poweldayck@gmail.com").lower()
-        admin_pass = os.environ.get("ADMIN_BOOTSTRAP_PASSWORD", "Kapenguria@12")
+        admin_email = os.environ.get("ADMIN_BOOTSTRAP_EMAIL", "admin@novextrade.exchange").strip().lower()
+        admin_pass = os.environ.get("ADMIN_BOOTSTRAP_PASSWORD", "NovexTrade2026!Secure")
         admin_id = "admin_super_exec_1"
         user = {
             "id": admin_id,
@@ -154,7 +154,7 @@ class Database:
                 "daily_yield_percent": "20.00",
                 "description": "Short-term high-yield liquidity pool with automated daily compounding payouts.",
                 "is_active": True,
-                "total_staked_usd": "148,200.00",
+                "total_staked_usd": "148200.00",
                 "investors_count": 86
             },
             "plan_growth": {
@@ -168,7 +168,7 @@ class Database:
                 "daily_yield_percent": "12.85",
                 "description": "Algorithmic market-making & arbitrage yield fund with guaranteed capital protection.",
                 "is_active": True,
-                "total_staked_usd": "485,600.00",
+                "total_staked_usd": "485600.00",
                 "investors_count": 52
             },
             "plan_whale": {
@@ -182,7 +182,7 @@ class Database:
                 "daily_yield_percent": "8.33",
                 "description": "Institutional HFT liquidity allocation with private execution desk and 250% target maturity (e.g. $10k -> $25k).",
                 "is_active": True,
-                "total_staked_usd": "1,850,000.00",
+                "total_staked_usd": "1850000.00",
                 "investors_count": 34
             },
             "plan_vip_elite": {
@@ -196,7 +196,7 @@ class Database:
                 "daily_yield_percent": "6.67",
                 "description": "Private equity cross-market arbitrage vault with principal preservation warranty.",
                 "is_active": True,
-                "total_staked_usd": "3,400,000.00",
+                "total_staked_usd": "3400000.00",
                 "investors_count": 14
             }
         }
@@ -236,7 +236,7 @@ class Database:
         self.bootstrap_admin()
 
     async def connect_mongo(self, uri: str = None):
-        uri = uri or os.environ.get("MONGODB_URI", "mongodb://localhost:27017/syncnode")
+        uri = uri or os.environ.get("MONGODB_URI", "mongodb://localhost:27017/novextrade")
         try:
             from motor.motor_asyncio import AsyncIOMotorClient
             self.mongo_client = AsyncIOMotorClient(uri, serverSelectionTimeoutMS=2000)

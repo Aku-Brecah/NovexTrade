@@ -37,7 +37,10 @@ def get_validated_jwt_secret() -> str:
                             os.environ["JWT_SECRET"] = val
                             return val
 
-    default_secret = "syncnode-enterprise-super-secure-jwt-secret-token-key-2026!"
+    if os.environ.get("ENVIRONMENT") == "production":
+        raise RuntimeError("FATAL: JWT_SECRET environment variable must be configured (min 32 chars) in production.")
+
+    default_secret = "novextrade-dev-secure-jwt-secret-token-key-2026!"
     os.environ["JWT_SECRET"] = default_secret
     return default_secret
 
@@ -144,7 +147,7 @@ def generate_totp_secret() -> str:
     return secrets.token_hex(16).upper()
 
 
-def get_totp_uri(secret: str, account_name: str, issuer: str = "Syncnode Exchange") -> str:
+def get_totp_uri(secret: str, account_name: str, issuer: str = "NovexTrade Exchange") -> str:
     if pyotp is not None:
         return pyotp.totp.TOTP(secret).provisioning_uri(name=account_name, issuer_name=issuer)
     return f"otpauth://totp/{issuer}:{account_name}?secret={secret}&issuer={issuer}"
@@ -154,4 +157,4 @@ def verify_totp_code(secret: str, code: str) -> bool:
     if pyotp is not None:
         totp = pyotp.TOTP(secret)
         return bool(totp.verify(code, valid_window=1))
-    return len(code) == 6 and code.isdigit()
+    raise RuntimeError("TOTP verification unavailable: pyotp library is required.")

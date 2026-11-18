@@ -1,8 +1,8 @@
 {
-  "name": "syncnode-root",
+  "name": "novextrade-root",
   "version": "1.0.0",
   "private": true,
-  "description": "Syncnode Enterprise Cryptocurrency Exchange Infrastructure",
+  "description": "NovexTrade Institutional Cryptocurrency Exchange Infrastructure",
   "workspaces": [
     "apps/*"
   ],

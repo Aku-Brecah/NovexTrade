@@ -1,6 +1,6 @@
 ---
 version: 1.0.0
-name: CryptoBridge Institutional Design System
+name: NovexTrade Institutional Design System
 description: Ultra-clean, high-density, authentic institutional digital asset exchange interface. Anti-slop, zero faux-3D gimmickry, crisp typography, and strict matte surface hierarchies.
 colors:
   background: "#0b0e11"
@@ -12,16 +12,16 @@ colors:
   border-strong: "#434c5a"
   text-primary: "#eaecef"
   text-secondary: "#848e9c"
-  text-muted: "#5e6673"
-  brand-yellow: "#fcd535"
-  brand-yellow-hover: "#f0b90b"
-  brand-yellow-subtle: "rgba(252, 213, 53, 0.1)"
+  text-muted: "#8b95a5"
+  brand-yellow: "#f0b90b"
+  brand-yellow-hover: "#fcd535"
+  brand-yellow-subtle: "rgba(240, 185, 11, 0.12)"
   buy-green: "#0ecb81"
   buy-green-subtle: "rgba(14, 203, 129, 0.12)"
   sell-red: "#f6465d"
   sell-red-subtle: "rgba(246, 70, 93, 0.12)"
 typography:
-  font-sans: "BinanceNova, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  font-sans: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
   font-mono: "'JetBrains Mono', monospace"
   scale:
     h1: "32px"
@@ -40,10 +40,10 @@ rounded:
   full: "9999px"
 ---
 
-# CryptoBridge Design System
+# NovexTrade Design System
 
 ## Overview
-CryptoBridge is built on the design principles of tier-1 institutional financial exchanges (Binance, Kraken Pro, Coinbase Institutional). The interface prioritizes raw data clarity, microsecond interaction responsiveness, tactile feedback, and crisp structural borders over ornamental gimmicks.
+NovexTrade is built on the design principles of tier-1 institutional financial exchanges (Binance, Kraken Pro, Coinbase Institutional). The interface prioritizes raw data clarity, microsecond interaction responsiveness, tactile feedback, and crisp structural borders over ornamental gimmicks.
 
 ## Core Anti-Slop Principles
 1. **Zero Faux-3D Renders or Isometric Blobs**: No cartoonish 3D floating icons, glass spheres, or AI-generated stock illustrations. All visual metaphors use standard financial glyphs, geometric SVG vectors, and real TradingView market charts.

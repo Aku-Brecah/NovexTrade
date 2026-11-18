@@ -180,7 +180,7 @@ ADMIN_HTML_TEMPLATE = """
                     <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#12161c]"></span>
                 </div>
                 <div class="hidden sm:block text-left">
-                    <div class="text-xs font-bold text-gray-200 leading-tight">poweldayck</div>
+                    <div class="text-xs font-bold text-gray-200 leading-tight">Executive Admin</div>
                     <div class="text-[10px] text-brand-400 font-semibold font-mono">SUPER_ADMIN</div>
                 </div>
                 <button onclick="logoutAdmin()" title="Sign Out" class="p-1.5 text-gray-400 hover:text-rose-400 transition-colors">
@@ -575,7 +575,7 @@ ADMIN_HTML_TEMPLATE = """
                         <div class="p-3 rounded-lg bg-[#12161c] border border-[#23272e] flex justify-between items-center">
                             <div>
                                 <span class="text-brand-500 font-bold">[ADMIN_AUTH]</span>
-                                <span class="text-gray-300 ml-2">poweldayck@gmail.com authenticated from 127.0.0.1</span>
+                                <span class="text-gray-300 ml-2">admin@novextrade.exchange authenticated from 127.0.0.1</span>
                             </div>
                             <span class="text-gray-500 text-[11px]">Just now</span>
                         </div>
@@ -656,11 +656,11 @@ ADMIN_HTML_TEMPLATE = """
             <form onsubmit="handleAdminLogin(event)" class="space-y-3.5">
                 <div>
                     <label class="text-xs font-semibold text-gray-300 block mb-1">Admin Email</label>
-                    <input id="login-email" type="email" value="poweldayck@gmail.com" class="w-full px-3.5 py-2.5 rounded-lg bg-[#12161c] border border-[#23272e] text-white font-mono text-xs focus:border-brand-500 focus:outline-none" required />
+                    <input id="login-email" type="email" placeholder="admin@novextrade.exchange" class="w-full px-3.5 py-2.5 rounded-lg bg-[#12161c] border border-[#23272e] text-white font-mono text-xs focus:border-brand-500 focus:outline-none" required />
                 </div>
                 <div>
                     <label class="text-xs font-semibold text-gray-300 block mb-1">Password</label>
-                    <input id="login-password" type="password" value="Kapenguria@12" class="w-full px-3.5 py-2.5 rounded-lg bg-[#12161c] border border-[#23272e] text-white font-mono text-xs focus:border-brand-500 focus:outline-none" required />
+                    <input id="login-password" type="password" placeholder="••••••••••••" class="w-full px-3.5 py-2.5 rounded-lg bg-[#12161c] border border-[#23272e] text-white font-mono text-xs focus:border-brand-500 focus:outline-none" required />
                 </div>
                 <div id="login-error" class="text-xs text-rose-400 hidden"></div>
                 <button type="submit" class="w-full py-2.5 rounded-lg font-bold text-xs text-[#0e1217] bg-brand-500 hover:bg-brand-hover transition-all">

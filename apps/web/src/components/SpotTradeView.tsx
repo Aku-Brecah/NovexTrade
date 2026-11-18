@@ -981,7 +981,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
             <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#0ecb81' }} />
             <span style={{ color: '#0ecb81', fontWeight: 600 }}>Operational (24ms)</span>
           </div>
-          <span className="desktop-only">Announcements: CryptoBridge Institutional Staking &amp; Yield Pools Live</span>
+          <span className="desktop-only">Announcements: NovexTrade Institutional Staking &amp; Yield Pools Live</span>
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>

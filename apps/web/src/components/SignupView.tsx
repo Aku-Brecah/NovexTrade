@@ -139,26 +139,6 @@ export const SignupView: React.FC<SignupViewProps> = ({
             onSuccess(data.user, data.token);
           }, 300);
           return;
-        } else {
-          // If user doesn't exist, auto-register seamlessly
-          const autoReg = await fetch('/api/v1/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: cleanEmail, password, full_name: cleanEmail.split('@')[0] })
-          });
-          const autoData = await autoReg.json();
-          if (autoData.success && autoData.token) {
-            localStorage.setItem('syncnode_token', autoData.token);
-            if (autoData.refreshToken) localStorage.setItem('syncnode_refresh_token', autoData.refreshToken);
-            if (autoData.user) localStorage.setItem('syncnode_user', JSON.stringify(autoData.user));
-
-            setSuccessMessage('Signed in successfully! Entering terminal...');
-            setTimeout(() => {
-              onSuccess(autoData.user, autoData.token);
-            }, 300);
-            return;
-          }
-
           throw new Error(data.detail || data.error || 'Invalid email or password.');
         }
       }
@@ -188,21 +168,6 @@ export const SignupView: React.FC<SignupViewProps> = ({
       setError(err?.errors?.[0]?.message || err?.message || 'Unable to connect to Google OAuth.');
       setLoading(false);
     }
-  };
-
-  const handleInstantDemoLogin = () => {
-    const demoUser = {
-      id: `usr_demo_${Date.now().toString(36)}`,
-      email: 'trader@cryptobridge.exchange',
-      fullName: 'Institutional Trader',
-      kyc_tier: 2,
-      kyc_status: 'VERIFIED',
-      created_at: Date.now()
-    };
-    const demoTok = `tok_demo_${Date.now()}`;
-    localStorage.setItem('syncnode_token', demoTok);
-    localStorage.setItem('syncnode_user', JSON.stringify(demoUser));
-    onSuccess(demoUser, demoTok);
   };
 
   return (
@@ -243,7 +208,7 @@ export const SignupView: React.FC<SignupViewProps> = ({
           <Zap size={20} color="#fcd535" />
         </div>
         <span style={{ fontSize: '22px', fontWeight: 800, color: '#eaecef', letterSpacing: '-0.5px' }}>
-          CryptoBridge
+          NovexTrade
         </span>
       </div>
 
@@ -572,31 +537,6 @@ export const SignupView: React.FC<SignupViewProps> = ({
             )}
           </button>
         </form>
-
-        {/* Demo Fast Login */}
-        <div
-          style={{
-            marginTop: '16px',
-            paddingTop: '12px',
-            borderTop: '1px solid #23272e',
-            textAlign: 'center'
-          }}
-        >
-          <button
-            type="button"
-            onClick={handleInstantDemoLogin}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#848e9c',
-              fontSize: '12px',
-              cursor: 'pointer',
-              textDecoration: 'underline'
-            }}
-          >
-            ⚡ Launch 1-Click Demo Session
-          </button>
-        </div>
       </div>
     </div>
   );
