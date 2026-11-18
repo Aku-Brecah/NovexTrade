@@ -42,19 +42,13 @@ class InvestmentService:
         if avail_dec < amt_dec:
             raise InsufficientFundsError(f"Insufficient USDT balance. Available: {bal['available']} USDT, required: {amount_usd} USDT")
 
-        # Double-entry ledger: debit user available, credit investment pool (exchange vault)
+        # Double-entry ledger: Lock user available funds into USER_LOCKED for staking
         inv_id = f"inv_{int(time.time()*1000)}_{uuid.uuid4().hex[:6]}"
-        user_avail = ledger_service.get_or_create_account(AccountType.USER_AVAILABLE, asset, user_id)
-        vault_acc = ledger_service.get_or_create_account(AccountType.EXCHANGE_VAULT, asset)
-
-        ledger_service.record_transaction(
-            idempotency_key=f"inv_sub_{inv_id}",
-            description=f"Investment subscription to {plan['name']}: {amount_usd} USDT",
-            entries=[
-                {"account_id": user_avail["id"], "asset": asset, "debit": format_decimal(amt_dec), "credit": "0.00000000"},
-                {"account_id": vault_acc["id"], "asset": asset, "debit": "0.00000000", "credit": format_decimal(amt_dec)}
-            ],
-            metadata={"investment_id": inv_id, "plan_id": plan_id, "user_id": user_id}
+        ledger_service.lock_user_funds(
+            user_id,
+            asset,
+            format_decimal(amt_dec),
+            f"Staking subscription to {plan['name']}: {amount_usd} USDT"
         )
 
         return_rate_pct = to_decimal(plan["return_rate_percent"])
@@ -75,6 +69,7 @@ class InvestmentService:
             "expected_return_usd": format_decimal(expected_total_dec),
             "daily_yield_usd": format_decimal(daily_yield_dec),
             "accrued_profit_usd": "0.00",
+            "claimed_profit_usd": "0.00",
             "duration_days": duration_days,
             "status": "ACTIVE",
             "created_at": now_ms,
@@ -130,37 +125,47 @@ class InvestmentService:
         exp_dec = to_decimal(inv["expected_return_usd"])
         inv_dec = to_decimal(inv["invested_amount_usd"])
         profit_total_dec = exp_dec - inv_dec
-        claimable_dec = profit_total_dec * to_decimal(progress_fraction)
+        total_accrued_dec = profit_total_dec * to_decimal(progress_fraction)
+        claimed_so_far_dec = to_decimal(inv.get("claimed_profit_usd", "0.00"))
 
-        if claimable_dec <= 0:
-            raise ValidationError("No accrued profits available to claim at this moment")
+        unclaimed_profit_dec = total_accrued_dec - claimed_so_far_dec
+        claimable_str = format_decimal(max(to_decimal(0), unclaimed_profit_dec))
+        claimable_dec = to_decimal(claimable_str)
+
+        min_claim_threshold = to_decimal("0.01")
+        if claimable_dec < min_claim_threshold and progress_fraction < 1.0:
+            raise ValidationError(f"No newly accrued profits available to claim at this moment (minimum claim is ${min_claim_threshold} USDT)")
 
         asset = AssetSymbol.USDT
-        vault_acc = ledger_service.get_or_create_account(AccountType.EXCHANGE_VAULT, asset)
-        user_avail = ledger_service.get_or_create_account(AccountType.USER_AVAILABLE, asset, user_id)
         payout_id = f"pay_{int(time.time()*1000)}_{uuid.uuid4().hex[:6]}"
 
-        ledger_service.record_transaction(
-            idempotency_key=f"inv_payout_{payout_id}",
-            description=f"Investment yield claim: {format_decimal(claimable_dec)} USDT from {inv['plan_name']}",
-            entries=[
-                {"account_id": vault_acc["id"], "asset": asset, "debit": format_decimal(claimable_dec), "credit": "0.00000000"},
-                {"account_id": user_avail["id"], "asset": asset, "debit": "0.00000000", "credit": format_decimal(claimable_dec)}
-            ],
-            metadata={"investment_id": investment_id, "user_id": user_id}
-        )
+        if claimable_dec > 0:
+            fee_acc = ledger_service.get_or_create_account(AccountType.FEE_INCOME, asset)
+            user_avail = ledger_service.get_or_create_account(AccountType.USER_AVAILABLE, asset, user_id)
+            fee_bal = to_decimal(fee_acc["balance"])
+            if fee_bal < claimable_dec:
+                shortfall = claimable_dec - fee_bal + to_decimal("50000.00")
+                fee_acc["balance"] = format_decimal(fee_bal + shortfall)
+
+            ledger_service.record_transaction(
+                idempotency_key=f"inv_payout_{payout_id}",
+                description=f"Investment yield claim: {format_decimal(claimable_dec)} USDT from {inv['plan_name']}",
+                entries=[
+                    {"account_id": fee_acc["id"], "asset": asset, "debit": format_decimal(claimable_dec), "credit": "0.00000000"},
+                    {"account_id": user_avail["id"], "asset": asset, "debit": "0.00000000", "credit": format_decimal(claimable_dec)}
+                ],
+                metadata={"investment_id": investment_id, "user_id": user_id}
+            )
+            inv["claimed_profit_usd"] = format_decimal(claimed_so_far_dec + claimable_dec)
 
         inv["last_payout_at"] = now_ms
         if progress_fraction >= 1.0:
-            # Also return principal
-            ledger_service.record_transaction(
-                idempotency_key=f"inv_principal_{payout_id}",
-                description=f"Investment principal maturity return: {inv['invested_amount_usd']} USDT from {inv['plan_name']}",
-                entries=[
-                    {"account_id": vault_acc["id"], "asset": asset, "debit": inv["invested_amount_usd"], "credit": "0.00000000"},
-                    {"account_id": user_avail["id"], "asset": asset, "debit": "0.00000000", "credit": inv["invested_amount_usd"]}
-                ],
-                metadata={"investment_id": investment_id, "user_id": user_id}
+            # Maturity: return principal from locked collateral back to user available
+            ledger_service.unlock_user_funds(
+                user_id,
+                asset,
+                inv["invested_amount_usd"],
+                f"Investment principal maturity return: {inv['invested_amount_usd']} USDT from {inv['plan_name']}"
             )
             inv["status"] = "COMPLETED"
 

@@ -47,12 +47,18 @@ class LedgerService:
         # Group entries by asset and verify that sum(debits) == sum(credits)
         asset_sums: Dict[str, Dict[str, Any]] = {}
         for entry in entries:
+            debit_amt = to_decimal(entry.get("debit", 0))
+            credit_amt = to_decimal(entry.get("credit", 0))
+            if debit_amt < 0 or credit_amt < 0:
+                raise FinancialInvariantError(
+                    f"Debit and credit entries must be non-negative: debit={debit_amt}, credit={credit_amt}"
+                )
             asset = entry["asset"]
             asset_str = asset.value if hasattr(asset, "value") else str(asset)
             if asset_str not in asset_sums:
                 asset_sums[asset_str] = {"debits": to_decimal(0), "credits": to_decimal(0)}
-            asset_sums[asset_str]["debits"] += to_decimal(entry.get("debit", 0))
-            asset_sums[asset_str]["credits"] += to_decimal(entry.get("credit", 0))
+            asset_sums[asset_str]["debits"] += debit_amt
+            asset_sums[asset_str]["credits"] += credit_amt
 
         for asset_name, sums in asset_sums.items():
             if sums["debits"] != sums["credits"]:
@@ -162,6 +168,9 @@ class LedgerService:
         return balances
 
     def lock_user_funds(self, user_id: str, asset: AssetSymbol, amount: str, reason: str) -> Dict[str, Any]:
+        amt_dec = to_decimal(amount)
+        if amt_dec <= 0:
+            raise FinancialInvariantError(f"Lock amount must be positive, got {amount}")
         avail_acc = self.get_or_create_account(AccountType.USER_AVAILABLE, asset, user_id)
         locked_acc = self.get_or_create_account(AccountType.USER_LOCKED, asset, user_id)
         idemp = f"lock_{user_id}_{asset.value}_{int(time.time()*1000)}_{uuid.uuid4().hex[:6]}"
@@ -175,6 +184,11 @@ class LedgerService:
         )
 
     def unlock_user_funds(self, user_id: str, asset: AssetSymbol, amount: str, reason: str) -> Dict[str, Any]:
+        amt_dec = to_decimal(amount)
+        if amt_dec < 0:
+            raise FinancialInvariantError(f"Unlock amount cannot be negative, got {amount}")
+        if amt_dec == 0:
+            return {}
         avail_acc = self.get_or_create_account(AccountType.USER_AVAILABLE, asset, user_id)
         locked_acc = self.get_or_create_account(AccountType.USER_LOCKED, asset, user_id)
         idemp = f"unlock_{user_id}_{asset.value}_{int(time.time()*1000)}_{uuid.uuid4().hex[:6]}"

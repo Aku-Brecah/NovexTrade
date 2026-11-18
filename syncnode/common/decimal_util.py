@@ -4,14 +4,17 @@ from decimal import Decimal, ROUND_DOWN, ROUND_HALF_UP
 def to_decimal(val) -> Decimal:
     if isinstance(val, Decimal):
         return val
-    return Decimal(str(val) if val is not None else "0")
+    if val is None:
+        return Decimal("0")
+    val_str = str(val).strip().replace(",", "")
+    return Decimal(val_str if val_str else "0")
 
 
 def format_decimal(val, decimals: int = 8) -> str:
     d = to_decimal(val)
     # Quantize to exact decimals with ROUND_DOWN
     pattern = "0." + "0" * decimals if decimals > 0 else "0"
-    return str(d.quantize(Decimal(pattern), rounding=ROUND_DOWN))
+    return f"{d.quantize(Decimal(pattern), rounding=ROUND_DOWN):f}"
 
 
 def add_decimals(a, b, decimals: int = 8) -> str:

@@ -138,6 +138,10 @@ class OrderBook:
                 if (side == OrderSide.BUY and order_price >= best_opposite_price) or (side == OrderSide.SELL and order_price <= best_opposite_price):
                     order["status"] = OrderStatus.CANCELLED
                     db.orders[order["id"]] = order
+                    base_sym, quote_sym = market.split("/")
+                    lock_asset = AssetSymbol(quote_sym) if side == OrderSide.BUY else AssetSymbol(base_sym)
+                    lock_amt = mul_decimals(order["quantity"], order["price"]) if side == OrderSide.BUY else order["quantity"]
+                    ledger_service.unlock_user_funds(order["user_id"], lock_asset, lock_amt, f"Post-Only Reject Unlock {order['id']}")
                     return {"order": order, "trades": []}
 
         # Matching loop
@@ -167,6 +171,10 @@ class OrderBook:
                 elif stp == SelfTradePrevention.CANCEL_TAKER:
                     order["status"] = OrderStatus.CANCELLED
                     db.orders[order["id"]] = order
+                    base_sym, quote_sym = market.split("/")
+                    rem_lock_asset = AssetSymbol(quote_sym) if side == OrderSide.BUY else AssetSymbol(base_sym)
+                    rem_lock_amt = mul_decimals(order["remaining_quantity"], order["price"]) if side == OrderSide.BUY else order["remaining_quantity"]
+                    ledger_service.unlock_user_funds(order["user_id"], rem_lock_asset, rem_lock_amt, f"STP Cancel Taker Unlock {order['id']}")
                     return {"order": order, "trades": trades_executed}
 
             match_price = maker_order["price"]
@@ -219,7 +227,8 @@ class OrderBook:
             quote_asset = AssetSymbol(quote_sym)
 
             # Settle Base Asset (Seller -> Buyer)
-            seller_locked = ledger_service.get_or_create_account(AccountType.USER_LOCKED if seller_id == maker_order["user_id"] else AccountType.USER_AVAILABLE, base_asset, seller_id)
+            # Seller's base asset is always locked (maker locked previously, taker locked upon order placement)
+            seller_locked = ledger_service.get_or_create_account(AccountType.USER_LOCKED, base_asset, seller_id)
             buyer_avail = ledger_service.get_or_create_account(AccountType.USER_AVAILABLE, base_asset, buyer_id)
             ledger_service.record_transaction(
                 idempotency_key=f"stl_base_{trade_id}",
@@ -231,7 +240,8 @@ class OrderBook:
             )
 
             # Settle Quote Asset (Buyer -> Seller)
-            buyer_locked = ledger_service.get_or_create_account(AccountType.USER_LOCKED if buyer_id == maker_order["user_id"] else AccountType.USER_AVAILABLE, quote_asset, buyer_id)
+            # Buyer's quote asset is always locked
+            buyer_locked = ledger_service.get_or_create_account(AccountType.USER_LOCKED, quote_asset, buyer_id)
             seller_avail = ledger_service.get_or_create_account(AccountType.USER_AVAILABLE, quote_asset, seller_id)
             ledger_service.record_transaction(
                 idempotency_key=f"stl_quote_{trade_id}",
@@ -242,17 +252,48 @@ class OrderBook:
                 ]
             )
 
+            # Price Improvement Refund:
+            # When buyer placed a limit buy order at P_limit > P_match, locked quote was fill_qty * P_limit,
+            # but settlement only debited fill_qty * P_match. Refund surplus back to buyer's USER_AVAILABLE.
+            if side == OrderSide.BUY and order_type != OrderType.MARKET:
+                order_price_dec = to_decimal(order["price"])
+                match_price_dec = to_decimal(match_price)
+                if order_price_dec > match_price_dec:
+                    surplus_unit = format_decimal(order_price_dec - match_price_dec)
+                    surplus_total = mul_decimals(fill_qty_str, surplus_unit)
+                    if to_decimal(surplus_total) > 0:
+                        ledger_service.unlock_user_funds(
+                            buyer_id,
+                            quote_asset,
+                            surplus_total,
+                            f"Price Improvement Refund for Trade {trade_id}"
+                        )
+
         # Update remaining order status
         if remaining_qty == 0:
             order["status"] = OrderStatus.FILLED
         elif to_decimal(order.get("filled_quantity", 0)) > 0:
-            order["status"] = OrderStatus.PARTIALLY_FILLED
             if order_type in [OrderType.LIMIT, OrderType.POST_ONLY]:
+                order["status"] = OrderStatus.PARTIALLY_FILLED
                 self._insert_maker_order(order)
+            else:
+                order["status"] = OrderStatus.PARTIALLY_FILLED
+                # Market order: unlock any unfilled remaining locked funds
+                base_sym, quote_sym = market.split("/")
+                rem_lock_asset = AssetSymbol(quote_sym) if side == OrderSide.BUY else AssetSymbol(base_sym)
+                rem_lock_amt = mul_decimals(order["remaining_quantity"], order["price"]) if side == OrderSide.BUY else order["remaining_quantity"]
+                ledger_service.unlock_user_funds(order["user_id"], rem_lock_asset, rem_lock_amt, f"Market order unfilled remaining unlock {order['id']}")
         else:
-            order["status"] = OrderStatus.NEW
             if order_type in [OrderType.LIMIT, OrderType.POST_ONLY]:
+                order["status"] = OrderStatus.NEW
                 self._insert_maker_order(order)
+            else:
+                order["status"] = OrderStatus.CANCELLED
+                # Market order with no fills: unlock all locked funds
+                base_sym, quote_sym = market.split("/")
+                rem_lock_asset = AssetSymbol(quote_sym) if side == OrderSide.BUY else AssetSymbol(base_sym)
+                rem_lock_amt = mul_decimals(order["quantity"], order["price"]) if side == OrderSide.BUY else order["quantity"]
+                ledger_service.unlock_user_funds(order["user_id"], rem_lock_asset, rem_lock_amt, f"Market order zero fill unlock {order['id']}")
 
         db.orders[order["id"]] = order
         return {"order": order, "trades": trades_executed}
@@ -291,6 +332,16 @@ class MatchingEngineManager:
         return self.books[market]
 
     def place_order(self, order_data: Dict[str, Any]) -> Dict[str, Any]:
+        qty_dec = to_decimal(order_data.get("quantity"))
+        if qty_dec <= 0:
+            raise ValidationError("Order quantity must be greater than zero")
+
+        order_type = order_data.get("type", OrderType.LIMIT)
+        if order_type != OrderType.MARKET:
+            price_dec = to_decimal(order_data.get("price", 0))
+            if price_dec <= 0:
+                raise ValidationError("Order price must be greater than zero for limit orders")
+
         market = order_data["market"]
         book = self.get_book(market)
 
@@ -316,7 +367,7 @@ class MatchingEngineManager:
             "updated_at": int(time.time() * 1000)
         }
 
-        # Lock funds for maker orders
+        # Lock funds for incoming orders
         base_sym, quote_sym = market.split("/")
         if order["side"] == OrderSide.BUY:
             needed_quote = mul_decimals(qty_str, price_str)
@@ -349,6 +400,16 @@ class MatchingEngineManager:
 
         ord_obj["status"] = OrderStatus.CANCELLED
         ord_obj["updated_at"] = int(time.time() * 1000)
+        m = ord_obj.get("market", "BTC/USDT")
+        base_sym, quote_sym = m.split("/")
+        rem_qty = ord_obj.get("remaining_quantity", "0.00000000")
+        if to_decimal(rem_qty) > 0:
+            if ord_obj.get("side") == OrderSide.BUY:
+                p = ord_obj.get("price", "0.00000000")
+                needed = mul_decimals(rem_qty, p)
+                ledger_service.unlock_user_funds(user_id, AssetSymbol(quote_sym), needed, f"Cancel Buy Order {order_id}")
+            else:
+                ledger_service.unlock_user_funds(user_id, AssetSymbol(base_sym), rem_qty, f"Cancel Sell Order {order_id}")
         db.orders[order_id] = ord_obj
         return ord_obj
 

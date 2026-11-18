@@ -33,7 +33,7 @@ class P2PService:
             "price": format_decimal(ad_data["price"], 2),
             "available_amount": available_amt,
             "min_limit": format_decimal(ad_data.get("min_limit", "50"), 2),
-            "max_limit": format_decimal(ad_data.get("max_limit", "5000"), 2),
+            "max_limit": format_decimal(ad_data.get("max_limit", max(to_decimal("5000.00"), to_decimal(mul_decimals(available_amt, format_decimal(ad_data["price"], 2), 2)))), 2),
             "payment_methods": ad_data.get("payment_methods", ["Bank Transfer"]),
             "is_active": True,
             "created_at": int(time.time() * 1000)
@@ -60,14 +60,27 @@ class P2PService:
             raise NotFoundError("P2P Advertisement not found or inactive")
 
         crypto_amt = format_decimal(trade_req["crypto_amount"])
-        if to_decimal(crypto_amt) <= 0:
+        crypto_dec = to_decimal(crypto_amt)
+        if crypto_dec <= 0:
             raise ValidationError("Crypto amount must be greater than zero")
+
+        ad_avail_dec = to_decimal(ad["available_amount"])
+        if crypto_dec > ad_avail_dec:
+            raise ValidationError(f"Requested amount ({crypto_amt}) exceeds advertisement available balance ({ad_avail_dec})")
 
         ad_type = ad["type"]
         asset = AssetSymbol(ad["asset"])
         fiat_currency = ad["fiat_currency"]
         price = ad["price"]
         fiat_amt = mul_decimals(crypto_amt, price, 2)
+        fiat_dec = to_decimal(fiat_amt)
+
+        min_limit_dec = to_decimal(ad.get("min_limit", 0))
+        max_limit_dec = to_decimal(ad.get("max_limit", "999999999.00"))
+        if fiat_dec < min_limit_dec:
+            raise ValidationError(f"Trade fiat amount ({fiat_amt} {fiat_currency}) is below advertisement minimum of {ad['min_limit']} {fiat_currency}")
+        if fiat_dec > max_limit_dec:
+            raise ValidationError(f"Trade fiat amount ({fiat_amt} {fiat_currency}) exceeds advertisement maximum of {ad['max_limit']} {fiat_currency}")
 
         # Determine seller and buyer
         if ad_type == "SELL":  # Ad creator is selling to buyer
@@ -84,6 +97,11 @@ class P2PService:
         seller_bal = ledger_service.get_user_asset_balance(seller_id, asset)
         if to_decimal(seller_bal["available"]) < to_decimal(crypto_amt):
             raise InsufficientFundsError(f"Seller has insufficient available {asset.value} balance ({seller_bal['available']} available, {crypto_amt} required)")
+
+        # Decrement advertisement available balance
+        ad["available_amount"] = format_decimal(ad_avail_dec - crypto_dec)
+        if to_decimal(ad["available_amount"]) <= 0:
+            ad["is_active"] = False
 
         trade_id = f"p2p_trd_{int(time.time()*1000)}_{uuid.uuid4().hex[:6]}"
 
@@ -191,6 +209,20 @@ class P2PService:
             ]
         )
 
+        trade["status"] = P2PTradeStatus.CANCELLED.value
+        trade["cancelled_at"] = int(time.time() * 1000)
+        trade["cancelled_by"] = user_id
+
+        # Restore advertisement available balance
+        ad = db.p2p_ads.get(trade.get("ad_id"))
+        if ad:
+            current_avail = to_decimal(ad.get("available_amount", 0))
+            ad["available_amount"] = format_decimal(current_avail + to_decimal(crypto_amt))
+            ad["is_active"] = True
+
+        logger.info(f"Cancelled P2P Trade {trade_id}: {crypto_amt} {asset.value} refunded to seller {seller_id}")
+        return trade
+
     def dispute_trade(self, trade_id: str, user_id: str, reason: str = "Dispute raised") -> Dict[str, Any]:
         trade = db.p2p_trades.get(trade_id)
         if not trade:
@@ -210,6 +242,9 @@ class P2PService:
         trade = db.p2p_trades.get(trade_id)
         if not trade:
             raise NotFoundError("P2P Trade not found")
+
+        if trade["status"] != P2PTradeStatus.DISPUTED.value:
+            raise ValidationError(f"Cannot resolve dispute on trade in status '{trade['status']}'. Trade must be in DISPUTED status.")
 
         asset = AssetSymbol(trade["asset"])
         crypto_amt = trade["crypto_amount"]
@@ -251,6 +286,13 @@ class P2PService:
             trade["cancelled_at"] = int(time.time() * 1000)
             trade["resolved_by"] = admin_id
             trade["resolution_notes"] = reason
+
+            # Restore advertisement available balance if cancelled
+            ad = db.p2p_ads.get(trade.get("ad_id"))
+            if ad:
+                current_avail = to_decimal(ad.get("available_amount", 0))
+                ad["available_amount"] = format_decimal(current_avail + to_decimal(crypto_amt))
+                ad["is_active"] = True
         else:
             raise ValidationError(f"Invalid dispute resolution action: {action}. Must be RELEASE or CANCEL.")
 
