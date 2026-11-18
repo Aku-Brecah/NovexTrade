@@ -139,23 +139,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               setActiveTab('home');
             }}
           >
-            <div
-              style={{
-                width: '30px',
-                height: '30px',
-                borderRadius: '8px',
-                background: 'rgba(252, 213, 53, 0.15)',
-                border: '1px solid rgba(252, 213, 53, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Zap size={16} color="#fcd535" />
+            <div className="brand-logo-badge">
+              <div className="brand-logo-icon">
+                <Layers size={18} color="#f0b90b" />
+              </div>
+              <div className="brand-logo-text-wrap">
+                <span className="brand-name-novex">NOVEX</span>
+                <span className="brand-name-trade">TRADE</span>
+              </div>
             </div>
-            <span style={{ fontSize: '17px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.5px' }}>
-              NovexTrade
-            </span>
           </a>
 
           {/* DESKTOP NAVIGATION LINKS */}
@@ -192,10 +184,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                       setIsTradeMenuOpen(false);
                     }}
                   >
-                    <Activity size={15} color="#fcd535" />
+                    <Activity size={15} color="#f0b90b" />
                     <div>
-                      <div className="dropdown-title">Spot Trading</div>
-                      <div className="dropdown-desc">Trade crypto with institutional depth &amp; sub-millisecond execution</div>
+                      <div className="nav-dropdown-title">Spot Trading</div>
+                      <div className="nav-dropdown-desc">Trade crypto with institutional depth &amp; sub-millisecond execution</div>
                     </div>
                   </button>
 
@@ -208,8 +200,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <Users size={15} color="#0ecb81" />
                     <div>
-                      <div className="dropdown-title">P2P Express Trading</div>
-                      <div className="dropdown-desc">Buy &amp; sell crypto with 100+ local payment methods &amp; 0 fees</div>
+                      <div className="nav-dropdown-title">P2P Express Trading</div>
+                      <div className="nav-dropdown-desc">Buy &amp; sell crypto with 100+ local payment methods &amp; 0 fees</div>
                     </div>
                   </button>
 
@@ -222,8 +214,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <TrendingUp size={15} color="#38bdf8" />
                     <div>
-                      <div className="dropdown-title">Tokenized Stock Equities</div>
-                      <div className="dropdown-desc">Trade 24/7 institutional shares of NVDA, AAPL, TSLA &amp; S&amp;P 500</div>
+                      <div className="nav-dropdown-title">Tokenized Stock Equities</div>
+                      <div className="nav-dropdown-desc">Trade 24/7 institutional shares of NVDA, AAPL, TSLA &amp; S&amp;P 500</div>
                     </div>
                   </button>
                 </div>
@@ -287,7 +279,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setActiveTab('resources');
               }}
             >
-              Strategies
+              Strategies <span className="nav-badge-green">PDF</span>
             </a>
 
             {/* Dashboard Link - Rendered when user is authenticated */}
@@ -384,7 +376,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsProfileMenuOpen(false);
                       }}
                     >
-                      <Activity size={14} color="#fcd535" />
+                      <Activity size={14} color="#f0b90b" />
                       <span>Dashboard &amp; Assets</span>
                     </button>
 
@@ -395,7 +387,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsProfileMenuOpen(false);
                       }}
                     >
-                      <Star size={14} color="#fcd535" />
+                      <Star size={14} color="#f0b90b" />
                       <span>Watchlist &amp; Alerts</span>
                     </button>
 
@@ -418,7 +410,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           setIsProfileMenuOpen(false);
                         }}
                       >
-                        <ShieldCheck size={14} color="#fcd535" />
+                        <ShieldCheck size={14} color="#f0b90b" />
                         <span>Risk Engine &amp; Admin</span>
                       </button>
                     )}
@@ -465,9 +457,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="mobile-drawer-overlay" onClick={() => setIsMobileDrawerOpen(false)}>
           <div className="mobile-drawer-content" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-drawer-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Zap size={18} color="#fcd535" />
-                <span style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff' }}>NovexTrade</span>
+              <div className="brand-logo-badge">
+                <div className="brand-logo-icon" style={{ width: '30px', height: '30px' }}>
+                  <Layers size={16} color="#f0b90b" />
+                </div>
+                <div className="brand-logo-text-wrap">
+                  <span className="brand-name-novex" style={{ fontSize: '16px' }}>NOVEX</span>
+                  <span className="brand-name-trade" style={{ fontSize: '16px' }}>TRADE</span>
+                </div>
               </div>
               <button
                 type="button"
@@ -647,7 +644,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <button
                     type="button"
                     className="btn btn-primary"
-                    style={{ background: '#fcd535', color: '#181a20', fontWeight: 700, padding: '12px' }}
+                    style={{ background: '#f0b90b', color: '#0b0e11', fontWeight: 700, padding: '12px', border: '1px solid #f0b90b' }}
                     onClick={() => {
                       setActiveTab('signup');
                       setIsMobileDrawerOpen(false);

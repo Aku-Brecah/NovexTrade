@@ -51,7 +51,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   if (circuitBreakers?.isDepositsPaused) alerts.push('DEPOSITS PAUSED');
   if (circuitBreakers?.emergencyMaintenance) alerts.push('MAINTENANCE MODE');
 
-  // Sample real-time notifications for NexLink dropdown
+  // Sample real-time notifications for NovexTrade dropdown
   const notifications = [
     {
       id: 1,
@@ -89,8 +89,11 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
   return (
     <header className="nex-header" style={{
-      background: '#181a20',
-      borderBottom: '1px solid #2b313a',
+      background: 'rgba(18, 22, 28, 0.95)',
+      backdropFilter: 'blur(14px)',
+      WebkitBackdropFilter: 'blur(14px)',
+      borderBottom: '1px solid rgba(43, 49, 58, 0.85)',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.35)',
       padding: '0 24px',
       height: '64px',
       display: 'flex',
@@ -124,7 +127,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           <Menu size={18} />
         </button>
 
-        {/* NexLink Search Input */}
+        {/* NovexTrade Search Input */}
         <div style={{ position: 'relative', width: '260px', flexShrink: 0 }} className="admin-header-search">
           <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#848e9c' }} />
           <input
@@ -161,13 +164,13 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           </span>
         </div>
 
-        {/* NexLink KPI Badge Pill */}
+        {/* NovexTrade KPI Badge Pill */}
         <div className="admin-header-kpi" style={{
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          background: 'rgba(252, 213, 53, 0.1)',
-          border: '1px solid rgba(252, 213, 53, 0.25)',
+          background: 'rgba(240, 185, 11, 0.1)',
+          border: '1px solid rgba(240, 185, 11, 0.25)',
           borderRadius: '20px',
           padding: '4px 12px',
           fontSize: '12px',
@@ -176,7 +179,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           flexShrink: 0
         }}>
           <span style={{ color: '#848e9c' }}>Today Trades:</span>
-          <span style={{ fontWeight: 800, color: '#fcd535' }}>1,482</span>
+          <span style={{ fontWeight: 800, color: '#f0b90b' }}>1,482</span>
           <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#848e9c' }} />
           <span style={{ color: '#0ecb81', fontWeight: 700 }}>$2.48M Vol</span>
         </div>
@@ -207,8 +210,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           onClick={onToggleRTL}
           title={isRTL ? 'Switch to Left-to-Right (LTR)' : 'Switch to Right-to-Left (RTL)'}
           style={{
-            background: isRTL ? '#fcd535' : '#202630',
-            color: isRTL ? '#181a20' : '#eaecef',
+            background: isRTL ? '#f0b90b' : '#202630',
+            color: isRTL ? '#0b0e11' : '#eaecef',
             border: '1px solid #2b313a',
             borderRadius: '8px',
             padding: '6px 10px',
@@ -242,7 +245,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             cursor: 'pointer'
           }}
         >
-          {isDarkMode ? <Moon size={16} color="#fcd535" /> : <Sun size={16} color="#fcd535" />}
+          {isDarkMode ? <Moon size={16} color="#f0b90b" /> : <Sun size={16} color="#f0b90b" />}
         </button>
 
         {/* Notifications Dropdown */}
@@ -300,7 +303,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '13px', fontWeight: 800, color: '#eaecef' }}>Notifications</span>
-                  <span style={{ background: '#fcd535', color: '#181a20', fontSize: '10px', fontWeight: 800, padding: '1px 6px', borderRadius: '10px' }}>
+                  <span style={{ background: '#f0b90b', color: '#0b0e11', fontSize: '10px', fontWeight: 800, padding: '1px 6px', borderRadius: '10px' }}>
                     {notifications.length}
                   </span>
                 </div>
@@ -331,7 +334,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                       height: '32px',
                       borderRadius: '50%',
                       background: n.type === 'warning' ? 'rgba(240, 185, 11, 0.15)' : n.type === 'success' ? 'rgba(14, 203, 129, 0.15)' : 'rgba(74, 144, 226, 0.15)',
-                      color: n.type === 'warning' ? '#fcd535' : n.type === 'success' ? '#0ecb81' : '#4a90e2',
+                      color: n.type === 'warning' ? '#f0b90b' : n.type === 'success' ? '#0ecb81' : '#4a90e2',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -351,7 +354,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
               </div>
 
               <div style={{ padding: '8px 16px', textAlign: 'center', background: '#181a20' }}>
-                <span style={{ fontSize: '11px', color: '#fcd535', fontWeight: 600, cursor: 'pointer' }}>
+                <span style={{ fontSize: '11px', color: '#f0b90b', fontWeight: 600, cursor: 'pointer' }}>
                   Mark all as read
                 </span>
               </div>
@@ -382,8 +385,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
                 width: '30px',
                 height: '30px',
                 borderRadius: '50%',
-                background: '#fcd535',
-                color: '#181a20',
+                background: '#f0b90b',
+                color: '#0b0e11',
                 fontWeight: 800,
                 fontSize: '13px',
                 display: 'flex',
@@ -408,7 +411,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
               <div style={{ fontSize: '12px', fontWeight: 700, color: '#eaecef', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {session.email.split('@')[0]}
               </div>
-              <div style={{ fontSize: '10px', color: '#fcd535', fontWeight: 600 }}>
+              <div style={{ fontSize: '10px', color: '#f0b90b', fontWeight: 600 }}>
                 {session.role.replace(/_/g, ' ')}
               </div>
             </div>
@@ -432,7 +435,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
             }}>
               <div style={{ padding: '12px 14px', borderBottom: '1px solid #2b313a' }}>
                 <div style={{ fontSize: '12px', fontWeight: 700, color: '#eaecef' }}>{session.email}</div>
-                <div style={{ fontSize: '11px', color: '#848e9c', marginTop: '2px' }}>Role: <span style={{ color: '#fcd535' }}>{session.role}</span></div>
+                <div style={{ fontSize: '11px', color: '#848e9c', marginTop: '2px' }}>Role: <span style={{ color: '#f0b90b' }}>{session.role}</span></div>
               </div>
 
               <div style={{ padding: '6px' }}>
