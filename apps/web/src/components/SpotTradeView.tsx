@@ -580,7 +580,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                 onClick={onOpenAuth}
                 style={{
                   background: '#f0b90b',
-                  color: '#181a20',
+                  color: '#0b0e11',
                   border: 'none',
                   borderRadius: '8px',
                   padding: '12px',
@@ -686,7 +686,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                   onClick={onOpenAuth}
                   style={{
                     background: '#f0b90b',
-                    color: '#181a20',
+                    color: '#0b0e11',
                     fontWeight: 700,
                     fontSize: '12px',
                     padding: '6px 16px',
@@ -801,7 +801,7 @@ export const SpotTradeView: React.FC<SpotTradeViewProps> = ({
                   onClick={onOpenAuth}
                   style={{
                     background: '#f0b90b',
-                    color: '#181a20',
+                    color: '#0b0e11',
                     fontWeight: 800,
                     fontSize: '13px',
                     padding: '8px 24px',

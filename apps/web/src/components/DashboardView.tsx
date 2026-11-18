@@ -454,7 +454,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         >
           <Gift size={20} color="#f0b90b" />
           <span>Rewards Hub</span>
-          <span style={{ marginLeft: 'auto', background: '#f0b90b', color: '#181a20', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>
+          <span style={{ marginLeft: 'auto', background: '#f0b90b', color: '#0b0e11', fontSize: '10px', fontWeight: 800, padding: '2px 6px', borderRadius: '4px' }}>
             NEW
           </span>
         </button>
@@ -792,7 +792,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 onClick={() => setIsDepositModalOpen(true)}
                 style={{
                   background: '#f0b90b',
-                  color: '#181a20',
+                  color: '#0b0e11',
                   border: 'none',
                   borderRadius: '8px',
                   padding: '8px 18px',
@@ -1322,7 +1322,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     style={{
                       marginTop: '16px',
                       background: '#f0b90b',
-                      color: '#181a20',
+                      color: '#0b0e11',
                       border: 'none',
                       borderRadius: '8px',
                       padding: '8px 16px',
@@ -1744,7 +1744,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   style={{
                     flex: 1,
                     background: '#f0b90b',
-                    color: '#181a20',
+                    color: '#0b0e11',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '12px',
@@ -1817,7 +1817,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   style={{
                     marginTop: '16px',
                     background: '#f0b90b',
-                    color: '#181a20',
+                    color: '#0b0e11',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '10px 24px',
@@ -1977,7 +1977,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   style={{
                     marginTop: '8px',
                     background: '#f0b90b',
-                    color: '#181a20',
+                    color: '#0b0e11',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '12px',

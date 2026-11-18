@@ -232,7 +232,7 @@ export const UserDetailDrawer: React.FC<UserDetailProps> = ({ userId, onClose, c
                         onClick={() => setSelectedAssetForModal('USDT')}
                         style={{
                           background: '#f0b90b',
-                          color: '#181a20',
+                          color: '#0b0e11',
                           border: 'none',
                           borderRadius: '6px',
                           padding: '4px 10px',

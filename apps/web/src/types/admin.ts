@@ -1,5 +1,5 @@
 // ==========================================================================
-// SyncNode Admin Console - TypeScript interfaces mirroring backend responses.
+// NovexTrade Admin Console - TypeScript interfaces mirroring backend responses.
 // Every type reflects the authoritative API contract in
 // services/api-gateway/src/server.ts. No invented fields.
 // ==========================================================================

@@ -288,7 +288,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     }}
                     style={{
                       background: '#f0b90b',
-                      color: '#181a20',
+                      color: '#0b0e11',
                       border: 'none',
                       borderRadius: '12px',
                       padding: '12px 24px',
@@ -359,7 +359,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       onClick={onOpenAuth}
                       style={{
                         background: '#f0b90b',
-                        color: '#181a20',
+                        color: '#0b0e11',
                         border: 'none',
                         borderRadius: '10px',
                         padding: '10px 20px',
@@ -1066,7 +1066,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                             }}
                             style={{
                               background: '#f0b90b',
-                              color: '#181a20',
+                              color: '#0b0e11',
                               border: 'none',
                               borderRadius: '8px',
                               padding: '6px 14px',
@@ -1282,7 +1282,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               }}
               style={{
                 background: '#f0b90b',
-                color: '#181a20',
+                color: '#0b0e11',
                 border: 'none',
                 borderRadius: '12px',
                 padding: '14px',
@@ -1563,7 +1563,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               }}
               style={{
                 background: '#f0b90b',
-                color: '#181a20',
+                color: '#0b0e11',
                 border: 'none',
                 borderRadius: '8px',
                 padding: '12px 24px',

@@ -377,7 +377,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                   style={{
                     width: '100%',
                     background: '#f0b90b',
-                    color: '#181a20',
+                    color: '#0b0e11',
                     fontWeight: 800,
                     fontSize: '14px',
                     padding: '12px',
@@ -731,7 +731,7 @@ export const InvestmentView: React.FC<InvestmentViewProps> = ({
                   type="submit"
                   className="btn btn-primary"
                   disabled={isSubscribing}
-                  style={{ flex: 1.5, background: '#f0b90b', color: '#181a20', fontWeight: 800, border: 'none', padding: '12px' }}
+                  style={{ flex: 1.5, background: '#f0b90b', color: '#0b0e11', fontWeight: 800, border: 'none', padding: '12px' }}
                 >
                   {isSubscribing ? 'Confirming...' : 'Confirm Subscription'}
                 </button>
