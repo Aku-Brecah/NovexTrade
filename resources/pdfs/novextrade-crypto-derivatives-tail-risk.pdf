@@ -1,0 +1,126 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1782 >>
+stream
+BT
+/F1 18 Tf
+50 740 Td
+(Crypto Derivatives & Tail-Risk Management Framework) Tj
+ET
+BT
+/F2 10 Tf
+50 715 Td
+(Derivatives & Options | Level: Advanced | Horizon: Weekly / Structural) Tj
+ET
+BT
+/F2 9 Tf
+50 700 Td
+(Publisher: NovexTrade Risk & Asset Protection Committee ? Date: November 2026) Tj
+ET
+BT
+/F1 11 Tf
+50 670 Td
+(Executive Summary) Tj
+ET
+BT
+/F2 9 Tf
+50 655 Td
+(Institutional risk manual covering volatility skew arbitrage, perpetual funding carry trades, and black-swan options collar hedges.) Tj
+ET
+BT
+/F1 12 Tf
+50 620 Td
+(1. Tail-Risk Distribution Modeling) Tj
+ET
+BT
+/F2 9 Tf
+60 600 Td
+(- Fat-tailed crypto asset returns and extreme value theory \(EVT\).) Tj
+ET
+BT
+/F2 9 Tf
+60 584 Td
+(- Conditional Value at Risk \(CVaR\) computation under leverage stress tests.) Tj
+ET
+BT
+/F2 9 Tf
+60 568 Td
+(- Contagion mitigation during systemic decentralized liquidity contractions.) Tj
+ET
+BT
+/F1 12 Tf
+50 538 Td
+(2. Basis & Funding Arbitrage) Tj
+ET
+BT
+/F2 9 Tf
+60 518 Td
+(- Perpetual funding rate capture vs spot inventory delta hedging.) Tj
+ET
+BT
+/F2 9 Tf
+60 502 Td
+(- Annualized yield optimization using cross-margin collateral efficiency.) Tj
+ET
+BT
+/F2 9 Tf
+60 486 Td
+(- Negative funding cycle survival protocols and interest-bearing reserves.) Tj
+ET
+BT
+/F1 12 Tf
+50 456 Td
+(3. Institutional Liquidation Insulation) Tj
+ET
+BT
+/F2 9 Tf
+60 436 Td
+(- Isolated margin segregation preventing cascading collateral liquidation.) Tj
+ET
+BT
+/F2 9 Tf
+60 420 Td
+(- Dynamic maintenance margin requirements based on position size scaling.) Tj
+ET
+BT
+/F2 9 Tf
+60 404 Td
+(- Emergency deleveraging \(ADL\) mechanics and insurance fund backing.) Tj
+ET
+BT
+/F2 8 Tf
+50 40 Td
+(NovexTrade Institutional Exchange  All Rights Reserved  Strictly Confidential  Property of NovexTrade Quantitative Research) Tj
+ET
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000002085 00000 n 
+0000002160 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2230
+%%EOF

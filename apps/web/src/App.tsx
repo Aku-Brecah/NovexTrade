@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
-import { useUser, useClerk } from '@clerk/clerk-react';
+import { useUser, useClerk, useAuth } from '@clerk/clerk-react';
 import { Navbar, TabType } from './components/Navbar';
 import { DashboardView } from './components/DashboardView';
 import { NewsView } from './components/NewsView';
@@ -20,6 +20,7 @@ const StockDetailView = lazy(() => import('./components/StockDetailView').then(m
 const EmailTemplatesView = lazy(() => import('./components/EmailTemplatesView').then(m => ({ default: m.EmailTemplatesView })));
 const P2PView = lazy(() => import('./components/P2PView').then(m => ({ default: m.P2PView })));
 const InvestmentView = lazy(() => import('./components/InvestmentView').then(m => ({ default: m.InvestmentView })));
+const StrategyResourcesView = lazy(() => import('./components/resources/StrategyResourcesView').then(m => ({ default: m.StrategyResourcesView })));
 const AdminConsole = lazy(() => import('./components/admin/AdminConsole').then(m => ({ default: m.AdminConsole })));
 
 const ViewFallback = () => (
@@ -184,7 +185,11 @@ function parseUrlRoute(): { tab: TabType; symbol: string; stockSymbol: string; i
     return { tab: 'earn', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
-  if (['home', 'dashboard', 'watchlist', 'news', 'stock', 'spot', 'earn', 'p2p', 'wallet', 'assets', 'margin', 'futures', 'funding', 'deposit', 'withdraw', 'transfers', 'orders', 'history', 'security', 'kyc', 'apikeys', 'sessions', 'settings', 'admin', 'emails', 'signup', 'login'].includes(raw)) {
+  if (raw === 'resources' || raw === 'strategies' || raw === 'strategy' || raw.startsWith('resources')) {
+    return { tab: 'resources', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
+  }
+
+  if (['home', 'dashboard', 'watchlist', 'news', 'stock', 'spot', 'earn', 'p2p', 'resources', 'wallet', 'assets', 'margin', 'futures', 'funding', 'deposit', 'withdraw', 'transfers', 'orders', 'history', 'security', 'kyc', 'apikeys', 'sessions', 'settings', 'admin', 'emails', 'signup', 'login'].includes(raw)) {
     return { tab: raw as TabType, symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
@@ -237,6 +242,7 @@ export const App: React.FC = () => {
   const [selectedPrice, setSelectedPrice] = useState<string | undefined>(undefined);
 
   const clerk = useClerk();
+  const { getToken } = useAuth();
   const { user: clerkUser, isLoaded: isClerkLoaded, isSignedIn: isClerkSignedIn } = useUser();
 
   // User and Auth State
@@ -564,11 +570,6 @@ export const App: React.FC = () => {
         created_at: Date.now()
       };
 
-      const existingToken = localStorage.getItem('syncnode_token');
-      if (!existingToken) {
-        localStorage.setItem('syncnode_token', `clerk_tok_${clerkUser.id}`);
-      }
-      localStorage.setItem('syncnode_user', JSON.stringify(userProfile));
       setUser(userProfile);
 
       if (activeTab === 'signup' || activeTab === 'login') {
@@ -580,14 +581,21 @@ export const App: React.FC = () => {
 
       const syncWithBackend = async () => {
         try {
+          const sessionToken = await getToken();
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+          if (sessionToken) {
+            headers['Authorization'] = `Bearer ${sessionToken}`;
+          }
+
           const res = await fetch('/api/v1/auth/clerk', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({
               clerkId: clerkUser.id,
               email: email,
               fullName: userProfile.fullName,
               avatarUrl: clerkUser.imageUrl,
+              accessToken: sessionToken || undefined,
               provider: 'clerk'
             })
           });
@@ -1063,6 +1071,24 @@ export const App: React.FC = () => {
       {activeTab === 'p2p' && (
         <Suspense fallback={<ViewFallback />}>
           <P2PView user={user} onOpenAuth={() => setActiveTab('signup')} />
+        </Suspense>
+      )}
+
+      {/* 9.5 STRATEGY RESOURCES & QUANT RESEARCH HUB */}
+      {activeTab === 'resources' && (
+        <Suspense fallback={<ViewFallback />}>
+          <StrategyResourcesView
+            user={user}
+            onOpenAuth={() => setActiveTab('signup')}
+            onNavigateToTrade={(sym) => {
+              if (sym) {
+                setSymbol(sym);
+                setActiveTab('spot', sym);
+              } else {
+                setActiveTab('spot');
+              }
+            }}
+          />
         </Suspense>
       )}
 

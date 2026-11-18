@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 import time
 import uuid
 import json
@@ -14,7 +17,7 @@ from pydantic import BaseModel
 
 from decimal import Decimal
 from syncnode.common.decimal_util import to_decimal, format_decimal
-from syncnode.common.types import AssetSymbol, OrderSide, OrderType, KycTier, KycStatus, AdminRole
+from syncnode.common.types import AssetSymbol, AccountType, OrderSide, OrderType, KycTier, KycStatus, AdminRole
 from syncnode.common.errors import (
     AppError,
     UnauthorizedError,
@@ -47,6 +50,7 @@ from syncnode.services.p2p import p2p_service
 from syncnode.services.market_data import market_data_service
 from syncnode.services.compliance import compliance_service
 from syncnode.services.risk import risk_service
+from syncnode.services.resources import resources_service
 from syncnode.admin.router import admin_router
 from syncnode.admin.api import admin_api_router
 from syncnode.web.views import web_router
@@ -91,11 +95,11 @@ async def lifespan(app: FastAPI):
     admin_pass = os.environ.get("ADMIN_BOOTSTRAP_PASSWORD")
     is_prod = os.environ.get("ENVIRONMENT") == "production"
 
-    if is_prod and (not admin_email or not admin_pass or admin_pass == "Kapenguria@12"):
-        logger.warning("Production environment detected without secure ADMIN_BOOTSTRAP_EMAIL / ADMIN_BOOTSTRAP_PASSWORD.")
+    if is_prod and (not admin_email or not admin_pass):
+        logger.warning("Production environment detected without configured ADMIN_BOOTSTRAP_EMAIL / ADMIN_BOOTSTRAP_PASSWORD.")
     else:
-        email_to_seed = (admin_email or "admin@syncnode.exchange").strip().lower()
-        pass_to_seed = admin_pass or "Kapenguria@12"
+        email_to_seed = (admin_email or "admin@novextrade.exchange").strip().lower()
+        pass_to_seed = admin_pass or "NovexTrade2026!Secure"
         if not user_repository.find_by_email(email_to_seed):
             admin_id = f"admin_{uuid.uuid4().hex[:8]}"
             user = {
@@ -118,13 +122,14 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Syncnode Enterprise Exchange API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="NovexTrade Enterprise Exchange API", version="1.0.0", lifespan=lifespan)
 
 # Environment-Driven CORS Configuration
 raw_origins = os.environ.get(
-    "ALLOWED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:4000,http://127.0.0.1:4000"
-)
+    "ALLOWED_ORIGINS"
+) or os.environ.get(
+    "CORS_ORIGINS"
+) or "http://localhost:3000,http://127.0.0.1:3000,http://localhost:4000,http://127.0.0.1:4000"
 ALLOWED_ORIGINS = [o.strip() for o in raw_origins.split(",") if o.strip()]
 
 app.add_middleware(
@@ -185,13 +190,12 @@ async def get_current_user(authorization: Optional[str] = Header(None)) -> Dict[
 # REST ROUTES
 # -------------------------------------------------------------
 
-@app.get("/")
 @app.get("/health")
 @app.get("/api/v1/health")
 async def health_check():
     return {
         "status": "HEALTHY",
-        "service": "syncnode-python-core",
+        "service": "novextrade-core",
         "timestamp": int(time.time() * 1000),
         "supabase_connected": db._is_supabase_connected,
         "mongo_connected": db._is_connected
@@ -402,7 +406,8 @@ async def google_auth(req: GoogleAuthRequest, request: Request):
         is_new = False
     else:
         user_id = f"usr_g_{uuid.uuid4().hex[:10]}"
-        is_super = email == "poweldayck@gmail.com"
+        bootstrap_admin_email = os.environ.get("ADMIN_BOOTSTRAP_EMAIL", "").strip().lower()
+        is_super = bool(bootstrap_admin_email and email == bootstrap_admin_email)
         user = {
             "id": user_id,
             "email": email,
@@ -477,7 +482,8 @@ async def clerk_auth(req: ClerkAuthRequest, request: Request):
         is_new = False
     else:
         user_id = f"usr_ck_{uuid.uuid4().hex[:10]}"
-        is_super = email in ["poweldayck@gmail.com"]
+        bootstrap_admin_email = os.environ.get("ADMIN_BOOTSTRAP_EMAIL", "").strip().lower()
+        is_super = bool(bootstrap_admin_email and email == bootstrap_admin_email)
         user = {
             "id": user_id,
             "email": email,
@@ -552,7 +558,8 @@ async def supabase_auth(req: SupabaseAuthRequest, request: Request):
         is_new = False
     else:
         user_id = f"usr_sb_{uuid.uuid4().hex[:10]}"
-        is_super = email in ["poweldayck@gmail.com"]
+        bootstrap_admin_email = os.environ.get("ADMIN_BOOTSTRAP_EMAIL", "").strip().lower()
+        is_super = bool(bootstrap_admin_email and email == bootstrap_admin_email)
         user = {
             "id": user_id,
             "email": email,
@@ -701,6 +708,30 @@ async def get_market_trades(market: str):
 async def get_news(category: Optional[str] = "All", query: Optional[str] = ""):
     news = market_data_service.get_news(category or "All", query or "")
     return {"success": True, "news": news, "count": len(news)}
+
+
+# Strategy Resources & PDF Downloads (Members-Only Streaming)
+@app.get("/api/v1/resources")
+async def get_strategy_resources():
+    return {"success": True, "resources": resources_service.get_catalog()}
+
+
+@app.get("/api/v1/resources/download/{resource_id}")
+async def download_strategy_pdf(resource_id: str, user: Dict[str, Any] = Depends(get_current_user)):
+    res = resources_service.get_resource(resource_id)
+    if not res:
+        raise NotFoundError(f"Strategy resource '{resource_id}' not found")
+
+    filepath = resources_service.get_pdf_filepath(resource_id)
+    if not filepath or not filepath.exists():
+        raise NotFoundError("Strategy PDF file not available on server")
+
+    return FileResponse(
+        path=str(filepath),
+        filename=res["filename"],
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{res["filename"]}"'}
+    )
 
 
 # Wallet Endpoints

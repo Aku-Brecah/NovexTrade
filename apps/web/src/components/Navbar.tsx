@@ -35,6 +35,7 @@ export type TabType =
   | 'dashboard'
   | 'watchlist'
   | 'news'
+  | 'resources'
   | 'stock'
   | 'spot'
   | 'earn'
@@ -153,7 +154,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Zap size={16} color="#fcd535" />
             </div>
             <span style={{ fontSize: '17px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.5px' }}>
-              CryptoBridge
+              NovexTrade
             </span>
           </a>
 
@@ -275,6 +276,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
             >
               News
+            </a>
+
+            {/* Strategy Resources Link */}
+            <a
+              href="#/resources"
+              className={`nav-link ${activeTab === 'resources' ? 'active' : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab('resources');
+              }}
+            >
+              Strategies
             </a>
 
             {/* Dashboard Link - Rendered when user is authenticated */}
@@ -454,7 +467,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="mobile-drawer-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Zap size={18} color="#fcd535" />
-                <span style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff' }}>CryptoBridge</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff' }}>NovexTrade</span>
               </div>
               <button
                 type="button"
@@ -561,6 +574,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               >
                 <Newspaper size={18} />
                 <span>News &amp; Research</span>
+              </button>
+
+              <button
+                type="button"
+                className={`mobile-drawer-item ${activeTab === 'resources' ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveTab('resources');
+                  setIsMobileDrawerOpen(false);
+                }}
+              >
+                <FileText size={18} />
+                <span>Strategies &amp; PDFs</span>
               </button>
 
               <div className="mobile-drawer-divider" />

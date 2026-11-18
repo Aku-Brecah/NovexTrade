@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '20px', fontWeight: 800, color: '#fcd535' }}>
               <Zap size={24} />
-              <span>CryptoBridge</span>
+              <span>NovexTrade</span>
             </div>
             <p style={{ fontSize: '13px', lineHeight: '1.6', margin: 0, color: '#848e9c' }}>
               Institutional-grade digital asset exchange engineered with microsecond deterministic matching, strict double-entry ledger architecture, and 100% verified Proof of Reserves.
@@ -128,6 +128,16 @@ export const Footer: React.FC<FooterProps> = ({
                   onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
                 >
                   Live Financial News &amp; Feeds
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#/resources"
+                  style={{ color: '#848e9c', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#fcd535')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#848e9c')}
+                >
+                  Strategy Playbooks &amp; PDFs
                 </a>
               </li>
             </ul>
@@ -227,7 +237,7 @@ export const Footer: React.FC<FooterProps> = ({
           }}
         >
           <div>
-            CryptoBridge Exchange &copy; 2026. All rights reserved.
+            NovexTrade Exchange &copy; 2026. All rights reserved.
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <span>SOC 2 Type II Certified</span>
