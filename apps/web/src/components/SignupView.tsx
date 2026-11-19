@@ -377,6 +377,14 @@ export const SignupView: React.FC<SignupViewProps> = ({
         )}
 
         {/* Clean Form */}
+        {mode === 'signup' && getStoredReferral().referralCode && (
+          <div className="nvx-alert nvx-alert-info" style={{ marginBottom: '12px', padding: '8px 12px', fontSize: '12px' }}>
+            <CheckCircle2 size={14} style={{ flexShrink: 0 }} />
+            <span>
+              Partner invitation active: <strong className="nvx-mono-code">{getStoredReferral().referralCode}</strong>
+            </span>
+          </div>
+        )}
         <form onSubmit={handleAuthSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {/* Full Name for Sign Up */}
           {mode === 'signup' && (

@@ -1,5 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { RefreshCw, Search, CheckCircle2, XCircle, RotateCcw, AlertTriangle, ShieldCheck } from 'lucide-react';
+import {
+  RefreshCw,
+  Search,
+  CheckCircle2,
+  XCircle,
+  RotateCcw,
+  AlertTriangle,
+  ShieldCheck,
+  Eye,
+  X,
+} from 'lucide-react';
+
+interface PendingActionModal {
+  kind: 'refund' | 'dispute' | 'reconcile_approve' | 'reconcile_reject';
+  targetId: string;
+  title: string;
+  subtitle: string;
+  defaultNote: string;
+}
 
 export const AdminPaymentsPanel: React.FC = () => {
   const [data, setData] = useState<any>(null);
@@ -9,8 +27,12 @@ export const AdminPaymentsPanel: React.FC = () => {
   const [methodFilter, setMethodFilter] = useState('');
   const [search, setSearch] = useState('');
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [inspectedOrder, setInspectedOrder] = useState<any | null>(null);
+  const [actionModal, setActionModal] = useState<PendingActionModal | null>(null);
+  const [actionNote, setActionNote] = useState('');
 
-  const getToken = () => localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token') || '';
+  const getToken = () =>
+    localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token') || '';
 
   const loadPayments = async () => {
     setLoading(true);
@@ -37,38 +59,47 @@ export const AdminPaymentsPanel: React.FC = () => {
     loadPayments();
   }, [statusFilter, methodFilter]);
 
-  const handleOrderAction = async (orderId: string, action: 'refund' | 'dispute') => {
-    const reason = window.prompt(`Enter audit reason for marking order as ${action.toUpperCase()}:`, `${action} processed by admin`);
-    if (!reason) return;
-    setBusyId(orderId);
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setInspectedOrder(null);
+        setActionModal(null);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
+  const openActionModal = (modal: PendingActionModal) => {
+    setActionNote(modal.defaultNote);
+    setActionModal(modal);
+  };
+
+  const executeModalAction = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!actionModal) return;
+    setBusyId(actionModal.targetId);
+    setError(null);
     try {
-      const res = await fetch(`/api/v1/admin/commerce/orders/${orderId}/${action}`, {
+      let url = '';
+      let body: Record<string, any> = {};
+      if (actionModal.kind === 'refund' || actionModal.kind === 'dispute') {
+        url = `/api/v1/admin/commerce/orders/${actionModal.targetId}/${actionModal.kind}`;
+        body = { reason: actionNote.trim() || actionModal.defaultNote };
+      } else {
+        const decision = actionModal.kind === 'reconcile_approve' ? 'APPROVE' : 'REJECT';
+        url = `/api/v1/admin/commerce/crypto-transactions/${actionModal.targetId}/reconcile`;
+        body = { decision, notes: actionNote.trim() || actionModal.defaultNote };
+      }
+
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
-        body: JSON.stringify({ reason }),
+        body: JSON.stringify(body),
       });
       const json = await res.json();
       if (!res.ok || !json.success) throw new Error(json.error || 'Action failed');
-      await loadPayments();
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setBusyId(null);
-    }
-  };
-
-  const handleReconcileCrypto = async (txId: string, decision: 'APPROVE' | 'REJECT') => {
-    const notes = window.prompt(`Reconciliation notes for ${decision}:`, `Manually ${decision.toLowerCase()}d by admin`);
-    if (notes === null) return;
-    setBusyId(txId);
-    try {
-      const res = await fetch(`/api/v1/admin/commerce/crypto-transactions/${txId}/reconcile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
-        body: JSON.stringify({ decision, notes }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.error || 'Reconciliation failed');
+      setActionModal(null);
       await loadPayments();
     } catch (err: any) {
       setError(err.message);
@@ -119,13 +150,14 @@ export const AdminPaymentsPanel: React.FC = () => {
           <input
             type="text"
             className="nvx-input"
+            aria-label="Search orders"
             placeholder="Search order ref, email, or product..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && loadPayments()}
           />
         </div>
-        <select className="nvx-input" style={{ width: 'auto' }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+        <select className="nvx-input" aria-label="Filter by status" style={{ width: 'auto' }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
           <option value="">All Statuses</option>
           <option value="PENDING">PENDING</option>
           <option value="AWAITING_VERIFICATION">AWAITING_VERIFICATION</option>
@@ -135,7 +167,7 @@ export const AdminPaymentsPanel: React.FC = () => {
           <option value="REFUNDED">REFUNDED</option>
           <option value="DISPUTED">DISPUTED</option>
         </select>
-        <select className="nvx-input" style={{ width: 'auto' }} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value)}>
+        <select className="nvx-input" aria-label="Filter by method" style={{ width: 'auto' }} value={methodFilter} onChange={(e) => setMethodFilter(e.target.value)}>
           <option value="">All Methods</option>
           <option value="CARD">CARD</option>
           <option value="CRYPTO">CRYPTO</option>
@@ -174,27 +206,52 @@ export const AdminPaymentsPanel: React.FC = () => {
                     <td>{o.paymentMethod} ({o.paymentProvider})</td>
                     <td><span className={`nvx-status-pill nvx-status-${o.status.toLowerCase()}`}>{o.status}</span></td>
                     <td>
-                      {o.status === 'PAID' && (
-                        <div style={{ display: 'flex', gap: '6px' }}>
-                          <button
-                            type="button"
-                            className="nvx-btn-outline"
-                            disabled={busyId === o.id}
-                            onClick={() => handleOrderAction(o.id, 'refund')}
-                          >
-                            <RotateCcw size={12} /> Refund
-                          </button>
-                          <button
-                            type="button"
-                            className="nvx-btn-outline"
-                            style={{ borderColor: '#f6465d', color: '#f6465d' }}
-                            disabled={busyId === o.id}
-                            onClick={() => handleOrderAction(o.id, 'dispute')}
-                          >
-                            Dispute
-                          </button>
-                        </div>
-                      )}
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          type="button"
+                          className="nvx-btn-outline"
+                          onClick={() => setInspectedOrder(o)}
+                        >
+                          <Eye size={12} /> Inspect
+                        </button>
+                        {o.status === 'PAID' && (
+                          <>
+                            <button
+                              type="button"
+                              className="nvx-btn-outline"
+                              disabled={busyId === o.id}
+                              onClick={() =>
+                                openActionModal({
+                                  kind: 'refund',
+                                  targetId: o.id,
+                                  title: `Refund Order ${o.orderReference}`,
+                                  subtitle: 'Revokes download access and reverses associated referral commissions.',
+                                  defaultNote: 'Refund processed by administrator',
+                                })
+                              }
+                            >
+                              <RotateCcw size={12} /> Refund
+                            </button>
+                            <button
+                              type="button"
+                              className="nvx-btn-outline"
+                              style={{ borderColor: '#f6465d', color: '#f6465d' }}
+                              disabled={busyId === o.id}
+                              onClick={() =>
+                                openActionModal({
+                                  kind: 'dispute',
+                                  targetId: o.id,
+                                  title: `Mark Order ${o.orderReference} Disputed`,
+                                  subtitle: 'Revokes download entitlement and reverses referral commissions pending dispute.',
+                                  defaultNote: 'Chargeback / dispute recorded by administrator',
+                                })
+                              }
+                            >
+                              Dispute
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -242,7 +299,15 @@ export const AdminPaymentsPanel: React.FC = () => {
                             className="nvx-btn-outline"
                             style={{ borderColor: '#0ecb81', color: '#0ecb81' }}
                             disabled={busyId === tx.id}
-                            onClick={() => handleReconcileCrypto(tx.id, 'APPROVE')}
+                            onClick={() =>
+                              openActionModal({
+                                kind: 'reconcile_approve',
+                                targetId: tx.id,
+                                title: 'Approve & Reconcile Crypto Transaction',
+                                subtitle: `Order ${tx.order_reference || tx.order_id} — unlocks customer download & records commission.`,
+                                defaultNote: 'Verified on block explorer and reconciled by administrator',
+                              })
+                            }
                           >
                             <CheckCircle2 size={12} /> Approve
                           </button>
@@ -251,7 +316,15 @@ export const AdminPaymentsPanel: React.FC = () => {
                             className="nvx-btn-outline"
                             style={{ borderColor: '#f6465d', color: '#f6465d' }}
                             disabled={busyId === tx.id}
-                            onClick={() => handleReconcileCrypto(tx.id, 'REJECT')}
+                            onClick={() =>
+                              openActionModal({
+                                kind: 'reconcile_reject',
+                                targetId: tx.id,
+                                title: 'Reject Crypto Transaction',
+                                subtitle: `Order ${tx.order_reference || tx.order_id} — marks transaction FAILED without unlocking download.`,
+                                defaultNote: 'Rejected during shared-wallet reconciliation review',
+                              })
+                            }
                           >
                             <XCircle size={12} /> Reject
                           </button>
@@ -265,6 +338,91 @@ export const AdminPaymentsPanel: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Order Verification Inspector Modal */}
+      {inspectedOrder && (
+        <div
+          className="nvx-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Order Inspector"
+          onClick={(e) => e.target === e.currentTarget && setInspectedOrder(null)}
+        >
+          <div className="nvx-modal-card">
+            <div className="nvx-modal-header">
+              <div>
+                <div className="nvx-modal-kicker">TRANSACTION INSPECTOR</div>
+                <h3 className="nvx-modal-title">{inspectedOrder.orderReference}</h3>
+              </div>
+              <button type="button" className="nvx-modal-close" aria-label="Close inspector" onClick={() => setInspectedOrder(null)}>
+                <X size={16} />
+              </button>
+            </div>
+            <div className="nvx-instruction-box">
+              <div className="nvx-instr-row"><span>Customer</span><strong>{inspectedOrder.customerEmail || inspectedOrder.userId}</strong></div>
+              <div className="nvx-instr-row"><span>Product</span><strong>{inspectedOrder.productName}</strong></div>
+              <div className="nvx-instr-row"><span>Amount</span><strong className="nvx-gold-text">${inspectedOrder.amountUsd} USD</strong></div>
+              <div className="nvx-instr-row"><span>Method / Provider</span><strong>{inspectedOrder.paymentMethod} · {inspectedOrder.paymentProvider}</strong></div>
+              <div className="nvx-instr-row"><span>Status</span><span className={`nvx-status-pill nvx-status-${inspectedOrder.status.toLowerCase()}`}>{inspectedOrder.status}</span></div>
+            </div>
+            <div className="nvx-section-label">Verification &amp; Webhook Timeline</div>
+            {!inspectedOrder.verificationHistory?.length ? (
+              <div className="nvx-empty-inline">No verification events logged yet for this order.</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {inspectedOrder.verificationHistory.map((ev: any) => (
+                  <div key={ev.id} className="nvx-entitlement-row" style={{ fontSize: '12px' }}>
+                    <div>
+                      <strong>{ev.event_type}</strong>
+                      <div className="nvx-label-muted">{new Date(ev.created_at).toLocaleString()}</div>
+                    </div>
+                    <span className={`nvx-status-pill nvx-status-${String(ev.status || '').toLowerCase()}`}>{ev.status}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Institutional Audit Reason Confirmation Modal */}
+      {actionModal && (
+        <div
+          className="nvx-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label={actionModal.title}
+          onClick={(e) => e.target === e.currentTarget && setActionModal(null)}
+        >
+          <form onSubmit={executeModalAction} className="nvx-modal-card">
+            <div className="nvx-modal-header">
+              <div>
+                <div className="nvx-modal-kicker">AUDITED ADMIN ACTION</div>
+                <h3 className="nvx-modal-title">{actionModal.title}</h3>
+                <div className="nvx-modal-subtitle">{actionModal.subtitle}</div>
+              </div>
+              <button type="button" className="nvx-modal-close" aria-label="Cancel action" onClick={() => setActionModal(null)}>
+                <X size={16} />
+              </button>
+            </div>
+            <label className="nvx-section-label" htmlFor="nvx-audit-note">Audit Reason / Notes *</label>
+            <textarea
+              id="nvx-audit-note"
+              className="nvx-input"
+              rows={3}
+              value={actionNote}
+              onChange={(e) => setActionNote(e.target.value)}
+              required
+            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
+              <button type="button" className="nvx-btn-outline" onClick={() => setActionModal(null)}>Cancel</button>
+              <button type="submit" className="nvx-btn-gold" disabled={busyId === actionModal.targetId}>
+                {busyId === actionModal.targetId ? 'Processing...' : 'Confirm Audited Action'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

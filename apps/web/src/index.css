@@ -7558,3 +7558,110 @@ a[href*="tradingview.com"] {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ============================================================================
+   GLOBAL WCAG 2.2 AA ACCESSIBILITY, MICRO-INTERACTIONS & RESPONSIVE POLISH
+   ============================================================================ */
+
+/* Consistent high-visibility keyboard focus indicators across all pages */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #f0b90b !important;
+  outline-offset: 2px;
+}
+
+/* Smooth institutional micro-interactions */
+.nvx-btn-gold,
+.nvx-btn-outline,
+.nvx-method-card,
+.nvx-token-pill,
+.nvx-share-pill,
+.nvx-kpi-card {
+  transition: transform 0.14s ease, border-color 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.nvx-btn-gold:hover:not(:disabled) {
+  background: #f5c638;
+  border-color: #f5c638;
+  box-shadow: 0 4px 14px rgba(240, 185, 11, 0.22);
+}
+
+.nvx-btn-gold:active:not(:disabled),
+.nvx-btn-outline:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.nvx-kpi-card:hover {
+  border-color: rgba(240, 185, 11, 0.35);
+}
+
+.nvx-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* Small Mobile (320px - 430px) & Tablet Ergonomics */
+@media (max-width: 600px) {
+  .nvx-container {
+    padding: 0 14px 36px;
+  }
+
+  .nvx-page-header h1 {
+    font-size: 21px;
+  }
+
+  .nvx-panel-card {
+    padding: 14px;
+  }
+
+  .nvx-modal-card {
+    padding: 16px;
+    max-height: 94vh;
+  }
+
+  .nvx-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .nvx-kpi-value {
+    font-size: 18px;
+  }
+
+  /* Prevent iOS Safari input zoom & enforce >= 40px touch targets */
+  .nvx-input,
+  .nvx-btn-gold,
+  .nvx-btn-outline,
+  .nvx-tab-btn {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  .nvx-combo-banner {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 375px) {
+  .nvx-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nvx-spin,
+  .nvx-btn-gold,
+  .nvx-btn-outline,
+  .nvx-method-card,
+  .nvx-token-pill,
+  .nvx-share-pill,
+  .nvx-kpi-card {
+    animation: none !important;
+    transition: none !important;
+  }
+}

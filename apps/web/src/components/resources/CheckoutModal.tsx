@@ -103,6 +103,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   );
 
   useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
+  useEffect(() => {
     const loadConfig = async () => {
       try {
         const res = await fetch('/api/v1/commerce/products');
@@ -234,7 +242,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   return (
-    <div className="nvx-modal-backdrop" role="dialog" aria-modal="true" aria-label="Checkout">
+    <div
+      className="nvx-modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Checkout"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="nvx-modal-card">
         <div className="nvx-modal-header">
           <div>

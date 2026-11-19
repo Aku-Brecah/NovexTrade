@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Lock, Mail, ShieldAlert, Sparkles, ExternalLink } from 'lucide-react';
 import { useClerk, useSignIn, useSignUp } from '@clerk/clerk-react';
+import { getStoredReferral } from '../utils/referralAttribution';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -27,6 +28,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [requires2fa, setRequires2fa] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -105,9 +115,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     // 2. Fallback to direct FastAPI backend endpoint
     try {
       const endpoint = mode === 'login' ? '/api/v1/auth/login' : '/api/v1/auth/register';
+      const { referralCode, clickId } = getStoredReferral();
       const body = mode === 'login'
         ? { email: cleanEmail, password }
-        : { email: cleanEmail, password, full_name: fullName };
+        : {
+            email: cleanEmail,
+            password,
+            fullName: fullName.trim() || undefined,
+            referralCode: referralCode || undefined,
+            referralClickId: clickId || undefined,
+          };
 
       const res = await fetch(endpoint, {
         method: 'POST',

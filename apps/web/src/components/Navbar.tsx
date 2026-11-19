@@ -598,6 +598,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>Strategies &amp; PDFs</span>
               </button>
 
+              <button
+                type="button"
+                className={`mobile-drawer-item ${activeTab === 'referrals' ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveTab('referrals');
+                  setIsMobileDrawerOpen(false);
+                }}
+              >
+                <TrendingUp size={18} />
+                <span>Referrals &amp; Orders</span>
+              </button>
+
               <div className="mobile-drawer-divider" />
 
               {currentUser ? (
