@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getStoredReferral, captureReferralFromUrl } from '../utils/referralAttribution';
 import { useSignIn, useSignUp } from '@clerk/clerk-react';
 import {
   Layers,
@@ -85,11 +86,19 @@ export const SignupView: React.FC<SignupViewProps> = ({
           }
         }
 
-        // 2. Register with backend
+        // 2. Register with backend (preserving any captured referral attribution)
+        await captureReferralFromUrl();
+        const { referralCode, clickId } = getStoredReferral();
         const res = await fetch('/api/v1/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: cleanEmail, password, full_name: fullName.trim() })
+          body: JSON.stringify({
+            email: cleanEmail,
+            password,
+            fullName: fullName.trim(),
+            referralCode: referralCode || undefined,
+            referralClickId: clickId || undefined,
+          })
         });
         const data = await res.json();
         if (data.success && data.token) {

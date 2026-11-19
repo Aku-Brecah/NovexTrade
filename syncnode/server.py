@@ -12,7 +12,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Depends, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, Response
 from pydantic import BaseModel
 
 from decimal import Decimal
@@ -51,6 +51,9 @@ from syncnode.services.market_data import market_data_service
 from syncnode.services.compliance import compliance_service
 from syncnode.services.risk import risk_service
 from syncnode.services.resources import resources_service
+from syncnode.services.referral import referral_service
+from syncnode.services.commerce import commerce_service
+from syncnode.services.card_gateway import card_gateway
 from syncnode.admin.router import admin_router
 from syncnode.admin.api import admin_api_router
 from syncnode.web.views import web_router
@@ -214,6 +217,8 @@ class RegisterRequest(BaseModel):
     preferredIndustry: Optional[str] = None
     otpCode: Optional[str] = None
     otpChannel: Optional[str] = "email"
+    referralCode: Optional[str] = None
+    referralClickId: Optional[str] = None
 
 
 @app.post("/api/v1/auth/register")
@@ -251,6 +256,7 @@ async def register(req: RegisterRequest, request: Request):
 
     user_id = f"usr_{uuid.uuid4().hex[:10]}"
     now = int(time.time() * 1000)
+    unique_ref_code = referral_service.generate_unique_referral_code()
     user = {
         "id": user_id,
         "email": email,
@@ -269,14 +275,26 @@ async def register(req: RegisterRequest, request: Request):
         "admin_roles": [],
         "is_suspended": False,
         "is_withdrawal_suspended": False,
+        "referral_code": unique_ref_code,
+        "referred_by": None,
         "created_at": now,
         "updated_at": now
     }
     user_repository.save(user)
 
+    # Attribute referral relationship if a valid referral code was provided
+    if req.referralCode and req.referralCode.strip():
+        referral_service.attribute_registration(
+            new_user=user,
+            referral_code=req.referralCode,
+            click_id=req.referralClickId,
+            ip_address=ip,
+        )
+
     token = sign_token({"userId": user_id, "email": email, "isTotpAuthenticated": True})
     refresh_token = sign_refresh_token({"userId": user_id, "email": email})
     safe_user = {k: v for k, v in user.items() if k != "password_hash" and k != "totp_secret"}
+    safe_user["referral_url"] = referral_service.build_referral_url(unique_ref_code)
     return {"success": True, "token": token, "refreshToken": refresh_token, "user": safe_user}
 
 
@@ -336,7 +354,10 @@ async def refresh_token(req: RefreshTokenRequest):
 
 @app.get("/api/v1/auth/me")
 async def get_me(user: Dict[str, Any] = Depends(get_current_user)):
+    code = referral_service.ensure_user_referral_code(user)
     safe_user = {k: v for k, v in user.items() if k != "password_hash" and k != "totp_secret"}
+    safe_user["referral_code"] = code
+    safe_user["referral_url"] = referral_service.build_referral_url(code)
     return {"success": True, "user": safe_user}
 
 
@@ -710,21 +731,74 @@ async def get_news(category: Optional[str] = "All", query: Optional[str] = ""):
     return {"success": True, "news": news, "count": len(news)}
 
 
-# Strategy Resources & PDF Downloads (Members-Only Streaming)
+# Strategy Resources & Entitlement-Gated PDF Downloads
 @app.get("/api/v1/resources")
-async def get_strategy_resources():
-    return {"success": True, "resources": resources_service.get_catalog()}
+async def get_strategy_resources(authorization: Optional[str] = Header(None)):
+    unlocked_ids: List[str] = []
+    has_combo = False
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            claims = verify_token(authorization.split(" ", 1)[1].strip())
+            uid = claims.get("userId") or claims.get("user_id")
+            if uid:
+                ent_data = commerce_service.get_user_orders_and_entitlements(uid)
+                unlocked_ids = ent_data["unlockedResourceIds"]
+                has_combo = ent_data["hasComboAccess"]
+        except Exception:
+            pass
+
+    individual_product = commerce_service.get_product("individual_pdf")
+    combo_product = commerce_service.get_product("combo_bundle")
+    catalog = []
+    for item in resources_service.get_catalog():
+        catalog.append({
+            **item,
+            "priceUsd": individual_product["price_usd"],
+            "currency": "USD",
+            "isUnlocked": has_combo or (item["id"] in unlocked_ids),
+        })
+
+    return {
+        "success": True,
+        "resources": catalog,
+        "pricing": {
+            "individualPdfUsd": individual_product["price_usd"],
+            "comboBundleUsd": combo_product["price_usd"],
+            "currency": "USD",
+        },
+        "hasComboAccess": has_combo,
+        "unlockedResourceIds": unlocked_ids,
+    }
 
 
 @app.get("/api/v1/resources/download/{resource_id}")
-async def download_strategy_pdf(resource_id: str, user: Dict[str, Any] = Depends(get_current_user)):
+async def download_strategy_pdf(
+    resource_id: str,
+    request: Request,
+    user: Dict[str, Any] = Depends(get_current_user),
+):
     res = resources_service.get_resource(resource_id)
     if not res:
         raise NotFoundError(f"Strategy resource '{resource_id}' not found")
 
+    # Enforce server-side verified paid entitlement
+    entitlement = commerce_service.check_download_entitlement(user["id"], resource_id)
+    if not entitlement:
+        raise ForbiddenError(
+            "Purchase required ($99 USD Individual PDF or $699 USD Combo) to download this strategy playbook."
+        )
+
     filepath = resources_service.get_pdf_filepath(resource_id)
     if not filepath or not filepath.exists():
         raise NotFoundError("Strategy PDF file not available on server")
+
+    commerce_service.record_download_activity(
+        user_id=user["id"],
+        entitlement_id=entitlement["id"],
+        resource_id=resource_id,
+        ip_address=get_client_ip(request),
+        user_agent=request.headers.get("user-agent"),
+    )
 
     return FileResponse(
         path=str(filepath),
@@ -732,6 +806,229 @@ async def download_strategy_pdf(resource_id: str, user: Dict[str, Any] = Depends
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{res["filename"]}"'}
     )
+
+
+@app.get("/api/v1/resources/combo/download")
+async def download_strategy_combo_zip(
+    request: Request,
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    entitlement = commerce_service.check_combo_entitlement(user["id"])
+    if not entitlement:
+        raise ForbiddenError(
+            "Complete Combo purchase ($699 USD) required to download the bundled strategy archive."
+        )
+
+    zip_bytes = commerce_service.build_combo_zip_bytes()
+    commerce_service.record_download_activity(
+        user_id=user["id"],
+        entitlement_id=entitlement["id"],
+        resource_id="ALL_COMBO",
+        ip_address=get_client_ip(request),
+        user_agent=request.headers.get("user-agent"),
+    )
+    return Response(
+        content=zip_bytes,
+        media_type="application/zip",
+        headers={"Content-Disposition": 'attachment; filename="novextrade-complete-strategy-combo.zip"'},
+    )
+
+
+# =============================================================================
+# REFERRAL SYSTEM ENDPOINTS
+# =============================================================================
+
+class ReferralTrackRequest(BaseModel):
+    referralCode: str
+    landingPath: Optional[str] = "/register"
+
+
+@app.post("/api/v1/referrals/track")
+async def track_referral_click(req: ReferralTrackRequest, request: Request):
+    ip = get_client_ip(request)
+    check_rate_limit(f"ref_track_{ip}", max_requests=60, window_seconds=60)
+    result = referral_service.track_click(
+        referral_code=req.referralCode,
+        ip_address=ip,
+        user_agent=request.headers.get("user-agent"),
+        landing_path=req.landingPath or "/register",
+    )
+    return {"success": True, **result}
+
+
+@app.get("/api/v1/referrals/validate/{code}")
+async def validate_referral_code(code: str):
+    referrer = referral_service.validate_referral_code(code)
+    if not referrer:
+        raise NotFoundError("Referral code not found")
+    return {
+        "success": True,
+        "valid": True,
+        "referralCode": referrer["referral_code"],
+        "referrerName": referrer.get("full_name") or "NovexTrade Partner",
+    }
+
+
+@app.get("/api/v1/referrals/dashboard")
+async def get_user_referral_dashboard(user: Dict[str, Any] = Depends(get_current_user)):
+    data = referral_service.get_user_referral_dashboard(user["id"])
+    return {"success": True, **data}
+
+
+# =============================================================================
+# COMMERCE, PRICING, CARD & CRYPTO CHECKOUT ENDPOINTS
+# =============================================================================
+
+class CheckoutOrderRequest(BaseModel):
+    productId: str
+    paymentMethod: str  # CARD | CRYPTO
+    resourceId: Optional[str] = None
+    cryptoAsset: Optional[str] = None
+    referralCode: Optional[str] = None
+    idempotencyKey: Optional[str] = None
+    cardProvider: Optional[str] = None
+    # Accepted solely to detect and reject client-side price manipulation attempts
+    priceUsd: Optional[Any] = None
+    amountUsd: Optional[Any] = None
+    amount: Optional[Any] = None
+
+
+class SubmitCryptoTxRequest(BaseModel):
+    txHash: str
+
+
+class VerifyCardOrderRequest(BaseModel):
+    providerTxId: Optional[str] = None
+
+
+@app.get("/api/v1/commerce/products")
+async def get_commerce_products():
+    return {
+        "success": True,
+        "products": commerce_service.get_products(),
+        "cryptoWallet": commerce_service.get_global_crypto_wallet_config(),
+        "cardGateway": {
+            "provider": card_gateway.get_active_provider().upper(),
+            "isConfigured": card_gateway.is_configured(),
+            "supportedMethods": ["Visa", "Mastercard", "Verve", "International Cards"],
+            "currency": "USD",
+        },
+    }
+
+
+@app.get("/api/v1/commerce/crypto-wallet")
+async def get_global_crypto_wallet_for_user(user: Dict[str, Any] = Depends(get_current_user)):
+    """Every registered user receives the exact same administrator-configured global receiving wallet."""
+    return {
+        "success": True,
+        "wallet": commerce_service.get_global_crypto_wallet_config(),
+    }
+
+
+@app.post("/api/v1/commerce/checkout")
+async def create_commerce_checkout(
+    req: CheckoutOrderRequest,
+    request: Request,
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    ip = get_client_ip(request)
+    check_rate_limit(f"checkout_{user['id']}_{ip}", max_requests=20, window_seconds=60)
+    supplied_price = req.priceUsd if req.priceUsd is not None else (
+        req.amountUsd if req.amountUsd is not None else req.amount
+    )
+    order = await commerce_service.create_checkout_order(
+        user=user,
+        product_id=req.productId,
+        payment_method=req.paymentMethod,
+        resource_id=req.resourceId,
+        crypto_asset=req.cryptoAsset,
+        referral_code=req.referralCode,
+        idempotency_key=req.idempotencyKey,
+        client_supplied_price=supplied_price,
+        card_provider=req.cardProvider,
+    )
+    return {"success": True, "order": order}
+
+
+@app.post("/api/v1/commerce/orders/{order_id}/submit-crypto-tx")
+async def submit_crypto_tx_for_order(
+    order_id: str,
+    req: SubmitCryptoTxRequest,
+    request: Request,
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    ip = get_client_ip(request)
+    check_rate_limit(f"crypto_tx_{user['id']}_{ip}", max_requests=20, window_seconds=60)
+    result = await commerce_service.submit_and_verify_crypto_tx(
+        user_id=user["id"],
+        order_id=order_id,
+        tx_hash=req.txHash,
+    )
+    return {"success": True, "order": result}
+
+
+@app.post("/api/v1/commerce/orders/{order_id}/verify-card")
+async def verify_card_payment_order(
+    order_id: str,
+    req: VerifyCardOrderRequest,
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    result = await commerce_service.verify_card_order_status(
+        user_id=user["id"],
+        order_id=order_id,
+        provider_tx_id=req.providerTxId,
+    )
+    return {"success": True, "order": result}
+
+
+@app.get("/api/v1/commerce/orders")
+async def get_my_commerce_orders(user: Dict[str, Any] = Depends(get_current_user)):
+    data = commerce_service.get_user_orders_and_entitlements(user["id"])
+    return {"success": True, **data}
+
+
+@app.get("/api/v1/commerce/orders/{order_id}")
+async def get_single_commerce_order(order_id: str, user: Dict[str, Any] = Depends(get_current_user)):
+    order = db.product_orders.get(order_id)
+    if not order or order["user_id"] != user["id"]:
+        raise NotFoundError("Order not found")
+    return {"success": True, "order": commerce_service._format_order_response(order)}
+
+
+# =============================================================================
+# VERIFIED CARD PAYMENT WEBHOOKS (FLUTTERWAVE & PAYSTACK)
+# =============================================================================
+
+@app.post("/api/v1/webhooks/flutterwave")
+async def flutterwave_webhook(request: Request):
+    raw_body = await request.body()
+    try:
+        payload = json.loads(raw_body.decode("utf-8"))
+    except Exception:
+        raise ValidationError("Invalid JSON webhook payload")
+    result = commerce_service.handle_card_webhook(
+        provider="flutterwave",
+        raw_body=raw_body,
+        headers=dict(request.headers),
+        payload=payload,
+    )
+    return result
+
+
+@app.post("/api/v1/webhooks/paystack")
+async def paystack_webhook(request: Request):
+    raw_body = await request.body()
+    try:
+        payload = json.loads(raw_body.decode("utf-8"))
+    except Exception:
+        raise ValidationError("Invalid JSON webhook payload")
+    result = commerce_service.handle_card_webhook(
+        provider="paystack",
+        raw_body=raw_body,
+        headers=dict(request.headers),
+        payload=payload,
+    )
+    return result
 
 
 # Wallet Endpoints

@@ -20,6 +20,8 @@ from syncnode.services.risk import risk_service
 from syncnode.services.compliance import compliance_service
 from syncnode.services.market_data import market_data_service
 from syncnode.services.investment import investment_service
+from syncnode.services.commerce import commerce_service
+from syncnode.services.referral import referral_service
 from syncnode.common.types import AssetSymbol, OrderSide, OrderType, KycTier, KycStatus, AdminRole
 from syncnode.common.decimal_util import to_decimal, format_decimal, mul_decimals
 from syncnode.common.errors import (
@@ -1190,4 +1192,195 @@ async def admin_save_invest_plan(req: Dict[str, Any], admin: Dict[str, Any] = De
 @admin_api_router.get("/invest/user-investments")
 async def admin_get_user_investments(admin: Dict[str, Any] = Depends(require_admin)):
     return {"success": True, "investments": list(db.user_investments.values())}
+
+
+# ==========================================================================
+# COMMERCE PAYMENTS, GLOBAL CRYPTO WALLET & REFERRAL MANAGEMENT
+# ==========================================================================
+
+def _require_admin_write_role(admin: Dict[str, Any], allowed: List[str]) -> None:
+    roles = admin.get("admin_roles", [])
+    if not any(r in allowed for r in roles):
+        raise ForbiddenError("Insufficient administrative role for this write operation")
+
+
+class AdminGlobalCryptoWalletRequest(BaseModel):
+    is_enabled: Optional[bool] = None
+    receiving_address: str
+    primary_network: str
+    primary_asset: str
+    supported_tokens: Optional[List[str]] = None
+    required_confirmations: Optional[int] = 12
+    memo_tag: Optional[str] = None
+
+
+class AdminReconcileCryptoTxRequest(BaseModel):
+    decision: str  # APPROVE | REJECT
+    notes: Optional[str] = None
+
+
+class AdminOrderRefundRequest(BaseModel):
+    reason: Optional[str] = "Refunded by administrator"
+
+
+class AdminReferralConfigRequest(BaseModel):
+    is_enabled: Optional[bool] = None
+    individual_pdf_commission_percent: Optional[Any] = None
+    combo_commission_percent: Optional[Any] = None
+    min_payout_threshold_usd: Optional[Any] = None
+    holding_period_days: Optional[int] = None
+    approval_mode: Optional[str] = None
+    auto_payout_enabled: Optional[bool] = None
+    terms_and_conditions: Optional[str] = None
+
+
+class AdminCommissionActionRequest(BaseModel):
+    action: str  # APPROVE | REJECT | MARK_PAID
+    reason: Optional[str] = None
+    payout_reference: Optional[str] = None
+
+
+@admin_api_router.get("/commerce/payments")
+async def admin_get_commerce_payments(
+    status: Optional[str] = Query(None),
+    method: Optional[str] = Query(None),
+    search: Optional[str] = Query(None),
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    data = commerce_service.get_admin_payments_overview(
+        status_filter=status, method_filter=method, search=search
+    )
+    return {"success": True, **data}
+
+
+@admin_api_router.post("/commerce/orders/{order_id}/refund")
+async def admin_refund_commerce_order(
+    order_id: str,
+    req: AdminOrderRefundRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value])
+    order = commerce_service.revoke_order_on_refund_or_dispute(
+        order_id=order_id,
+        new_status="REFUNDED",
+        reason=req.reason or "Refunded by administrator",
+        admin_id=admin["id"],
+    )
+    log_admin_action(admin, "REFUND_PRODUCT_ORDER", target_id=order_id, reason=req.reason)
+    return {"success": True, "order": order}
+
+
+@admin_api_router.post("/commerce/orders/{order_id}/dispute")
+async def admin_dispute_commerce_order(
+    order_id: str,
+    req: AdminOrderRefundRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value, AdminRole.COMPLIANCE_OFFICER.value])
+    order = commerce_service.revoke_order_on_refund_or_dispute(
+        order_id=order_id,
+        new_status="DISPUTED",
+        reason=req.reason or "Disputed / chargeback recorded by administrator",
+        admin_id=admin["id"],
+    )
+    log_admin_action(admin, "DISPUTE_PRODUCT_ORDER", target_id=order_id, reason=req.reason)
+    return {"success": True, "order": order}
+
+
+@admin_api_router.get("/commerce/crypto-wallet")
+async def admin_get_global_crypto_wallet(admin: Dict[str, Any] = Depends(require_admin)):
+    return {"success": True, "wallet": commerce_service.get_global_crypto_wallet_config()}
+
+
+@admin_api_router.put("/commerce/crypto-wallet")
+async def admin_update_global_crypto_wallet(
+    req: AdminGlobalCryptoWalletRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value, AdminRole.SECURITY_ADMIN.value])
+    updated = commerce_service.update_global_crypto_wallet_config(
+        admin_id=admin["id"],
+        payload=req.model_dump(exclude_none=True),
+    )
+    log_admin_action(
+        admin,
+        "UPDATE_GLOBAL_CRYPTO_WALLET",
+        target_id="global_default",
+        metadata={
+            "network": updated["primaryNetwork"],
+            "asset": updated["primaryAsset"],
+            "address": updated["receivingAddress"],
+            "isEnabled": updated["isEnabled"],
+        },
+    )
+    return {"success": True, "wallet": updated}
+
+
+@admin_api_router.post("/commerce/crypto-transactions/{tx_id}/reconcile")
+async def admin_reconcile_crypto_tx(
+    tx_id: str,
+    req: AdminReconcileCryptoTxRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value])
+    tx = commerce_service.admin_reconcile_crypto_transaction(
+        tx_id=tx_id,
+        decision=req.decision,
+        admin_id=admin["id"],
+        notes=req.notes,
+    )
+    log_admin_action(
+        admin,
+        f"RECONCILE_CRYPTO_TX_{req.decision.upper()}",
+        target_id=tx_id,
+        reason=req.notes,
+    )
+    return {"success": True, "transaction": tx}
+
+
+@admin_api_router.get("/referrals/overview")
+async def admin_get_referrals_overview(
+    search: Optional[str] = Query(None),
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    data = referral_service.get_admin_referral_overview(search=search)
+    return {"success": True, **data}
+
+
+@admin_api_router.put("/referrals/config")
+async def admin_update_referral_config(
+    req: AdminReferralConfigRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value])
+    updated = referral_service.update_commission_config(
+        admin_id=admin["id"],
+        payload=req.model_dump(exclude_none=True),
+    )
+    log_admin_action(admin, "UPDATE_REFERRAL_CONFIG", target_id="default", metadata=updated)
+    return {"success": True, "config": updated}
+
+
+@admin_api_router.post("/referrals/commissions/{commission_id}/action")
+async def admin_action_referral_commission(
+    commission_id: str,
+    req: AdminCommissionActionRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value])
+    comm = referral_service.update_commission_status(
+        commission_id=commission_id,
+        action=req.action,
+        admin_id=admin["id"],
+        reason=req.reason,
+        payout_reference=req.payout_reference,
+    )
+    log_admin_action(
+        admin,
+        f"REFERRAL_COMMISSION_{req.action.upper()}",
+        target_id=commission_id,
+        reason=req.reason,
+        metadata={"payout_reference": req.payout_reference},
+    )
+    return {"success": True, "commission": comm}
 

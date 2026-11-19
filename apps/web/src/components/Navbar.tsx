@@ -36,6 +36,7 @@ export type TabType =
   | 'watchlist'
   | 'news'
   | 'resources'
+  | 'referrals'
   | 'stock'
   | 'spot'
   | 'earn'
@@ -280,6 +281,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
             >
               Strategies <span className="nav-badge-green">PDF</span>
+            </a>
+
+            {/* Referrals & Orders Link */}
+            <a
+              href="#/referrals"
+              className={`nav-link ${activeTab === 'referrals' ? 'active' : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab('referrals');
+              }}
+            >
+              Referrals
             </a>
 
             {/* Dashboard Link - Rendered when user is authenticated */}

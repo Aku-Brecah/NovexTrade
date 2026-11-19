@@ -15,6 +15,7 @@ export type AdminSectionId =
   | 'all-users' | 'user-surveillance' | 'kyc-compliance' | 'suspended-accounts'
   | 'markets' | 'order-books' | 'trades' | 'trading-surveillance'
   | 'proof-of-reserves' | 'treasury' | 'fees' | 'financial-reports' | 'investment-plans'
+  | 'commerce-payments' | 'commerce-referrals' | 'commerce-crypto-wallet'
   | 'deposits' | 'withdrawals' | 'internal-transfers' | 'deposit-wallets'
   | 'escrows' | 'disputes' | 'escrow-merchants'
   | 'audit-logs' | 'login-security' | 'api-keys' | 'two-factor-compliance' | 'security-alerts'
@@ -69,6 +70,14 @@ export const ADMIN_NAV_GROUPS: NavGroup[] = [
       { id: 'order-books', label: 'Order Books', icon: <BookOpen size={15} />, permission: 'viewRisk' },
       { id: 'trades', label: 'Trades', icon: <Repeat2 size={15} />, permission: 'viewRisk' },
       { id: 'trading-surveillance', label: 'Trading Surveillance', icon: <Radar size={15} />, permission: 'viewRisk' }
+    ]
+  },
+  {
+    title: 'Commerce & Referrals',
+    items: [
+      { id: 'commerce-payments', label: 'Product Payments', icon: <Receipt size={15} />, permission: 'viewFinance' },
+      { id: 'commerce-referrals', label: 'Referrals & Commissions', icon: <Users size={15} />, permission: 'viewFinance' },
+      { id: 'commerce-crypto-wallet', label: 'Global Crypto Wallet', icon: <Coins size={15} />, permission: 'viewFinance' }
     ]
   },
   {

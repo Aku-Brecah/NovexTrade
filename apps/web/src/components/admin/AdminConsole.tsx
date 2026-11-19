@@ -22,6 +22,9 @@ import { TradesTable } from './trading/TradesTable';
 import { ProofOfReserves } from './finance/ProofOfReserves';
 import { TreasuryView } from './finance/TreasuryView';
 import { InvestmentAdmin } from './finance/InvestmentAdmin';
+import { AdminPaymentsPanel } from './commerce/AdminPaymentsPanel';
+import { AdminGlobalCryptoWalletPanel } from './commerce/AdminGlobalCryptoWalletPanel';
+import { AdminReferralsPanel } from './commerce/AdminReferralsPanel';
 import { DepositMonitor } from './wallet/DepositMonitor';
 import { WithdrawalQueue } from './wallet/WithdrawalQueue';
 import { InternalTransfers } from './wallet/InternalTransfers';
@@ -89,6 +92,13 @@ const renderSection = (
       return <TreasuryView />;
     case 'investment-plans':
       return <InvestmentAdmin />;
+    // Commerce & Referrals
+    case 'commerce-payments':
+      return <AdminPaymentsPanel />;
+    case 'commerce-referrals':
+      return <AdminReferralsPanel />;
+    case 'commerce-crypto-wallet':
+      return <AdminGlobalCryptoWalletPanel />;
     // Wallet ops
     case 'deposit-wallets':
       return <DepositWalletsConfig />;

@@ -20,6 +20,7 @@ import {
   X
 } from 'lucide-react';
 import { Footer } from '../Footer';
+import { CheckoutModal, CheckoutTarget } from './CheckoutModal';
 
 export interface StrategyResource {
   id: string;
@@ -37,6 +38,8 @@ export interface StrategyResource {
   publishedDate: string;
   tags: string[];
   downloadUrl?: string;
+  priceUsd?: string;
+  isUnlocked?: boolean;
   sections?: [string, string[]][];
 }
 
@@ -60,22 +63,40 @@ export const StrategyResourcesView: React.FC<StrategyResourcesViewProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
 
-  // Download feedback states
+  // Download & Checkout states
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [hasComboAccess, setHasComboAccess] = useState<boolean>(false);
+  const [pricing, setPricing] = useState<{ individualPdfUsd: string; comboBundleUsd: string }>({
+    individualPdfUsd: '99.00',
+    comboBundleUsd: '699.00',
+  });
+  const [checkoutTarget, setCheckoutTarget] = useState<CheckoutTarget | null>(null);
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // Fetch catalog on mount
+  const getToken = () => localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token');
+
+  // Fetch catalog & entitlement state on mount / user change
   const fetchResources = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/v1/resources');
+      const token = getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const res = await fetch('/api/v1/resources', { headers });
       if (!res.ok) {
         throw new Error(`Failed to load resources (Status ${res.status})`);
       }
       const data = await res.json();
       if (data.success && Array.isArray(data.resources)) {
         setResources(data.resources);
+        setHasComboAccess(Boolean(data.hasComboAccess));
+        if (data.pricing) {
+          setPricing({
+            individualPdfUsd: data.pricing.individualPdfUsd || '99.00',
+            comboBundleUsd: data.pricing.comboBundleUsd || '699.00',
+          });
+        }
       } else {
         throw new Error(data.message || 'Malformed strategy catalog response');
       }
@@ -89,7 +110,56 @@ export const StrategyResourcesView: React.FC<StrategyResourcesViewProps> = ({
 
   useEffect(() => {
     fetchResources();
-  }, []);
+  }, [user]);
+
+  const openCheckout = (target: CheckoutTarget) => {
+    const token = getToken();
+    if (!user || !token) {
+      showToast('error', 'Please sign in to purchase and unlock strategy downloads.');
+      onOpenAuth();
+      return;
+    }
+    setCheckoutTarget(target);
+  };
+
+  const handleDownloadCombo = async () => {
+    const token = getToken();
+    if (!user || !token) {
+      onOpenAuth();
+      return;
+    }
+    setDownloadingId('COMBO_ZIP');
+    try {
+      const res = await fetch('/api/v1/resources/combo/download', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        if (res.status === 403) {
+          openCheckout({
+            productId: 'combo_bundle',
+            productName: 'Complete Institutional Strategy Combo',
+            priceUsd: pricing.comboBundleUsd,
+          });
+          return;
+        }
+        throw new Error(`Combo download failed (Status ${res.status})`);
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'novextrade-complete-strategy-combo.zip');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      showToast('success', 'Downloaded Complete Strategy Combo (ZIP).');
+    } catch (err: any) {
+      showToast('error', err.message || 'Unable to download combo archive.');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   // Show auto-dismiss toast
   const showToast = (type: 'success' | 'error', text: string) => {
@@ -432,13 +502,14 @@ export const StrategyResourcesView: React.FC<StrategyResourcesViewProps> = ({
                       <span>{res.pages} Pages</span>
                     </div>
 
-                    {/* Download CTA Button */}
-                    {user ? (
+                    {/* Download or Purchase CTA Button */}
+                    {user && res.isUnlocked ? (
                       <button
                         type="button"
                         onClick={() => handleDownload(res)}
                         disabled={isDownloading}
                         className="strategy-download-btn"
+                        style={{ background: '#0ecb81', color: '#0b0e11', borderColor: '#0ecb81' }}
                       >
                         {isDownloading ? (
                           <>
@@ -448,18 +519,26 @@ export const StrategyResourcesView: React.FC<StrategyResourcesViewProps> = ({
                         ) : (
                           <>
                             <FolderDown size={14} />
-                            <span>Download Playbook (.pdf)</span>
+                            <span>Unlocked — Download PDF</span>
                           </>
                         )}
                       </button>
                     ) : (
                       <button
                         type="button"
-                        onClick={onOpenAuth}
-                        className="strategy-locked-btn"
+                        onClick={() =>
+                          openCheckout({
+                            productId: 'individual_pdf',
+                            productName: 'Individual Strategy PDF Download',
+                            priceUsd: res.priceUsd || pricing.individualPdfUsd,
+                            resourceId: res.id,
+                            resourceTitle: res.title,
+                          })
+                        }
+                        className="strategy-download-btn"
                       >
-                        <Lock size={13} color="#f0b90b" />
-                        <span>Members Only — Sign In to Download</span>
+                        <Lock size={14} />
+                        <span>Unlock PDF — ${res.priceUsd || pricing.individualPdfUsd} USD</span>
                       </button>
                     )}
 
@@ -478,6 +557,47 @@ export const StrategyResourcesView: React.FC<StrategyResourcesViewProps> = ({
             })}
           </div>
         )}
+
+        {/* Complete Combo Bundle Banner ($699 USD) */}
+        <div className="nvx-combo-banner">
+          <div>
+            <div className="nvx-modal-kicker">ALL-ACCESS INSTITUTIONAL BUNDLE</div>
+            <h3 style={{ margin: '4px 0 6px', fontSize: '20px', fontWeight: 800, color: '#ffffff' }}>
+              Complete Strategy Combo Download — ${pricing.comboBundleUsd} USD
+            </h3>
+            <p style={{ margin: 0, fontSize: '13px', color: '#848e9c', maxWidth: '640px', lineHeight: 1.5 }}>
+              Unlock all 5 institutional strategy playbooks individually plus a single bundled ZIP archive. Pay securely by Card (Visa/Mastercard) or verified on-chain Cryptocurrency.
+            </p>
+          </div>
+          <div>
+            {hasComboAccess ? (
+              <button
+                type="button"
+                className="nvx-btn-gold"
+                style={{ background: '#0ecb81', borderColor: '#0ecb81' }}
+                disabled={downloadingId === 'COMBO_ZIP'}
+                onClick={handleDownloadCombo}
+              >
+                <Download size={16} />
+                {downloadingId === 'COMBO_ZIP' ? 'Preparing ZIP...' : 'Download Complete Combo (ZIP)'}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="nvx-btn-gold"
+                onClick={() =>
+                  openCheckout({
+                    productId: 'combo_bundle',
+                    productName: 'Complete Institutional Strategy Combo',
+                    priceUsd: pricing.comboBundleUsd,
+                  })
+                }
+              >
+                <Sparkles size={16} /> Buy Complete Combo — ${pricing.comboBundleUsd} USD
+              </button>
+            )}
+          </div>
+        </div>
 
         {/* Security & Mathematical Rigor Notice */}
         <div className="strategy-authenticity-card">
@@ -516,6 +636,27 @@ export const StrategyResourcesView: React.FC<StrategyResourcesViewProps> = ({
         {/* Footer */}
         <Footer onNavigateToTrade={onNavigateToTrade} />
       </div>
+
+      {checkoutTarget && getToken() && (
+        <CheckoutModal
+          target={checkoutTarget}
+          token={getToken()!}
+          onClose={() => setCheckoutTarget(null)}
+          onPaymentSuccess={() => {
+            fetchResources();
+            showToast('success', 'Payment verified! Your download entitlement is now active.');
+          }}
+          onDownloadUnlocked={(resourceId, isCombo) => {
+            setCheckoutTarget(null);
+            if (isCombo) {
+              handleDownloadCombo();
+            } else if (resourceId) {
+              const found = resources.find((r) => r.id === resourceId);
+              if (found) handleDownload(found);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

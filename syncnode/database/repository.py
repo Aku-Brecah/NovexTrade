@@ -13,11 +13,22 @@ class UserRepository:
             return db.users.get(user_id)
         return None
 
+    def find_by_referral_code(self, code: str) -> Optional[Dict[str, Any]]:
+        if not code:
+            return None
+        user_id = db.users_by_referral_code.get(code.strip().upper())
+        if user_id:
+            return db.users.get(user_id)
+        return None
+
     def save(self, user: Dict[str, Any]) -> Dict[str, Any]:
         user_id = user["id"]
         email = user["email"].lower()
         db.users[user_id] = user
         db.users_by_email[email] = user_id
+        ref_code = user.get("referral_code")
+        if ref_code:
+            db.users_by_referral_code[ref_code.strip().upper()] = user_id
         supabase_client.queue_upsert("users", user)
         return user
 

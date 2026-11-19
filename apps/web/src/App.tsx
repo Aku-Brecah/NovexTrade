@@ -21,7 +21,9 @@ const EmailTemplatesView = lazy(() => import('./components/EmailTemplatesView').
 const P2PView = lazy(() => import('./components/P2PView').then(m => ({ default: m.P2PView })));
 const InvestmentView = lazy(() => import('./components/InvestmentView').then(m => ({ default: m.InvestmentView })));
 const StrategyResourcesView = lazy(() => import('./components/resources/StrategyResourcesView').then(m => ({ default: m.StrategyResourcesView })));
+const ReferralDashboardView = lazy(() => import('./components/referrals/ReferralDashboardView').then(m => ({ default: m.ReferralDashboardView })));
 const AdminConsole = lazy(() => import('./components/admin/AdminConsole').then(m => ({ default: m.AdminConsole })));
+import { captureReferralFromUrl } from './utils/referralAttribution';
 
 const ViewFallback = () => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', color: '#848e9c' }}>
@@ -81,7 +83,7 @@ function parseUrlRoute(): { tab: TabType; symbol: string; stockSymbol: string; i
     return { tab: 'spot', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
-  if (raw === 'signup') {
+  if (raw === 'signup' || raw === 'register') {
     return { tab: 'signup', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
@@ -189,7 +191,11 @@ function parseUrlRoute(): { tab: TabType; symbol: string; stockSymbol: string; i
     return { tab: 'resources', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
-  if (['home', 'dashboard', 'watchlist', 'news', 'stock', 'spot', 'earn', 'p2p', 'resources', 'wallet', 'assets', 'margin', 'futures', 'funding', 'deposit', 'withdraw', 'transfers', 'orders', 'history', 'security', 'kyc', 'apikeys', 'sessions', 'settings', 'admin', 'emails', 'signup', 'login'].includes(raw)) {
+  if (raw === 'referrals' || raw === 'referral') {
+    return { tab: 'referrals', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
+  }
+
+  if (['home', 'dashboard', 'watchlist', 'news', 'stock', 'spot', 'earn', 'p2p', 'resources', 'referrals', 'wallet', 'assets', 'margin', 'futures', 'funding', 'deposit', 'withdraw', 'transfers', 'orders', 'history', 'security', 'kyc', 'apikeys', 'sessions', 'settings', 'admin', 'emails', 'signup', 'login'].includes(raw)) {
     return { tab: raw as TabType, symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
@@ -230,6 +236,10 @@ export const App: React.FC = () => {
   const initialRoute = parseUrlRoute();
 
   const [activeTab, setActiveTabState] = useState<TabType>(initialRoute.tab);
+
+  useEffect(() => {
+    captureReferralFromUrl();
+  }, []);
   const [symbol, setSymbolState] = useState<string>(initialRoute.symbol);
   const [stockSymbol, setStockSymbolState] = useState<string>(initialRoute.stockSymbol);
   const [isSearchOpen, setIsSearchOpen] = useState(initialRoute.isSearch);
@@ -1080,6 +1090,25 @@ export const App: React.FC = () => {
           <StrategyResourcesView
             user={user}
             onOpenAuth={() => setActiveTab('signup')}
+            onNavigateToTrade={(sym) => {
+              if (sym) {
+                setSymbol(sym);
+                setActiveTab('spot', sym);
+              } else {
+                setActiveTab('spot');
+              }
+            }}
+          />
+        </Suspense>
+      )}
+
+      {/* 9.6 USER REFERRAL DASHBOARD & PURCHASED DOWNLOADS */}
+      {activeTab === 'referrals' && (
+        <Suspense fallback={<ViewFallback />}>
+          <ReferralDashboardView
+            token={localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token')}
+            onRequireAuth={() => setActiveTab('signup')}
+            onNavigateToResources={() => setActiveTab('resources')}
             onNavigateToTrade={(sym) => {
               if (sym) {
                 setSymbol(sym);

@@ -13,6 +13,31 @@ class Database:
     def __init__(self):
         self.users: Dict[str, Any] = {}
         self.users_by_email: Dict[str, str] = {}
+        self.users_by_referral_code: Dict[str, str] = {}
+
+        # Product Pricing, Orders, Payments, Crypto & Referral Systems
+        self.products: Dict[str, Dict[str, Any]] = {}
+        self.referral_clicks: Dict[str, Dict[str, Any]] = {}
+        self.referral_relationships: Dict[str, Dict[str, Any]] = {}  # keyed by referred_user_id
+        self.referral_commission_config: Dict[str, Any] = {}
+        self.referral_commissions: Dict[str, Dict[str, Any]] = {}  # keyed by id
+        self.referral_commissions_by_order: Dict[str, str] = {}    # order_id -> commission_id
+        self.referral_payouts: Dict[str, Dict[str, Any]] = {}
+
+        self.product_orders: Dict[str, Dict[str, Any]] = {}        # keyed by order_id
+        self.product_orders_by_ref: Dict[str, str] = {}            # order_reference -> order_id
+        self.product_orders_by_idempotency: Dict[str, str] = {}    # idempotency_key -> order_id
+        self.payment_records: Dict[str, Dict[str, Any]] = {}       # keyed by payment_id
+        self.payment_records_by_provider_ref: Dict[str, str] = {}  # provider_reference -> payment_id
+        self.payment_verification_events: List[Dict[str, Any]] = []
+        self.processed_webhook_events: Set[str] = set()
+
+        self.crypto_wallet_config: Dict[str, Any] = {}
+        self.crypto_transactions: Dict[str, Dict[str, Any]] = {}   # keyed by id
+        self.crypto_tx_by_hash: Dict[str, str] = {}                # normalized tx_hash -> id
+
+        self.download_entitlements: Dict[str, Dict[str, Any]] = {} # keyed by entitlement_id
+        self.download_logs: List[Dict[str, Any]] = []
 
         self.api_keys: Dict[str, Any] = {}
         self.api_keys_by_key: Dict[str, str] = {}
@@ -60,6 +85,7 @@ class Database:
         admin_email = os.environ.get("ADMIN_BOOTSTRAP_EMAIL", "admin@novextrade.exchange").strip().lower()
         admin_pass = os.environ.get("ADMIN_BOOTSTRAP_PASSWORD", "NovexTrade2026!Secure")
         admin_id = "admin_super_exec_1"
+        now_ms = int(time.time() * 1000)
         user = {
             "id": admin_id,
             "email": admin_email,
@@ -71,11 +97,76 @@ class Database:
             "admin_roles": [AdminRole.SUPER_ADMIN.value],
             "is_suspended": False,
             "is_withdrawal_suspended": False,
-            "created_at": int(time.time() * 1000),
-            "updated_at": int(time.time() * 1000)
+            "referral_code": "NVXADMIN01",
+            "referred_by": None,
+            "created_at": now_ms,
+            "updated_at": now_ms
         }
         self.users[admin_id] = user
         self.users_by_email[admin_email] = admin_id
+        self.users_by_referral_code["NVXADMIN01"] = admin_id
+
+        # Authoritative Server-Side Product Catalog & Pricing (USD)
+        self.products = {
+            "individual_pdf": {
+                "id": "individual_pdf",
+                "name": "Individual Strategy PDF Download",
+                "description": "Single institutional strategy PDF playbook with lifetime verified access.",
+                "product_type": "INDIVIDUAL_PDF",
+                "price_usd": "99.00",
+                "currency": "USD",
+                "is_active": True,
+                "created_at": now_ms,
+                "updated_at": now_ms,
+            },
+            "combo_bundle": {
+                "id": "combo_bundle",
+                "name": "Complete Institutional Strategy Combo",
+                "description": "Unlocks all 5 institutional strategy PDFs individually plus a bundled ZIP download.",
+                "product_type": "COMBO_BUNDLE",
+                "price_usd": "699.00",
+                "currency": "USD",
+                "is_active": True,
+                "created_at": now_ms,
+                "updated_at": now_ms,
+            },
+        }
+
+        # Admin-Controlled Referral Commission Configuration (0% default until admin configures)
+        self.referral_commission_config = {
+            "id": "default",
+            "is_enabled": True,
+            "individual_pdf_commission_percent": "0.00",
+            "combo_commission_percent": "0.00",
+            "min_payout_threshold_usd": "50.00",
+            "approval_mode": "MANUAL",  # MANUAL | AUTO_AFTER_HOLD
+            "holding_period_days": 14,
+            "auto_payout_enabled": False,
+            "terms_and_conditions": (
+                "Referral commissions are calculated strictly on verified net USD purchases. "
+                "Self-referrals are prohibited. Refunded, cancelled, or disputed orders automatically reverse associated commissions."
+            ),
+            "updated_by": admin_id,
+            "updated_at": now_ms,
+        }
+
+        # Single Global Administrator-Configured Cryptocurrency Receiving Wallet
+        # Every registered user sees this exact receiving wallet address.
+        self.crypto_wallet_config = {
+            "id": "global_default",
+            "is_enabled": True,
+            "receiving_address": os.environ.get(
+                "GLOBAL_CRYPTO_RECEIVING_ADDRESS",
+                "0x71C8366420A092679b5436194448873305370caD"
+            ),
+            "primary_asset": os.environ.get("GLOBAL_CRYPTO_ASSET", "USDT"),
+            "primary_network": os.environ.get("GLOBAL_CRYPTO_NETWORK", "ERC20"),
+            "supported_tokens": ["USDT", "USDC", "ETH"],
+            "required_confirmations": int(os.environ.get("GLOBAL_CRYPTO_CONFIRMATIONS", "12")),
+            "memo_tag": os.environ.get("GLOBAL_CRYPTO_MEMO_TAG") or None,
+            "updated_by": admin_id,
+            "updated_at": now_ms,
+        }
 
         # Seed Default Admin-Managed Deposit Wallets
         self.deposit_addresses = {
@@ -211,6 +302,26 @@ class Database:
     def reset(self):
         self.users.clear()
         self.users_by_email.clear()
+        self.users_by_referral_code.clear()
+        self.products.clear()
+        self.referral_clicks.clear()
+        self.referral_relationships.clear()
+        self.referral_commission_config.clear()
+        self.referral_commissions.clear()
+        self.referral_commissions_by_order.clear()
+        self.referral_payouts.clear()
+        self.product_orders.clear()
+        self.product_orders_by_ref.clear()
+        self.product_orders_by_idempotency.clear()
+        self.payment_records.clear()
+        self.payment_records_by_provider_ref.clear()
+        self.payment_verification_events.clear()
+        self.processed_webhook_events.clear()
+        self.crypto_wallet_config.clear()
+        self.crypto_transactions.clear()
+        self.crypto_tx_by_hash.clear()
+        self.download_entitlements.clear()
+        self.download_logs.clear()
         self.api_keys.clear()
         self.api_keys_by_key.clear()
         self.accounts.clear()
