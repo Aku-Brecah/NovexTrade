@@ -25,6 +25,7 @@ import { InvestmentAdmin } from './finance/InvestmentAdmin';
 import { AdminPaymentsPanel } from './commerce/AdminPaymentsPanel';
 import { AdminGlobalCryptoWalletPanel } from './commerce/AdminGlobalCryptoWalletPanel';
 import { AdminReferralsPanel } from './commerce/AdminReferralsPanel';
+import { AdminStrategiesPanel } from './commerce/AdminStrategiesPanel';
 import { DepositMonitor } from './wallet/DepositMonitor';
 import { WithdrawalQueue } from './wallet/WithdrawalQueue';
 import { InternalTransfers } from './wallet/InternalTransfers';
@@ -93,6 +94,8 @@ const renderSection = (
     case 'investment-plans':
       return <InvestmentAdmin />;
     // Commerce & Referrals
+    case 'commerce-strategies':
+      return <AdminStrategiesPanel />;
     case 'commerce-payments':
       return <AdminPaymentsPanel />;
     case 'commerce-referrals':

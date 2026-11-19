@@ -22,6 +22,7 @@ from syncnode.services.market_data import market_data_service
 from syncnode.services.investment import investment_service
 from syncnode.services.commerce import commerce_service
 from syncnode.services.referral import referral_service
+from syncnode.services.resources import resources_service
 from syncnode.common.types import AssetSymbol, OrderSide, OrderType, KycTier, KycStatus, AdminRole
 from syncnode.common.decimal_util import to_decimal, format_decimal, mul_decimals
 from syncnode.common.errors import (
@@ -1383,4 +1384,101 @@ async def admin_action_referral_commission(
         metadata={"payout_reference": req.payout_reference},
     )
     return {"success": True, "commission": comm}
+
+
+# ==========================================================================
+# STRATEGY PDF UPLOAD & CATALOG MANAGEMENT
+# ==========================================================================
+
+class AdminCreateStrategyPdfRequest(BaseModel):
+    title: str
+    category: Optional[str] = "Institutional Strategy"
+    difficulty: Optional[str] = "Intermediate"
+    summary: Optional[str] = ""
+    targetSharpe: Optional[str] = "2.00"
+    recommendedHorizon: Optional[str] = "Intraday / Swing"
+    assetSuitability: Optional[str] = "BTC, ETH, USDT Pairs"
+    author: Optional[str] = "NovexTrade Quantitative Research"
+    pages: Optional[int] = 1
+    tags: Optional[Any] = None
+    pdfFilename: Optional[str] = None
+    pdfBase64: str
+
+
+class AdminUpdateStrategyPdfRequest(BaseModel):
+    title: Optional[str] = None
+    category: Optional[str] = None
+    difficulty: Optional[str] = None
+    summary: Optional[str] = None
+    targetSharpe: Optional[str] = None
+    recommendedHorizon: Optional[str] = None
+    assetSuitability: Optional[str] = None
+    author: Optional[str] = None
+    pages: Optional[int] = None
+    tags: Optional[Any] = None
+    pdfFilename: Optional[str] = None
+    pdfBase64: Optional[str] = None
+
+
+@admin_api_router.get("/resources/strategies")
+async def admin_list_strategy_pdfs(admin: Dict[str, Any] = Depends(require_admin)):
+    return {
+        "success": True,
+        "strategies": resources_service.get_catalog(),
+        "pricing": {
+            "individualPdfUsd": commerce_service.get_product("individual_pdf")["price_usd"],
+            "comboBundleUsd": commerce_service.get_product("combo_bundle")["price_usd"],
+        },
+    }
+
+
+@admin_api_router.post("/resources/strategies")
+async def admin_create_strategy_pdf(
+    req: AdminCreateStrategyPdfRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value])
+    created = resources_service.admin_create_strategy(req.model_dump(), admin_id=admin["id"])
+    log_admin_action(
+        admin,
+        "CREATE_STRATEGY_PDF",
+        target_id=created["id"],
+        metadata={"title": created["title"], "filename": created["filename"], "fileSize": created["fileSize"]},
+    )
+    return {"success": True, "strategy": created}
+
+
+@admin_api_router.put("/resources/strategies/{resource_id}")
+async def admin_update_strategy_pdf(
+    resource_id: str,
+    req: AdminUpdateStrategyPdfRequest,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value])
+    updated = resources_service.admin_update_strategy(
+        resource_id, req.model_dump(exclude_none=True), admin_id=admin["id"]
+    )
+    log_admin_action(
+        admin,
+        "UPDATE_STRATEGY_PDF",
+        target_id=resource_id,
+        metadata={"title": updated["title"], "filename": updated["filename"], "replacedPdf": bool(req.pdfBase64)},
+    )
+    return {"success": True, "strategy": updated}
+
+
+@admin_api_router.delete("/resources/strategies/{resource_id}")
+async def admin_delete_strategy_pdf(
+    resource_id: str,
+    admin: Dict[str, Any] = Depends(require_admin),
+):
+    _require_admin_write_role(admin, [AdminRole.SUPER_ADMIN.value, AdminRole.FINANCE_ADMIN.value])
+    deleted = resources_service.admin_delete_strategy(resource_id)
+    log_admin_action(
+        admin,
+        "DELETE_STRATEGY_PDF",
+        target_id=resource_id,
+        metadata=deleted,
+    )
+    return {"success": True, **deleted}
 

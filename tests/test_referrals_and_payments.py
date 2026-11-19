@@ -469,3 +469,77 @@ def test_paystack_hmac_webhook_signature_and_admin_rbac(client, monkeypatch):
     assert adm["summary"]["totalSales"] == 1
     assert adm["summary"]["totalRevenueUsd"] == "99.00"
     assert adm["summary"]["individualPdfSales"] == 1
+
+
+# ---------------------------------------------------------------------------
+# 19. ADMIN STRATEGY PDF UPLOAD, UPDATE & DELETE MANAGEMENT
+# ---------------------------------------------------------------------------
+
+def test_admin_upload_update_and_delete_strategy_pdf(client):
+    import base64
+
+    fake_bytes = base64.b64encode(b"<html>not a pdf</html>" * 10).decode("ascii")
+    valid_pdf_bytes = b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n" + (b"%" * 120) + b"\n%%EOF\n"
+    valid_b64 = "data:application/pdf;base64," + base64.b64encode(valid_pdf_bytes).decode("ascii")
+
+    # 1. Read-only auditor rejected (403)
+    ro_res = client.post(
+        "/api/v1/admin/resources/strategies",
+        headers=_auditor_headers(),
+        json={"title": "Unauthorized Strategy", "pdfFilename": "unauth.pdf", "pdfBase64": valid_b64},
+    )
+    assert ro_res.status_code == 403
+
+    # 2. Fake non-PDF content rejected (422)
+    bad_res = client.post(
+        "/api/v1/admin/resources/strategies",
+        headers=_admin_headers(),
+        json={"title": "Fake PDF Strategy", "pdfFilename": "fake.pdf", "pdfBase64": fake_bytes},
+    )
+    assert bad_res.status_code == 422
+
+    # 3. Admin uploads genuine PDF strategy -> appears in public catalog at $99.00
+    create_res = client.post(
+        "/api/v1/admin/resources/strategies",
+        headers=_admin_headers(),
+        json={
+            "title": "Admin Liquidity Sweep Playbook",
+            "category": "Order Flow",
+            "difficulty": "Institutional",
+            "summary": "Custom admin-uploaded liquidity sweep strategy.",
+            "pages": 18,
+            "tags": ["Liquidity", "Sweep"],
+            "pdfFilename": "admin-liquidity-sweep.pdf",
+            "pdfBase64": valid_b64,
+        },
+    )
+    assert create_res.status_code == 200
+    created = create_res.json()["strategy"]
+    strat_id = created["id"]
+    assert created["fileExists"] is True
+
+    # Appears in public /api/v1/resources catalog at $99.00
+    pub_catalog = client.get("/api/v1/resources").json()["resources"]
+    match = next((r for r in pub_catalog if r["id"] == strat_id), None)
+    assert match is not None
+    assert match["priceUsd"] == "99.00"
+    assert match["title"] == "Admin Liquidity Sweep Playbook"
+
+    # 4. Admin edits metadata cleanly
+    upd_res = client.put(
+        f"/api/v1/admin/resources/strategies/{strat_id}",
+        headers=_admin_headers(),
+        json={"title": "Admin Liquidity Sweep Playbook v2", "pages": 24},
+    )
+    assert upd_res.status_code == 200
+    assert upd_res.json()["strategy"]["title"] == "Admin Liquidity Sweep Playbook v2"
+    assert upd_res.json()["strategy"]["pages"] == 24
+
+    # 5. Admin deletes strategy cleanly (cleanup test artifact)
+    del_res = client.delete(
+        f"/api/v1/admin/resources/strategies/{strat_id}",
+        headers=_admin_headers(),
+    )
+    assert del_res.status_code == 200
+    pub_after = client.get("/api/v1/resources").json()["resources"]
+    assert all(r["id"] != strat_id for r in pub_after)

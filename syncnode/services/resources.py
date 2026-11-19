@@ -2,12 +2,21 @@
 NovexTrade Strategy Resources & Institutional PDF Service
 Manages strategy whitepapers, playbooks, and secure authenticated PDF streaming.
 """
+import base64
+import json
 import os
+import re
+import time
+import uuid
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 
+from syncnode.common.errors import ValidationError, NotFoundError
+
 
 RESOURCES_DIR = Path(__file__).resolve().parent.parent.parent / "resources" / "pdfs"
+CATALOG_MANIFEST_PATH = RESOURCES_DIR / "catalog.json"
+MAX_PDF_UPLOAD_BYTES = 25 * 1024 * 1024  # 25 MB limit
 
 
 STRATEGY_CATALOG: List[Dict[str, Any]] = [
@@ -300,21 +309,96 @@ def ensure_strategy_pdfs_exist():
             _generate_valid_pdf(filepath, res)
 
 
+def _format_file_size(num_bytes: int) -> str:
+    if num_bytes >= 1024 * 1024:
+        return f"{num_bytes / (1024 * 1024):.1f} MB"
+    return f"{max(1, round(num_bytes / 1024))} KB"
+
+
+def _sanitize_pdf_filename(raw_name: str, fallback_slug: str) -> str:
+    base = Path(raw_name or fallback_slug).name
+    stem = re.sub(r"[^a-zA-Z0-9._-]+", "-", base).strip("-.").lower()
+    if not stem:
+        stem = fallback_slug
+    if not stem.endswith(".pdf"):
+        stem = f"{stem}.pdf"
+    return stem[:120]
+
+
+def _slugify(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", (text or "").lower()).strip("-")
+    return slug[:48] or f"strategy-{uuid.uuid4().hex[:6]}"
+
+
 class ResourcesService:
     def __init__(self):
+        self._catalog: List[Dict[str, Any]] = []
+        self._load_or_seed_catalog()
+
+    def _load_or_seed_catalog(self):
         ensure_strategy_pdfs_exist()
+        if CATALOG_MANIFEST_PATH.exists():
+            try:
+                loaded = json.loads(CATALOG_MANIFEST_PATH.read_text(encoding="utf-8"))
+                if isinstance(loaded, list) and loaded:
+                    self._catalog = loaded
+                    return
+            except Exception:
+                pass
+        # Seed from built-in institutional playbooks
+        self._catalog = [dict(r) for r in STRATEGY_CATALOG]
+        self._persist_catalog()
+
+    def _persist_catalog(self):
+        RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
+        serializable = [{k: v for k, v in item.items() if k != "sections"} for item in self._catalog]
+        tmp_path = CATALOG_MANIFEST_PATH.with_suffix(".json.tmp")
+        tmp_path.write_text(json.dumps(serializable, indent=2), encoding="utf-8")
+        tmp_path.replace(CATALOG_MANIFEST_PATH)
+
+    def _decode_and_validate_pdf(self, pdf_base64: str) -> bytes:
+        raw = (pdf_base64 or "").strip()
+        if not raw:
+            raise ValidationError("PDF file content is required")
+        if "," in raw and raw.lower().startswith("data:"):
+            header_part, raw = raw.split(",", 1)
+            if "pdf" not in header_part.lower() and "octet-stream" not in header_part.lower():
+                raise ValidationError("Uploaded file must be a valid PDF document (application/pdf)")
+        try:
+            pdf_bytes = base64.b64decode(raw, validate=True)
+        except Exception:
+            raise ValidationError("Invalid base64 encoding for PDF file")
+
+        if len(pdf_bytes) < 64:
+            raise ValidationError("Uploaded PDF file is empty or corrupted")
+        if len(pdf_bytes) > MAX_PDF_UPLOAD_BYTES:
+            raise ValidationError("PDF file exceeds the maximum allowed size of 25 MB")
+        if not pdf_bytes.startswith(b"%PDF-"):
+            raise ValidationError("Invalid file signature: uploaded file must be a genuine PDF (%PDF- header)")
+        return pdf_bytes
+
+    def _write_pdf_bytes(self, filename: str, pdf_bytes: bytes) -> Path:
+        RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
+        target = (RESOURCES_DIR / filename).resolve()
+        if RESOURCES_DIR.resolve() not in target.parents:
+            raise ValidationError("Invalid PDF filename path")
+        tmp = target.with_suffix(".pdf.tmp")
+        tmp.write_bytes(pdf_bytes)
+        tmp.replace(target)
+        return target
 
     def get_catalog(self) -> List[Dict[str, Any]]:
-        # Return public metadata without heavy binary stream structures
         catalog = []
-        for r in STRATEGY_CATALOG:
+        for r in self._catalog:
             item = {k: v for k, v in r.items() if k != "sections"}
             item["downloadUrl"] = f"/api/v1/resources/download/{r['id']}"
+            fp = RESOURCES_DIR / r["filename"]
+            item["fileExists"] = fp.exists()
             catalog.append(item)
         return catalog
 
     def get_resource(self, resource_id: str) -> Optional[Dict[str, Any]]:
-        for r in STRATEGY_CATALOG:
+        for r in self._catalog:
             if r["id"] == resource_id:
                 return r
         return None
@@ -323,10 +407,125 @@ class ResourcesService:
         res = self.get_resource(resource_id)
         if not res:
             return None
-        filepath = RESOURCES_DIR / res["filename"]
+        filepath = (RESOURCES_DIR / res["filename"]).resolve()
+        if RESOURCES_DIR.resolve() not in filepath.parents:
+            return None
         if not filepath.exists():
-            _generate_valid_pdf(filepath, res)
+            # Regenerate only if it is one of the built-in seeded strategies
+            builtin = next((b for b in STRATEGY_CATALOG if b["id"] == resource_id), None)
+            if builtin:
+                _generate_valid_pdf(filepath, builtin)
         return filepath
+
+    def admin_create_strategy(self, payload: Dict[str, Any], admin_id: str) -> Dict[str, Any]:
+        title = str(payload.get("title") or "").strip()
+        if len(title) < 3:
+            raise ValidationError("Strategy title must be at least 3 characters")
+
+        pdf_bytes = self._decode_and_validate_pdf(str(payload.get("pdfBase64") or ""))
+        resource_id = f"strat-{_slugify(title)}-{uuid.uuid4().hex[:6]}"
+        filename = _sanitize_pdf_filename(str(payload.get("pdfFilename") or f"{resource_id}.pdf"), resource_id)
+
+        # Ensure unique filename on disk
+        if (RESOURCES_DIR / filename).exists():
+            filename = f"{Path(filename).stem}-{uuid.uuid4().hex[:6]}.pdf"
+
+        self._write_pdf_bytes(filename, pdf_bytes)
+
+        raw_tags = payload.get("tags") or []
+        if isinstance(raw_tags, str):
+            tags = [t.strip() for t in raw_tags.split(",") if t.strip()]
+        else:
+            tags = [str(t).strip() for t in raw_tags if str(t).strip()]
+
+        now_month = time.strftime("%B %Y")
+        strategy = {
+            "id": resource_id,
+            "title": title,
+            "category": str(payload.get("category") or "Institutional Strategy").strip(),
+            "difficulty": str(payload.get("difficulty") or "Intermediate").strip(),
+            "summary": str(payload.get("summary") or "").strip() or "Institutional trading strategy playbook.",
+            "targetSharpe": str(payload.get("targetSharpe") or "2.00").strip(),
+            "recommendedHorizon": str(payload.get("recommendedHorizon") or "Intraday / Swing").strip(),
+            "assetSuitability": str(payload.get("assetSuitability") or "BTC, ETH, USDT Pairs").strip(),
+            "filename": filename,
+            "fileSize": _format_file_size(len(pdf_bytes)),
+            "pages": max(1, int(payload.get("pages") or 1)),
+            "author": str(payload.get("author") or "NovexTrade Quantitative Research").strip(),
+            "publishedDate": str(payload.get("publishedDate") or now_month).strip(),
+            "tags": tags or ["Strategy", "PDF"],
+            "uploadedBy": admin_id,
+            "updatedAt": int(time.time() * 1000),
+        }
+        self._catalog.insert(0, strategy)
+        self._persist_catalog()
+        return {**strategy, "downloadUrl": f"/api/v1/resources/download/{resource_id}", "fileExists": True}
+
+    def admin_update_strategy(self, resource_id: str, payload: Dict[str, Any], admin_id: str) -> Dict[str, Any]:
+        strategy = self.get_resource(resource_id)
+        if not strategy:
+            raise NotFoundError(f"Strategy '{resource_id}' not found")
+
+        for field in (
+            "title",
+            "category",
+            "difficulty",
+            "summary",
+            "targetSharpe",
+            "recommendedHorizon",
+            "assetSuitability",
+            "author",
+            "publishedDate",
+        ):
+            if field in payload and payload[field] is not None:
+                val = str(payload[field]).strip()
+                if field == "title" and len(val) < 3:
+                    raise ValidationError("Strategy title must be at least 3 characters")
+                strategy[field] = val
+
+        if "pages" in payload and payload["pages"] is not None:
+            strategy["pages"] = max(1, int(payload["pages"]))
+
+        if "tags" in payload and payload["tags"] is not None:
+            raw_tags = payload["tags"]
+            if isinstance(raw_tags, str):
+                strategy["tags"] = [t.strip() for t in raw_tags.split(",") if t.strip()]
+            else:
+                strategy["tags"] = [str(t).strip() for t in raw_tags if str(t).strip()]
+
+        # Optional PDF replacement
+        if payload.get("pdfBase64"):
+            pdf_bytes = self._decode_and_validate_pdf(str(payload["pdfBase64"]))
+            new_filename = _sanitize_pdf_filename(
+                str(payload.get("pdfFilename") or strategy["filename"]), resource_id
+            )
+            self._write_pdf_bytes(new_filename, pdf_bytes)
+            strategy["filename"] = new_filename
+            strategy["fileSize"] = _format_file_size(len(pdf_bytes))
+
+        strategy["uploadedBy"] = admin_id
+        strategy["updatedAt"] = int(time.time() * 1000)
+        self._persist_catalog()
+        return {**strategy, "downloadUrl": f"/api/v1/resources/download/{resource_id}", "fileExists": True}
+
+    def admin_delete_strategy(self, resource_id: str) -> Dict[str, Any]:
+        strategy = self.get_resource(resource_id)
+        if not strategy:
+            raise NotFoundError(f"Strategy '{resource_id}' not found")
+
+        self._catalog = [r for r in self._catalog if r["id"] != resource_id]
+        self._persist_catalog()
+
+        # Remove uploaded file if not a built-in default
+        builtin_ids = {b["id"] for b in STRATEGY_CATALOG}
+        if resource_id not in builtin_ids:
+            fp = (RESOURCES_DIR / strategy["filename"]).resolve()
+            if RESOURCES_DIR.resolve() in fp.parents and fp.exists():
+                try:
+                    fp.unlink()
+                except Exception:
+                    pass
+        return {"deletedId": resource_id, "title": strategy["title"]}
 
 
 resources_service = ResourcesService()
