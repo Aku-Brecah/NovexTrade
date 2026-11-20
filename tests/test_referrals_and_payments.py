@@ -543,3 +543,45 @@ def test_admin_upload_update_and_delete_strategy_pdf(client):
     assert del_res.status_code == 200
     pub_after = client.get("/api/v1/resources").json()["resources"]
     assert all(r["id"] != strat_id for r in pub_after)
+
+
+# ---------------------------------------------------------------------------
+# 20. ADMIN ADD FUNDS TO USER -> REFLECTS IN BALANCES, TRANSACTIONS & ADMIN LIST
+# ---------------------------------------------------------------------------
+
+def test_admin_add_funds_reflects_in_user_balances_transactions_and_admin_users(client):
+    reg = _register_user(client, "fundedtrader@example.com", full_name="Funded Trader").json()
+    user_id = reg["user"]["id"]
+    user_headers = {"Authorization": f"Bearer {reg['token']}"}
+
+    # Admin credits 2500.00 USDT via adjust-balance (same call as + Add Funds modal)
+    adj = client.post(
+        f"/api/v1/admin/users/{user_id}/adjust-balance",
+        headers=_admin_headers(),
+        json={
+            "asset": "USDT",
+            "operation": "CREDIT",
+            "amount": "2500.00",
+            "reason": "Institutional account funding credit",
+        },
+    )
+    assert adj.status_code == 200
+    assert adj.json()["success"] is True
+
+    # 1. Reflects in user's live /api/v1/balances
+    bal_res = client.get("/api/v1/balances", headers=user_headers)
+    assert bal_res.status_code == 200
+    usdt = next(b for b in bal_res.json()["balances"] if b["asset"] == "USDT")
+    assert Decimal(usdt["available"]) == Decimal("2500.00000000")
+
+    # 2. Reflects in user's /api/v1/wallet/transactions history
+    tx_res = client.get("/api/v1/wallet/transactions", headers=user_headers)
+    assert tx_res.status_code == 200
+    txs = tx_res.json()["transactions"]
+    assert any(t["type"] == "DEPOSIT" and t["asset"] == "USDT" and Decimal(t["amount"]) == Decimal("2500.00000000") for t in txs)
+
+    # 3. Reflects in Admin Users table payload
+    adm_users = client.get("/api/v1/admin/users", headers=_admin_headers()).json()["users"]
+    u_row = next(u for u in adm_users if u["id"] == user_id)
+    adm_usdt = next(b for b in u_row["balances"] if b["asset"] == "USDT")
+    assert Decimal(adm_usdt["available"]) == Decimal("2500.00000000")

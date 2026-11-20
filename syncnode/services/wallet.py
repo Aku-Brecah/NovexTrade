@@ -5,6 +5,7 @@ from syncnode.common.types import AssetSymbol, AccountType
 from syncnode.common.errors import ValidationError, InsufficientFundsError, NotFoundError
 from syncnode.common.decimal_util import format_decimal, to_decimal
 from syncnode.database.db import db
+from syncnode.database.supabase_client import supabase_client
 from syncnode.services.ledger import ledger_service
 from syncnode.common.logger import Logger
 
@@ -224,6 +225,20 @@ class WalletService:
                 ],
                 metadata={"user_id": user_id, "admin_id": admin_id, "reason": reason}
             )
+            # Also record a confirmed deposit entry so it reflects in user Transaction History
+            dep_id = f"dep_{adj_id}"
+            dep_record = {
+                "id": dep_id,
+                "user_id": user_id,
+                "asset": asset.value,
+                "amount": diff_str,
+                "tx_hash": f"admin_credit_{adj_id}",
+                "status": "CONFIRMED",
+                "note": reason,
+                "created_at": int(time.time() * 1000)
+            }
+            db.deposits[dep_id] = dep_record
+            supabase_client.queue_upsert("deposits", dep_record)
         else:
             diff_str = format_decimal(abs(diff_dec))
             ledger_service.record_transaction(

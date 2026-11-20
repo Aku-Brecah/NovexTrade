@@ -563,6 +563,24 @@ export const App: React.FC = () => {
     fetchUserData();
   }, []);
 
+  // Keep user balances & transactions fresh when switching to wallet/trading tabs or focusing the window
+  useEffect(() => {
+    const balanceTabs: TabType[] = ['dashboard', 'spot', 'wallet', 'assets', 'deposit', 'withdraw', 'transfers', 'earn', 'p2p'];
+    if (balanceTabs.includes(activeTab)) {
+      const tok = localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token');
+      if (tok) fetchUserData();
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    const onFocus = () => {
+      const tok = localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token');
+      if (tok) fetchUserData();
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, []);
+
   // Realtime Clerk User Synchronization
   useEffect(() => {
     if (!isClerkLoaded) return;
@@ -682,8 +700,19 @@ export const App: React.FC = () => {
           try {
             const msg = JSON.parse(event.data);
             if (msg.type === 'BALANCE_UPDATE') {
-              if (msg.balances) setBalances(msg.balances);
-              if (localStorage.getItem('syncnode_token')) fetchUserData();
+              let currentUid: string | null = null;
+              try {
+                const saved = JSON.parse(localStorage.getItem('syncnode_user') || 'null');
+                currentUid = saved?.id || null;
+              } catch {
+                currentUid = null;
+              }
+              if (!msg.userId || !currentUid || msg.userId === currentUid) {
+                if (msg.balances) setBalances(msg.balances);
+                if (localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token')) {
+                  fetchUserData();
+                }
+              }
             } else if (msg.type === 'ORDER_UPDATE' || msg.type === 'TRADE_UPDATE') {
               fetchUserData();
             } else if (msg.channel === `depth@${symbol}`) {

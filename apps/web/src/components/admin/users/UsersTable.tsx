@@ -99,11 +99,14 @@ export const UsersTable: React.FC<{
           <table className="bn-table admin-users-table">
             <thead>
               <tr>
-                <th>User</th><th>KYC</th><th>Security</th><th>Status</th><th>Registered</th><th style={{ textAlign: 'right' }}>Actions</th>
+                <th>User</th><th>USDT Balance</th><th>KYC</th><th>Security</th><th>Status</th><th>Registered</th><th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {(query.data?.users || []).map((u) => (
+              {(query.data?.users || []).map((u) => {
+                const usdtBal = ((u as any).balances || []).find((b: any) => b.asset === 'USDT');
+                const availUsdt = usdtBal ? parseFloat(usdtBal.available || '0').toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00';
+                return (
                 <tr key={u.id}>
                   <td>
                     <div className="admin-user-cell">
@@ -113,6 +116,9 @@ export const UsersTable: React.FC<{
                         <small>{u.email}</small>
                       </div>
                     </div>
+                  </td>
+                  <td style={{ fontWeight: 700, color: '#f0b90b', fontFamily: 'ui-monospace, monospace' }}>
+                    ${availUsdt}
                   </td>
                   <td>
                     <span className={`badge ${u.kycStatus === 'APPROVED' ? 'badge-green' : u.kycStatus === 'PENDING' ? 'badge-amber' : u.kycStatus === 'REJECTED' ? 'badge-red' : ''}`}>
@@ -136,11 +142,11 @@ export const UsersTable: React.FC<{
                         <>
                           <button
                             className="btn btn-secondary"
-                            style={{ padding: '4px 8px', fontSize: '11px', color: '#f0b90b', borderColor: 'rgba(240, 185, 11, 0.3)' }}
+                            style={{ padding: '4px 10px', fontSize: '11px', background: '#f0b90b', color: '#0b0e11', borderColor: '#f0b90b', fontWeight: 800 }}
                             onClick={() => setAdjustingUser(u)}
-                            title="Add / Edit user balance"
+                            title="Add / Edit user funds"
                           >
-                            <Wallet size={12} /> Balance
+                            <Wallet size={12} /> + Add Funds
                           </button>
                           <button
                             className="btn btn-secondary"
@@ -161,7 +167,8 @@ export const UsersTable: React.FC<{
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

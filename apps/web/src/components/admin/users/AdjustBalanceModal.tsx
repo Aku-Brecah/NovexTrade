@@ -31,8 +31,16 @@ export const AdjustBalanceModal: React.FC<AdjustBalanceModalProps> = ({
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
+  useEffect(() => {
     if (userId) {
-      const token = localStorage.getItem('syncnode_token');
+      const token = localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token');
       fetch(`/api/v1/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -71,7 +79,7 @@ export const AdjustBalanceModal: React.FC<AdjustBalanceModalProps> = ({
     setSuccessMsg(null);
 
     try {
-      const token = localStorage.getItem('syncnode_token');
+      const token = localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token');
       const res = await fetch(`/api/v1/admin/users/${userId}/adjust-balance`, {
         method: 'POST',
         headers: {
