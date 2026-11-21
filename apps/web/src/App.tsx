@@ -87,7 +87,7 @@ function parseUrlRoute(): { tab: TabType; symbol: string; stockSymbol: string; i
     return { tab: 'signup', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
-  if (raw === 'login') {
+  if (raw === 'login' || raw === 'forgot-password' || raw === 'reset-password') {
     return { tab: 'login', symbol: defaultSymbol, stockSymbol: defaultStock, isSearch: false };
   }
 
@@ -778,8 +778,46 @@ export const App: React.FC = () => {
   }, []);
 
 
+  // Multi-tab session synchronization (instant logout/login sync across browser tabs)
+  useEffect(() => {
+    const onStorageChange = (e: StorageEvent) => {
+      if (e.key === 'syncnode_token' || e.key === 'novextrade_token') {
+        if (!e.newValue) {
+          setUser(null);
+          setBalances([]);
+          setOrders([]);
+          setUserTrades([]);
+          setTransactions([]);
+        } else {
+          fetchUserData();
+        }
+      }
+    };
+    window.addEventListener('storage', onStorageChange);
+    return () => window.removeEventListener('storage', onStorageChange);
+  }, []);
+
   const handleLogout = async () => {
+    const accessToken = localStorage.getItem('novextrade_token') || localStorage.getItem('syncnode_token');
+    const refreshToken = localStorage.getItem('syncnode_refresh_token');
+
+    if (accessToken) {
+      try {
+        await fetch('/api/v1/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ refreshToken: refreshToken || undefined }),
+        });
+      } catch {
+        // continue client cleanup even if network fails
+      }
+    }
+
     localStorage.removeItem('syncnode_token');
+    localStorage.removeItem('novextrade_token');
     localStorage.removeItem('syncnode_refresh_token');
     localStorage.removeItem('syncnode_user');
     try {

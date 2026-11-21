@@ -54,6 +54,11 @@ from syncnode.services.resources import resources_service
 from syncnode.services.referral import referral_service
 from syncnode.services.commerce import commerce_service
 from syncnode.services.card_gateway import card_gateway
+from syncnode.services.auth_recovery import (
+    auth_recovery_service,
+    validate_email_address,
+    validate_password_strength,
+)
 from syncnode.admin.router import admin_router
 from syncnode.admin.api import admin_api_router
 from syncnode.web.views import web_router
@@ -176,16 +181,23 @@ async def get_current_user(authorization: Optional[str] = Header(None)) -> Dict[
     if not authorization or not authorization.startswith("Bearer "):
         raise UnauthorizedError("Missing or invalid Authorization header")
     token = authorization.split(" ", 1)[1].strip()
+    if auth_recovery_service.is_token_revoked(token):
+        raise UnauthorizedError("Session has been revoked. Please sign in again.")
     try:
         payload = verify_token(token)
     except Exception as e:
         raise UnauthorizedError(f"Invalid or expired token: {str(e)}")
+
+    if payload.get("type") == "refresh":
+        raise UnauthorizedError("Refresh tokens cannot be used to access protected resources")
 
     user = user_repository.find_by_id(payload.get("user_id") or payload.get("userId"))
     if not user:
         raise UnauthorizedError("User account not found")
     if user.get("is_suspended"):
         raise ForbiddenError("Account is suspended")
+    if "tv" in payload and int(payload["tv"]) != int(user.get("token_version", 0)):
+        raise UnauthorizedError("Session invalidated due to security change. Please sign in again.")
     return user
 
 
@@ -209,6 +221,7 @@ async def health_check():
 class RegisterRequest(BaseModel):
     email: str
     password: str
+    confirmPassword: Optional[str] = None
     fullName: Optional[str] = None
     country: Optional[str] = None
     phoneNumber: Optional[str] = None
@@ -226,11 +239,10 @@ async def register(req: RegisterRequest, request: Request):
     ip = get_client_ip(request)
     check_rate_limit(f"reg_{ip}", max_requests=10, window_seconds=60)
 
-    email = req.email.strip().lower()
-    if not email or "@" not in email:
-        raise ValidationError("Valid email address is required")
-    if len(req.password) < 8:
-        raise ValidationError("Password must contain at least 8 characters")
+    email = validate_email_address(req.email)
+    if req.confirmPassword is not None and req.password != req.confirmPassword:
+        raise ValidationError("Passwords do not match")
+    validate_password_strength(req.password)
     if user_repository.find_by_email(email):
         raise ValidationError("User already exists with this email")
 
@@ -277,10 +289,15 @@ async def register(req: RegisterRequest, request: Request):
         "is_withdrawal_suspended": False,
         "referral_code": unique_ref_code,
         "referred_by": None,
+        "token_version": 0,
         "created_at": now,
         "updated_at": now
     }
     user_repository.save(user)
+
+    # Initialize zero ledger balances for the new account
+    for asset in AssetSymbol:
+        ledger_service.get_or_create_account(AccountType.USER_AVAILABLE, asset, user_id)
 
     # Attribute referral relationship if a valid referral code was provided
     if req.referralCode and req.referralCode.strip():
@@ -291,8 +308,8 @@ async def register(req: RegisterRequest, request: Request):
             ip_address=ip,
         )
 
-    token = sign_token({"userId": user_id, "email": email, "isTotpAuthenticated": True})
-    refresh_token = sign_refresh_token({"userId": user_id, "email": email})
+    token = sign_token({"userId": user_id, "email": email, "isTotpAuthenticated": True, "tv": 0})
+    refresh_token = sign_refresh_token({"userId": user_id, "email": email, "tv": 0})
     safe_user = {k: v for k, v in user.items() if k != "password_hash" and k != "totp_secret"}
     safe_user["referral_url"] = referral_service.build_referral_url(unique_ref_code)
     return {"success": True, "token": token, "refreshToken": refresh_token, "user": safe_user}
@@ -310,16 +327,23 @@ async def login(req: LoginRequest, request: Request):
     ip = get_client_ip(request)
     check_rate_limit(f"login_{email}", max_requests=15, window_seconds=60)
     user = user_repository.find_by_email(email)
-    if not user or not verify_password(req.password, user["password_hash"]):
+    if not user or not user.get("password_hash") or not verify_password(req.password, user["password_hash"]):
         raise UnauthorizedError("Invalid credentials provided")
+
+    if user.get("is_suspended"):
+        raise ForbiddenError("This account has been suspended. Please contact support.")
 
     if user.get("is_totp_enabled"):
         if not req.totpCode or not verify_totp_code(user.get("totp_secret", ""), req.totpCode):
             return {"success": False, "requires2FA": True, "error": "2FA TOTP verification required"}
 
-    token = sign_token({"userId": user["id"], "email": email, "isTotpAuthenticated": True})
-    refresh_token = sign_refresh_token({"userId": user["id"], "email": email})
+    tv = int(user.get("token_version", 0))
+    code = referral_service.ensure_user_referral_code(user)
+    token = sign_token({"userId": user["id"], "email": email, "isTotpAuthenticated": True, "tv": tv})
+    refresh_token = sign_refresh_token({"userId": user["id"], "email": email, "tv": tv})
     safe_user = {k: v for k, v in user.items() if k != "password_hash" and k != "totp_secret"}
+    safe_user["referral_code"] = code
+    safe_user["referral_url"] = referral_service.build_referral_url(code)
     return {"success": True, "token": token, "refreshToken": refresh_token, "user": safe_user}
 
 
@@ -331,6 +355,8 @@ class RefreshTokenRequest(BaseModel):
 async def refresh_token(req: RefreshTokenRequest):
     if not req.refreshToken:
         raise UnauthorizedError("Missing refresh token")
+    if auth_recovery_service.is_token_revoked(req.refreshToken):
+        raise UnauthorizedError("Refresh token has been revoked")
     try:
         claims = verify_refresh_token(req.refreshToken)
     except Exception as e:
@@ -342,13 +368,99 @@ async def refresh_token(req: RefreshTokenRequest):
         raise UnauthorizedError("User account not found")
     if user.get("is_suspended"):
         raise ForbiddenError("Account is suspended")
+    tv = int(user.get("token_version", 0))
+    if "tv" in claims and int(claims["tv"]) != tv:
+        raise UnauthorizedError("Refresh token invalidated due to security change")
 
-    new_access_token = sign_token({"userId": user["id"], "email": user["email"], "isTotpAuthenticated": True})
-    new_refresh_token = sign_refresh_token({"userId": user["id"], "email": user["email"]})
+    # Rotate refresh token (revoke previous one)
+    auth_recovery_service.revoke_token(req.refreshToken)
+    new_access_token = sign_token({"userId": user["id"], "email": user["email"], "isTotpAuthenticated": True, "tv": tv})
+    new_refresh_token = sign_refresh_token({"userId": user["id"], "email": user["email"], "tv": tv})
     return {
         "success": True,
         "token": new_access_token,
         "refreshToken": new_refresh_token
+    }
+
+
+class LogoutRequest(BaseModel):
+    refreshToken: Optional[str] = None
+    revokeAll: Optional[bool] = False
+
+
+@app.post("/api/v1/auth/logout")
+async def logout_user(
+    req: LogoutRequest,
+    authorization: Optional[str] = Header(None),
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    if authorization and authorization.startswith("Bearer "):
+        auth_recovery_service.revoke_token(authorization.split(" ", 1)[1].strip())
+    if req.refreshToken:
+        auth_recovery_service.revoke_token(req.refreshToken)
+    if req.revokeAll:
+        user["token_version"] = int(user.get("token_version", 0)) + 1
+        user["updated_at"] = int(time.time() * 1000)
+        user_repository.save(user)
+    return {"success": True, "message": "Signed out and session invalidated"}
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+
+@app.post("/api/v1/auth/forgot-password")
+async def forgot_password(req: ForgotPasswordRequest, request: Request):
+    ip = get_client_ip(request)
+    check_rate_limit(f"forgot_{ip}", max_requests=5, window_seconds=300)
+    return await auth_recovery_service.request_password_reset(req.email, request_ip=ip)
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    newPassword: str
+    confirmPassword: Optional[str] = None
+
+
+@app.post("/api/v1/auth/reset-password")
+async def reset_password(req: ResetPasswordRequest, request: Request):
+    ip = get_client_ip(request)
+    check_rate_limit(f"reset_{ip}", max_requests=10, window_seconds=300)
+    return auth_recovery_service.reset_password_with_token(
+        raw_token=req.token,
+        new_password=req.newPassword,
+        confirm_password=req.confirmPassword,
+    )
+
+
+class ChangePasswordRequest(BaseModel):
+    currentPassword: str
+    newPassword: str
+    confirmPassword: Optional[str] = None
+
+
+@app.post("/api/v1/auth/change-password")
+async def change_password(
+    req: ChangePasswordRequest,
+    authorization: Optional[str] = Header(None),
+    user: Dict[str, Any] = Depends(get_current_user),
+):
+    updated_user = auth_recovery_service.change_password(
+        user=user,
+        current_password=req.currentPassword,
+        new_password=req.newPassword,
+        confirm_password=req.confirmPassword,
+    )
+    if authorization and authorization.startswith("Bearer "):
+        auth_recovery_service.revoke_token(authorization.split(" ", 1)[1].strip())
+    tv = int(updated_user.get("token_version", 0))
+    new_access = sign_token({"userId": updated_user["id"], "email": updated_user["email"], "isTotpAuthenticated": True, "tv": tv})
+    new_refresh = sign_refresh_token({"userId": updated_user["id"], "email": updated_user["email"], "tv": tv})
+    return {
+        "success": True,
+        "message": "Password updated and other sessions invalidated",
+        "token": new_access,
+        "refreshToken": new_refresh,
     }
 
 

@@ -14,6 +14,8 @@ class Database:
         self.users: Dict[str, Any] = {}
         self.users_by_email: Dict[str, str] = {}
         self.users_by_referral_code: Dict[str, str] = {}
+        self.password_reset_tokens: Dict[str, Dict[str, Any]] = {}  # keyed by token_hash
+        self.revoked_tokens: Set[str] = set()                       # SHA-256 hashes of revoked JWTs
 
         # Product Pricing, Orders, Payments, Crypto & Referral Systems
         self.products: Dict[str, Dict[str, Any]] = {}
@@ -303,6 +305,8 @@ class Database:
         self.users.clear()
         self.users_by_email.clear()
         self.users_by_referral_code.clear()
+        self.password_reset_tokens.clear()
+        self.revoked_tokens.clear()
         self.products.clear()
         self.referral_clicks.clear()
         self.referral_relationships.clear()

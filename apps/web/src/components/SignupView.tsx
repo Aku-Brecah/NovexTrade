@@ -28,54 +28,123 @@ export const SignupView: React.FC<SignupViewProps> = ({
   const { signIn, setActive: setSignInActive } = useSignIn();
   const { signUp, setActive: setSignUpActive } = useSignUp();
 
-  const [mode, setMode] = useState<'signup' | 'login'>(initialMode);
+  const [mode, setMode] = useState<'signup' | 'login' | 'forgot' | 'reset'>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (window.location.pathname.includes('reset-password') || params.get('token')) {
+        return 'reset';
+      }
+      if (window.location.pathname.includes('forgot-password')) {
+        return 'forgot';
+      }
+    }
+    return initialMode;
+  });
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [totpCode, setTotpCode] = useState('');
+  const [requires2FA, setRequires2FA] = useState(false);
+  const [resetToken, setResetToken] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('token') || '';
+    }
+    return '';
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    setMode(initialMode);
+    if (mode === 'login' || mode === 'signup') {
+      setMode(initialMode);
+    }
     setError(null);
     setSuccessMessage(null);
+    setRequires2FA(false);
   }, [initialMode]);
+
+  const validateStrongPassword = (pwd: string): string | null => {
+    if (!pwd || pwd.length < 8) return 'Password must be at least 8 characters long.';
+    if (!/[A-Z]/.test(pwd)) return 'Password must include at least one uppercase letter.';
+    if (!/[a-z]/.test(pwd)) return 'Password must include at least one lowercase letter.';
+    if (!/[0-9]/.test(pwd)) return 'Password must include at least one number.';
+    return null;
+  };
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
 
-    const cleanEmail = email.trim().toLowerCase();
-    if (!cleanEmail || !cleanEmail.includes('@')) {
-      setError('Please enter a valid email address.');
-      setLoading(false);
-      return;
-    }
-
-    if (!password || password.length < 6) {
-      setError('Password must be at least 6 characters.');
-      setLoading(false);
-      return;
-    }
-
-    if (mode === 'signup' && !fullName.trim()) {
-      setError('Please enter your full name.');
-      setLoading(false);
-      return;
-    }
-
     try {
+      // FORGOT PASSWORD FLOW
+      if (mode === 'forgot') {
+        const cleanEmail = email.trim().toLowerCase();
+        if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+          throw new Error('Please enter a valid email address.');
+        }
+        const res = await fetch('/api/v1/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || data.detail || 'Unable to process password reset request.');
+        }
+        setSuccessMessage(data.message || 'If an account exists for that email, a reset link has been sent.');
+        return;
+      }
+
+      // RESET PASSWORD FLOW
+      if (mode === 'reset') {
+        if (!resetToken.trim()) throw new Error('Password reset token is required.');
+        const pwdErr = validateStrongPassword(password);
+        if (pwdErr) throw new Error(pwdErr);
+        if (password !== confirmPassword) throw new Error('Passwords do not match.');
+
+        const res = await fetch('/api/v1/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: resetToken.trim(),
+            newPassword: password,
+            confirmPassword,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || data.detail || 'Password reset failed.');
+        }
+        setSuccessMessage('Password updated successfully! Please sign in with your new password.');
+        setPassword('');
+        setConfirmPassword('');
+        setTimeout(() => setMode('login'), 1200);
+        return;
+      }
+
+      const cleanEmail = email.trim().toLowerCase();
+      if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+        throw new Error('Please enter a valid email address.');
+      }
+
       if (mode === 'signup') {
-        // 1. Try Clerk Sign-Up
+        if (!fullName.trim()) throw new Error('Please enter your full name.');
+        const pwdErr = validateStrongPassword(password);
+        if (pwdErr) throw new Error(pwdErr);
+        if (password !== confirmPassword) throw new Error('Passwords do not match.');
+
+        // 1. Optional Clerk Sign-Up sync
         if (signUp) {
           try {
             const signUpAttempt = await signUp.create({
               emailAddress: cleanEmail,
-              password: password,
+              password,
               firstName: fullName.trim() || undefined
             });
             if (signUpAttempt.status === 'complete' && setSignUpActive) {
@@ -86,7 +155,7 @@ export const SignupView: React.FC<SignupViewProps> = ({
           }
         }
 
-        // 2. Register with backend (preserving any captured referral attribution)
+        // 2. Register with authoritative backend (preserving referral attribution)
         await captureReferralFromUrl();
         const { referralCode, clickId } = getStoredReferral();
         const res = await fetch('/api/v1/auth/register', {
@@ -95,13 +164,14 @@ export const SignupView: React.FC<SignupViewProps> = ({
           body: JSON.stringify({
             email: cleanEmail,
             password,
+            confirmPassword,
             fullName: fullName.trim(),
             referralCode: referralCode || undefined,
             referralClickId: clickId || undefined,
           })
         });
         const data = await res.json();
-        if (data.success && data.token) {
+        if (res.ok && data.success && data.token) {
           localStorage.setItem('syncnode_token', data.token);
           if (data.refreshToken) localStorage.setItem('syncnode_refresh_token', data.refreshToken);
           if (data.user) localStorage.setItem('syncnode_user', JSON.stringify(data.user));
@@ -111,46 +181,54 @@ export const SignupView: React.FC<SignupViewProps> = ({
             onSuccess(data.user, data.token);
           }, 300);
           return;
-        } else {
-          throw new Error(data.detail || data.error || 'Failed to register account.');
         }
+        throw new Error(data.error || data.detail || 'Failed to register account.');
+      }
 
-      } else {
-        // 1. Try Clerk Sign-In
-        if (signIn) {
-          try {
-            const signInAttempt = await signIn.create({
-              identifier: cleanEmail,
-              password: password
-            });
-            if (signInAttempt.status === 'complete' && setSignInActive) {
-              await setSignInActive({ session: signInAttempt.createdSessionId });
-            }
-          } catch (clerkErr: any) {
-            console.debug('Clerk signin notice:', clerkErr?.errors?.[0]?.message || clerkErr);
+      // LOGIN FLOW
+      if (!password) throw new Error('Please enter your password.');
+
+      if (signIn) {
+        try {
+          const signInAttempt = await signIn.create({
+            identifier: cleanEmail,
+            password
+          });
+          if (signInAttempt.status === 'complete' && setSignInActive) {
+            await setSignInActive({ session: signInAttempt.createdSessionId });
           }
-        }
-
-        // 2. Sign in with backend
-        const res = await fetch('/api/v1/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: cleanEmail, password })
-        });
-        const data = await res.json();
-        if (data.success && data.token) {
-          localStorage.setItem('syncnode_token', data.token);
-          if (data.refreshToken) localStorage.setItem('syncnode_refresh_token', data.refreshToken);
-          if (data.user) localStorage.setItem('syncnode_user', JSON.stringify(data.user));
-
-          setSuccessMessage('Signed in successfully! Entering terminal...');
-          setTimeout(() => {
-            onSuccess(data.user, data.token);
-          }, 300);
-          return;
-          throw new Error(data.detail || data.error || 'Invalid email or password.');
+        } catch (clerkErr: any) {
+          console.debug('Clerk signin notice:', clerkErr?.errors?.[0]?.message || clerkErr);
         }
       }
+
+      const res = await fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: cleanEmail,
+          password,
+          totpCode: requires2FA && totpCode.trim() ? totpCode.trim() : undefined,
+        })
+      });
+      const data = await res.json();
+      if (data.requires2FA) {
+        setRequires2FA(true);
+        setError('Two-factor authentication is enabled. Please enter your 6-digit authenticator code.');
+        return;
+      }
+      if (res.ok && data.success && data.token) {
+        localStorage.setItem('syncnode_token', data.token);
+        if (data.refreshToken) localStorage.setItem('syncnode_refresh_token', data.refreshToken);
+        if (data.user) localStorage.setItem('syncnode_user', JSON.stringify(data.user));
+
+        setSuccessMessage('Signed in successfully! Entering terminal...');
+        setTimeout(() => {
+          onSuccess(data.user, data.token);
+        }, 300);
+        return;
+      }
+      throw new Error(data.error || data.detail || 'Invalid email or password.');
     } catch (err: any) {
       setError(err?.message || 'Authentication error. Please check your credentials.');
     } finally {
@@ -458,11 +536,40 @@ export const SignupView: React.FC<SignupViewProps> = ({
             </div>
           </div>
 
-          {/* Password */}
+          {/* Reset Token (only in reset mode) */}
+          {mode === 'reset' && (
+            <div>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#848e9c', marginBottom: '5px' }}>
+                Reset Token
+              </label>
+              <input
+                type="text"
+                className="nvx-input nvx-mono-code"
+                placeholder="Paste reset token from email"
+                value={resetToken}
+                onChange={(e) => setResetToken(e.target.value)}
+                required
+              />
+            </div>
+          )}
+
+          {/* Password (hidden in forgot mode) */}
+          {mode !== 'forgot' && (
           <div>
-            <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#848e9c', marginBottom: '5px' }}>
-              Password
-            </label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#848e9c' }}>
+                {mode === 'reset' ? 'New Password' : 'Password'}
+              </label>
+              {mode === 'login' && (
+                <button
+                  type="button"
+                  onClick={() => { setMode('forgot'); setError(null); setSuccessMessage(null); }}
+                  style={{ background: 'none', border: 'none', color: '#f0b90b', fontSize: '12px', fontWeight: 600, cursor: 'pointer', padding: 0 }}
+                >
+                  Forgot password?
+                </button>
+              )}
+            </div>
             <div
               style={{
                 display: 'flex',
@@ -492,6 +599,7 @@ export const SignupView: React.FC<SignupViewProps> = ({
               />
               <button
                 type="button"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
                 onClick={() => setShowPassword(!showPassword)}
                 style={{
                   background: 'transparent',
@@ -506,7 +614,72 @@ export const SignupView: React.FC<SignupViewProps> = ({
                 {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
+            {(mode === 'signup' || mode === 'reset') && (
+              <div style={{ fontSize: '11px', color: '#848e9c', marginTop: '6px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <span style={{ color: password.length >= 8 ? '#0ecb81' : '#848e9c' }}>• 8+ chars</span>
+                <span style={{ color: /[A-Z]/.test(password) ? '#0ecb81' : '#848e9c' }}>• Uppercase</span>
+                <span style={{ color: /[a-z]/.test(password) ? '#0ecb81' : '#848e9c' }}>• Lowercase</span>
+                <span style={{ color: /[0-9]/.test(password) ? '#0ecb81' : '#848e9c' }}>• Number</span>
+              </div>
+            )}
           </div>
+          )}
+
+          {/* Confirm Password (signup & reset modes) */}
+          {(mode === 'signup' || mode === 'reset') && (
+            <div>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#848e9c', marginBottom: '5px' }}>
+                Confirm Password
+              </label>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: '#0b0e11',
+                  border: `1px solid ${confirmPassword && confirmPassword !== password ? '#f6465d' : '#2b313a'}`,
+                  borderRadius: '6px',
+                  padding: '0 10px',
+                  height: '40px'
+                }}
+              >
+                <Lock size={15} color="#848e9c" style={{ marginRight: '8px' }} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Re-enter password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  style={{
+                    flex: 1,
+                    background: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    color: '#eaecef',
+                    fontSize: '13px'
+                  }}
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          {/* 2FA TOTP Input when required */}
+          {mode === 'login' && requires2FA && (
+            <div>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#f0b90b', marginBottom: '5px' }}>
+                2FA Authenticator Code
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                className="nvx-input nvx-mono-code"
+                placeholder="Enter 6-digit code"
+                value={totpCode}
+                onChange={(e) => setTotpCode(e.target.value)}
+                required
+              />
+            </div>
+          )}
 
           {/* Submit Button */}
           <button
@@ -532,7 +705,17 @@ export const SignupView: React.FC<SignupViewProps> = ({
             }}
           >
             {loading ? (
-              <span>Authenticating...</span>
+              <span>Processing...</span>
+            ) : mode === 'forgot' ? (
+              <>
+                <span>Send Reset Link</span>
+                <ArrowRight size={15} />
+              </>
+            ) : mode === 'reset' ? (
+              <>
+                <span>Reset Password</span>
+                <ShieldCheck size={15} />
+              </>
             ) : mode === 'login' ? (
               <>
                 <span>Sign In</span>
@@ -545,6 +728,23 @@ export const SignupView: React.FC<SignupViewProps> = ({
               </>
             )}
           </button>
+
+          {(mode === 'forgot' || mode === 'reset') && (
+            <button
+              type="button"
+              onClick={() => { setMode('login'); setError(null); setSuccessMessage(null); }}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#848e9c',
+                fontSize: '12.5px',
+                cursor: 'pointer',
+                marginTop: '4px'
+              }}
+            >
+              ← Back to Sign In
+            </button>
+          )}
         </form>
       </div>
     </div>
